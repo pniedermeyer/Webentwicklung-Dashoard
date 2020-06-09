@@ -68,3 +68,9 @@ Zeige alle Volumes \
 
 ## Github Packages
 Das Docker-Image findet ihr auf Github unter https://github.com/pniedermeyer/Webentwicklung-Dashoard/packages
+
+
+# PostgreSQL
+## Download und Installation
+https://www.postgresql.org/download/windows/
+##pgAdmin
