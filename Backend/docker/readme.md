@@ -54,10 +54,10 @@ Um sich mit einem laufenden Container zu verbinden kann man folgendes Command be
 Um von einem laufenden Docker-Image/Container ein neues Abbild zu erstellen(z.B. neue Tabellen o.ä. wurde generiert) muss zuerst über `docker commit <containername>` ein neues Image erstellt werden. Anschließend muss dem Image noch ein Tag und eine Version zugewießen werden. Dazu schaut man mit `docker images` nach, welche Images noch keine Repository/Tag haben. Diese werden mit `<none>` markiert. Um diese jetzt zu taggen wird der Befehl `docker tag <imageID> <repo/name:tag>` ausgeführt. Wenn kein Tag angegeben wird, wird das Image mit `latest` markiert. Für weitere Infos: https://docs.docker.com/engine/reference/commandline/commit/
 ### Other Docker Commands
 Zeige alle laufenden docker-container\
-`docker ps -a`\
+`docker ps -a`
 Zeige alle lokalen Docker-Images\    
 `docker images`
 Zeige alle Netzwerke\
-`docker network ls`\
-Zeige alle Volumes
+`docker network ls`
+Zeige alle Volumes\
 `docker volume ls`
