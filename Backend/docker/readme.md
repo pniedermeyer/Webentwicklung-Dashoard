@@ -35,7 +35,7 @@ $ docker run -d --name some-postgres -v "$PWD/my-postgres.conf":/etc/postgresql/
 ## How-To Docker
 ### Docker Download 
 Zuerst muss Docker von der folgende Seite heruntergeladen und installiert werden: https://docs.docker.com/get-docker/ .
-Sowohl für MacOS, Linux und Windows verfügbar. Ich benutze hier die Version "Docker version 19.03.5" mit dem Build "build 633a0ea". Hier sollte jedoch auch jede andere Version in Ordnung sein. 
+Sowohl für MacOS, Linux und Windows verfügbar. Ich benutze hier die Version "Docker version 19.03.5" mit dem Build "build 633a0ea". Hier sollte jedoch auch jede andere Version in Ordnung sein. Bevor Docker nun laufen kann muss im Bios die Virtualization eingeschaltet werden. (Hyper-V)
 ### Docker Login Github
 Nach der Installation von Docker lassen sich die Befehle in der Form "docker <command>" an den docker-daemon weiterleiten, der diese dann ausführt. Zuerst müssen wir allerdings unseren Github-Account verlinken. Dies geschieht mit folgendem docker login Command.
 Bei "-u" wird der Username angegeben und bei -p ein Personal Access Token. Ein Passwort lässt sich an dieser Stelle auch benutzen sollte aber vermieden werden. Hier die Anleitung zum erstellen eines Personal Access Token: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
