@@ -73,4 +73,4 @@ Das Docker-Image findet ihr auf Github unter https://github.com/pniedermeyer/Web
 # PostgreSQL
 ## Download und Installation
 https://www.postgresql.org/download/windows/
-##pgAdmin
+
