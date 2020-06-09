@@ -31,3 +31,21 @@ $ # customize the config
  
 $ # run postgres with custom config
 $ docker run -d --name some-postgres -v "$PWD/my-postgres.conf":/etc/postgresql/postgresql.conf -e POSTGRES_PASSWORD=mysecretpassword postgres -c 'config_file=/etc/postgresql/postgresql.conf'
+
+## How-To Docker
+### Docker Download 
+Zuerst muss Docker von der folgende Seite heruntergeladen und installiert werden: https://docs.docker.com/get-docker/ .
+Sowohl für MacOS, Linux und Windows verfügbar. Ich benutze hier die Version "Docker version 19.03.5" mit dem Build "build 633a0ea". Hier sollte jedoch auch jede andere Version in Ordnung sein. 
+### Docker Login Github
+Nach der Installation von Docker lassen sich die Befehle in der Form "docker <command>" an den docker-daemon weiterleiten, der diese dann ausführt. Zuerst müssen wir allerdings unseren Github-Account verlinken. Dies geschieht mit folgendem docker login Command.
+Bei "-u" wird der Username angegeben und bei -p ein Personal Access Token. Ein Passwort lässt sich an dieser Stelle auch benutzen sollte aber vermieden werden. Hier die Anleitung zum erstellen eines Personal Access Token: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
+> Example Login
+> `docker login docker.pkg.github.com -u ktpn -p  <personalAccessToken> (z.B. dgni723a3k67fsdj65e)`
+### Pull Docker Image
+> `docker pull docker.pkg.github.com/pniedermeyer/webentwicklung-dashoard/postgres_dashboard:1.0`
+### Push Docker Image
+> `docker push docker.pkg.github.com/pniedermeyer/webentwicklung-dashoard/postgres_dashboard:1.0`
+### Inspect Docker Image
+> 'docker inspect <containername>
+### Docker exex <Container>
+> `docker exec -it <containername> /bin/bash`
