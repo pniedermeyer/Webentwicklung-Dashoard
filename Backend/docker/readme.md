@@ -47,7 +47,7 @@ Bei "-u" wird der Username angegeben und bei -p ein Personal Access Token. Ein P
 > `docker push docker.pkg.github.com/pniedermeyer/webentwicklung-dashoard/postgres_dashboard:1.0`
 ### Inspect Docker Image
 > `docker inspect <containername>`
-### Docker exex <Container>
+### Docker exec <Container>
 Um sich mit einem laufenden Container zu verbinden kann man folgendes Command benutzen um in die Bash des Containers zu gelangen: 
 > `docker exec -it <containername> /bin/bash`
 ### Create Docker Image
