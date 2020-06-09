@@ -50,6 +50,9 @@ Bei "-u" wird der Username angegeben und bei -p ein Personal Access Token. Ein P
 ### Docker exec <Container>
 Um sich mit einem laufenden Container zu verbinden kann man folgendes Command benutzen um in die Bash des Containers zu gelangen: 
 > `docker exec -it <containername> /bin/bash`
+### Start Docker Container
+`docker run -it --rm --network bridge -d --name dashboard_db_postgres -p 5432:5432 -e POSTGRES_PASSWORD=admin docker.pkg.github.com/pniedermeyer/webentwicklung-dashoard/postgres_dashboard:1.0`
+
 ### Create Docker Image
 Um von einem laufenden Docker-Image/Container ein neues Abbild zu erstellen(z.B. neue Tabellen o.ä. wurde generiert) muss zuerst über `docker commit <containername>` ein neues Image erstellt werden. Anschließend muss dem Image noch ein Tag und eine Version zugewießen werden. Dazu schaut man mit `docker images` nach, welche Images noch keine Repository/Tag haben. Diese werden mit `<none>` markiert. Um diese jetzt zu taggen wird der Befehl `docker tag <imageID> <repo/name:tag>` ausgeführt. Wenn kein Tag angegeben wird, wird das Image mit `latest` markiert. Für weitere Infos: https://docs.docker.com/engine/reference/commandline/commit/
 ### Other Docker Commands
