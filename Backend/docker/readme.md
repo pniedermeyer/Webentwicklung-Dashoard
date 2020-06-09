@@ -116,4 +116,9 @@ Das Docker-Image findet ihr auf Github unter https://github.com/pniedermeyer/Web
 
 ## Download und Installation
 PostgreSQL 12.3
+Installation: PgAdmin, StackBuilder und CommandLine Tools (Server wird nicht benötigt)
 https://www.postgresql.org/download/windows/
+
+## Login über SQL-Shell (psql)
+![Alt text](./img/postgreslogin.PNG?raw=true 'Database Login')
+
