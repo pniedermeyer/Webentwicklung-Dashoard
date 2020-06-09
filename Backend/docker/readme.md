@@ -56,8 +56,8 @@ Um von einem laufenden Docker-Image/Container ein neues Abbild zu erstellen(z.B.
 Zeige alle laufenden docker-container\
 `docker ps -a`\
 Zeige alle lokalen Docker-Images\    
-`docker images`\
+`docker images`
 Zeige alle Netzwerke\
 `docker network ls`\
-Zeige alle Volumes\
-`docker volume ls`\
+Zeige alle Volumes
+`docker volume ls`
