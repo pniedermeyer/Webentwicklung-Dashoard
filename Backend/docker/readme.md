@@ -64,6 +64,7 @@ Sowohl für MacOS, Linux und Windows verfügbar. Ich benutze hier die Version "D
 
 Nach der Installation von Docker lassen sich die Befehle in der Form "docker <command>" an den docker-daemon weiterleiten, der diese dann ausführt. Zuerst müssen wir allerdings unseren Github-Account verlinken. Dies geschieht mit folgendem docker login Command.
 Bei "-u" wird der Username angegeben und bei -p ein Personal Access Token. Ein Passwort lässt sich an dieser Stelle auch benutzen sollte aber vermieden werden. Hier die Anleitung zum erstellen eines Personal Access Token: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
+![Alt text](./img/gittoken.PNG?raw=true 'Personal Access Token Settings')
 
 > Example Login
 > `docker login docker.pkg.github.com -u ktpn -p <personalAccessToken> (z.B. dgni723a3k67fsdj65e)`
@@ -94,7 +95,7 @@ Um sich mit einem laufenden Container zu verbinden kann man folgendes Command be
 
 Um von einem laufenden Docker-Image/Container ein neues Abbild zu erstellen(z.B. neue Tabellen o.ä. wurde generiert) muss zuerst über `docker commit <containername>` ein neues Image erstellt werden. Anschließend muss dem Image noch ein Tag und eine Version zugewießen werden. Dazu schaut man mit `docker images` nach, welche Images noch keine Repository/Tag haben. Diese werden mit `<none>` markiert. Um diese jetzt zu taggen wird der Befehl `docker tag <imageID> <repo/name:tag>` ausgeführt. Wenn kein Tag angegeben wird, wird das Image mit `latest` markiert. Für weitere Infos: https://docs.docker.com/engine/reference/commandline/commit/
 Einstellungen des Tokens:
-![Alt text](./img/gittoken.PNG?raw=true 'Personal Access Token Settings')
+
 
 ### Other Docker Commands
 
