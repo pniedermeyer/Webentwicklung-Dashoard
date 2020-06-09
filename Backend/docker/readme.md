@@ -61,3 +61,7 @@ Zeige alle Netzwerke \
 `docker network ls` \
 Zeige alle Volumes \
 `docker volume ls` \
+
+
+## Github Packages
+Das Docker-Image findet ihr auf Github unter https://github.com/pniedermeyer/Webentwicklung-Dashoard/packages
