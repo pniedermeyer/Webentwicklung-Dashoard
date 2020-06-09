@@ -52,7 +52,13 @@ $ docker run -d --name some-postgres -v "\$PWD/my-postgres.conf":/etc/postgresql
 ### Docker Download
 
 Zuerst muss Docker von der folgende Seite heruntergeladen und installiert werden: https://docs.docker.com/get-docker/ .
+<<<<<<< HEAD
 Sowohl für MacOS, Linux und Windows verfügbar. Ich benutze hier die Version "Docker version 19.03.5" mit dem Build "build 633a0ea". Hier sollte jedoch auch jede andere Version in Ordnung sein.
+
+=======
+Sowohl für MacOS, Linux und Windows verfügbar. Ich benutze hier die Version "Docker version 19.03.5" mit dem Build "build 633a0ea". Hier sollte jedoch auch jede andere Version in Ordnung sein. Bevor Docker nun laufen kann muss im Bios die Virtualization eingeschaltet werden. (Hyper-V)
+
+> > > > > > > fde6c8a971dd3afa4a955340144ec92accc26a35
 
 ### Docker Login Github
 
@@ -87,6 +93,8 @@ Um sich mit einem laufenden Container zu verbinden kann man folgendes Command be
 ### Create Docker Image
 
 Um von einem laufenden Docker-Image/Container ein neues Abbild zu erstellen(z.B. neue Tabellen o.ä. wurde generiert) muss zuerst über `docker commit <containername>` ein neues Image erstellt werden. Anschließend muss dem Image noch ein Tag und eine Version zugewießen werden. Dazu schaut man mit `docker images` nach, welche Images noch keine Repository/Tag haben. Diese werden mit `<none>` markiert. Um diese jetzt zu taggen wird der Befehl `docker tag <imageID> <repo/name:tag>` ausgeführt. Wenn kein Tag angegeben wird, wird das Image mit `latest` markiert. Für weitere Infos: https://docs.docker.com/engine/reference/commandline/commit/
+Einstellungen des Tokens:
+![Alt text](./img/gittoken.PNG?raw=true 'Personal Access Token Settings')
 
 ### Other Docker Commands
 
@@ -102,3 +110,9 @@ Zeige alle Volumes \
 ## Github Packages
 
 Das Docker-Image findet ihr auf Github unter https://github.com/pniedermeyer/Webentwicklung-Dashoard/packages
+
+# PostgreSQL
+
+## Download und Installation
+
+https://www.postgresql.org/download/windows/
