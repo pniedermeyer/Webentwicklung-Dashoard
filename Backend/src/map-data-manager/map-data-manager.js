@@ -1,5 +1,7 @@
 import * as Counties from './constants/map-data-manager-constants.js'
+import GeoDataAPI from './data-requests/geo-data-request.js'
 import Scheduler from './scheduler/scheduler.js'
+import RkiDataAPI from './data-requests/rki-data-request.js'
 
 let settings = {
   dataRefreshInterval: '*/5 * * * *',
@@ -41,6 +43,11 @@ class MapDataManager {
 
   getData({ fromDate = '', toDate = '', county = [Counties.ALL], resolution = settings.resolutions.high } = {}) {
     console.log('getData()')
+    return RkiDataAPI.get()
+  }
+
+  getGeoData({ county = [Counties.ALL] } = {}) {
+    return GeoDataAPI.get()
   }
 
   /**
