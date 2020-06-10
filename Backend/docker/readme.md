@@ -120,5 +120,7 @@ Installation: PgAdmin, StackBuilder und CommandLine Tools (Server wird nicht ben
 https://www.postgresql.org/download/windows/
 
 ## Login über SQL-Shell (psql)
+In dem Container läuft bereits eine Datenbank unter dem Namen coronaDB. 
+Auf diese kann man sich über die SQL-Shell(psql) verbinden oder mit dem PGAdmin Tool.
 ![Alt text](./img/postgreslogin.PNG?raw=true 'Database Login')
-
+![Alt text](./img/pgadmin.PNG?raw=true 'Dashboard pgAdmin')
