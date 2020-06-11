@@ -1,0 +1,37 @@
+{
+  "name": "Deutschland",
+  "cases_DE": 44,
+  "deaths_DE": 3,
+  "cases_per_100k_DE": 49,
+  "cases7_per_100k_DE": 5,
+  "recovered_DE": 0,
+  "change_DE": 0,
+  "new_cases_DE": 0,
+  "states": [
+    {
+      "BL_ID": 1,
+      "name": "Schleswig-Holstein",
+      "cases_BL": 44,
+      "deaths_BL": 3,
+      "cases_per_100k_BL": 49,
+      "cases7_per_100k_BL": 5,
+      "recovered_BL": 0,
+      "change_BL": 0,
+      "new_cases_BL": 0,
+      "counties": [
+        {
+          "LK_ID": 1,
+          "LK": "SK Flensburg",
+          "GEN": "Flensburg",
+          "cases_LK": 44,
+          "deaths_LK": 3,
+          "cases_per_100k_LK": 49,
+          "cases7_per_100k_LK": 5,
+          "recovered_LK": 0,
+          "change_LK": 0,
+          "new_cases_LK": 0
+        }
+      ]
+    }
+  ]
+}
