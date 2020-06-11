@@ -49,6 +49,12 @@ $ docker run -d --name some-postgres -v "\$PWD/my-postgres.conf":/etc/postgresql
 
 ## How-To Docker
 
+1. Download & install Docker (evlt aktivierung "Virtualisierung im bios)
+2. Login Docker Github
+3. Docker create Volume
+4. Pull Image
+5. Start docker image
+
 ### Docker Download
 
 Zuerst muss Docker von der folgende Seite heruntergeladen und installiert werden: https://docs.docker.com/get-docker/ .
@@ -68,6 +74,11 @@ Bei "-u" wird der Username angegeben und bei -p ein Personal Access Token. Ein P
 
 > Example Login
 > `docker login docker.pkg.github.com -u ktpn -p <personalAccessToken> (z.B. dgni723a3k67fsdj65e)`
+
+### Docker Volume Create 
+Um Datenverlust vorzubeugen sollte als nächstes ein Volume erstellt werden. Bei Start der Datenbank wird nun immer auf das Volume zugegriffen und lädt die Daten lokal. (-v Paramater mit Volume muss angegeben werden)
+>`docker volume create <volumename>`
+>`docker volume coronadbvolume`
 
 ### Pull Docker Image
 
@@ -89,7 +100,7 @@ Um sich mit einem laufenden Container zu verbinden kann man folgendes Command be
 
 ### Start Docker Container
 
-`docker run -it --rm --network bridge -d --name dashboard_db_postgres -p 5432:5432 -e POSTGRES_PASSWORD=admin docker.pkg.github.com/pniedermeyer/webentwicklung-dashoard/postgres_dashboard:1.0`
+`docker run -it --rm --network bridge -d -v coronadb:/var/lib/postgresql/data --name dashboard_db_postgres -p 5432:5432 -e POSTGRES_PASSWORD=admin docker.pkg.github.com/pniedermeyer/webentwicklung-dashoard/postgres_dashboard:1.0`
 
 ### Create Docker Image
 
