@@ -1,5 +1,7 @@
 <template>
   <div id="app">
+    <bar-chart :chartData="arrTotal" :options="chartOptions" :label="Test"></bar-chart> 
+
     <grid-layout
                     :layout.sync="layout"
                     :col-num="12"
@@ -21,12 +23,16 @@
                     {{item.i}}
             </grid-item>
     </grid-layout>
-  </div>
+  </div> 
 </template>
 
 <script src="vue-grid-layout.umd.min.js"></script>
 <script>
 import VueGridLayout from 'vue-grid-layout';
+import Vue from 'vue' // es6 syntax
+import Test from './components/Test.vue'
+// import BarChart from './components/Barchart.vue'
+import BarChart from './components/BarchartTest.vue'
 
 var testLayout = [
     {"x":0,"y":0,"w":2,"h":2,"i":"0"},
@@ -41,11 +47,27 @@ export default {
   name: 'App',
   components: {
     GridLayout: VueGridLayout.GridLayout,
-    GridItem: VueGridLayout.GridItem
+    GridItem: VueGridLayout.GridItem,
+    BarChart
   },
   data () {
     return {
-      layout: testLayout
+      Test: 'Cases100k',
+      layout: testLayout,
+      arrTotal: [10,15,20],
+      arrCounty: ['Saarbrücken', 'Saarlouise', 'Merzig'],
+      chartOptions: {
+            scales: {
+        xAxes: [{
+            ticks: {
+                beginAtZero: true
+            }
+        }]
+    },
+        responsive: true,
+        maintainAspectRatio: false,
+
+      }
     }
   }
 }
