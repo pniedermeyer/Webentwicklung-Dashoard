@@ -5,7 +5,9 @@
         <b-col>1 of 3: 
           <bar-chart :chartData="arrTotal" :options="chartOptions" :label="Test"></bar-chart>
         </b-col>
-        <b-col>2 of 3</b-col>
+        <b-col>2 of 3
+            <MapSVG> </MapSVG>
+        </b-col>
         <b-col>3 of 3</b-col>
       </b-row>
     </b-container>
@@ -14,12 +16,14 @@
 
 <script>
 import BarChart from './components/BarchartTest.vue'
+import MapSVG from './components/MapSVG.vue'
 
 
 export default {
   name: 'App',
   components: {
-    BarChart
+    BarChart,
+    MapSVG
   },
   data () {
     return {
