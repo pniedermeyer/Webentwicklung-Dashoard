@@ -1,5 +1,5 @@
 import {getConnection} from "typeorm";
-import {GeoData} from "../entities/GeoData";
+import {GeoData} from "../../entity/GeoData";
 import {InfectionData} from "../entities/Infection";
 //import Settings from "../entities/Settings"
 

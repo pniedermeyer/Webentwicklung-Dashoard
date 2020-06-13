@@ -1,11 +1,17 @@
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import { getConnection } from "typeorm";
-import GeoData from "../entities/GeoData"
+import { GeoData } from "../entity/GeoData"
 
 class GeoDataController{
-    static geoData =async (Request, Response) => {
-        return getConnection().getRepository(GeoData).find();
+    static geoData = async (req: Request, res: Response) => {
+        let geoData; GeoData;
+        try {
+            geoData = await getConnection().getRepository(GeoData).find();
+        } catch (error) {
+            res.status(401).send();
+        }
+        res.send(geoData)
     }
 }
 export default GeoDataController;

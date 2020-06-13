@@ -1,8 +1,8 @@
 import { Router } from "express";
-import GeoDataController from "controller/GeoDataController"
+import GeoDataController from "../controllers/GeoDataController"
 
 const router = Router();
 
-router.get('/geo-data', GeoDataController.getGeoData);
+router.get('/geo-data', GeoDataController.geoData);
 
 export default router;
