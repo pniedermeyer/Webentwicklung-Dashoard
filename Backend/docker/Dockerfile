@@ -1,3 +1,3 @@
-FROM postgres:9.4
-ENV LANG de_DE.utf8
+FROM postgres:12.3
 EXPOSE 80/tcp
+EXPOSE 5432/tcp

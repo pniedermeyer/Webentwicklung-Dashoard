@@ -20,7 +20,11 @@ class MapDataManager {
 
   constructor() {
     this.counties = Counties
-    MapDataManager.scheduler = new Scheduler({ schedule: this.settings.dataRefreshInterval })
+    MapDataManager.scheduler = new Scheduler(this.updateData, { schedule: this.settings.dataRefreshInterval })
+  }
+
+  private updateData() {
+    console.log('Update data')
   }
 
   /**

@@ -1,16 +1,14 @@
 import { CronJob, CronTime } from 'cron'
 
-const retrieveData = () => {
-  console.log('Retrieve new data!')
-}
-
 class Scheduler {
   private job: CronJob
   private schedule: string
+  private jobFunction: any
 
-  constructor({ schedule = '*/5 * * * * *' } = {}) {
+  constructor(jobFunction: any, { schedule = '*/5 * * * * *' } = {}) {
     this.setSchedule(schedule)
     this.job = null
+    this.jobFunction = jobFunction
   }
 
   setSchedule(schedule: string) {
@@ -24,7 +22,7 @@ class Scheduler {
     }
 
     function createJob(schedule: string) {
-      return new CronJob(schedule, retrieveData)
+      return new CronJob(schedule, this.jobFunction)
     }
   }
 
