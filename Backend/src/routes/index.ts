@@ -5,8 +5,8 @@ import settings from "./settings"
 
 const router = Router();
 
-router.use("/geodata")
-router.use("/settings")
-router.use("/data")
+router.use("/geodata", geodata)
+router.use("/settings", settings)
+router.use("/data", infections)
 
 export default router;
