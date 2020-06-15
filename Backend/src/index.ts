@@ -4,6 +4,20 @@ import e from 'express'
 import * as bodyParser from 'body-parser'
 import * as dbrequests from './database/db-request/db-requests'
 import routes from './routes'
+// import mapDataManager from './map-data-manager/map-data-manager'
+
+// const app = e()
+
+// app.get('/geo-data', (req, res) => {
+//   // res.json({ test: 'test' })
+//   mapDataManager.getGeoData().then((data) => {
+//     res.send(data)
+//   })
+// })
+
+// app.listen(3000, () => {
+//   console.log('Server started on port 3000!')
+// })
 
 createConnection()
   .then((connection) => {
