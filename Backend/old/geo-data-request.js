@@ -1,5 +1,5 @@
 import DataAPI from './data-request.js'
-import webMercator from '../utilities/web-mercator.js'
+import webMercator from '../src/map-data-manager/utilities/web-mercator.js'
 
 const request = {
   method: 'get',

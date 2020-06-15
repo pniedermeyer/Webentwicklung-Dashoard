@@ -1,4 +1,4 @@
-import DataAPI from './data-request.js'
+import DataAPI from '../src/map-data-manager/data-requests/data-request.js'
 
 const request = {
   method: 'get',

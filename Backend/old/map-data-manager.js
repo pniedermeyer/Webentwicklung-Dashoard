@@ -1,7 +1,7 @@
-import * as Counties from './constants/map-data-manager-constants.js'
-import GeoDataAPI from './data-requests/geo-data-request.js'
-import Scheduler from './scheduler/scheduler.js'
-import RkiDataAPI from './data-requests/rki-data-request.js'
+import * as Counties from '../src/map-data-manager/constants/map-data-manager-constants.js'
+import GeoDataAPI from '../src/map-data-manager/data-requests/geo-data-request.js'
+import Scheduler from '../src/map-data-manager/scheduler/scheduler.js'
+import RkiDataAPI from '../src/map-data-manager/data-requests/rki-data-request.js'
 
 let settings = {
   dataRefreshInterval: '*/5 * * * *',

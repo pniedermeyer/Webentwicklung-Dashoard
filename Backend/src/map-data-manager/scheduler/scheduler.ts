@@ -1,14 +1,14 @@
-import { CronJob, CronTime } from 'cron'
+import { CronJob, CronTime, CronCommand } from 'cron'
 
 class Scheduler {
-  private job: CronJob
-  private schedule: string
-  private jobFunction: any
+  private job: CronJob | null
+  private schedule: string = ''
+  private jobFunction: CronCommand
 
   constructor(jobFunction: any, { schedule = '*/5 * * * * *' } = {}) {
     this.setSchedule(schedule)
-    this.job = null
     this.jobFunction = jobFunction
+    this.job = null
   }
 
   setSchedule(schedule: string) {
@@ -16,14 +16,17 @@ class Scheduler {
   }
 
   start() {
-    this.job = this.job ?? createJob(this.schedule)
+    if (this.job === null) {
+      this.job = this.createJob(this.schedule)
+    }
+    // this.job = this.job ?? this.createJob(this.schedule)
     if (!this.job.running) {
       this.job.start()
     }
+  }
 
-    function createJob(schedule: string) {
-      return new CronJob(schedule, this.jobFunction)
-    }
+  private createJob(schedule: string) {
+    return new CronJob(schedule, this.jobFunction)
   }
 
   stop() {
@@ -33,7 +36,7 @@ class Scheduler {
   }
 
   executeOutOfSchedule() {
-    retrieveData
+    this.jobFunction
   }
 }
 
