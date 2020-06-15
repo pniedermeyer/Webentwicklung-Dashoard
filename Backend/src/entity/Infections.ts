@@ -4,29 +4,29 @@ import { Column, Entity, Index } from "typeorm";
 @Entity("infections", { schema: "public" })
 export class Infections {
   @Column("integer", { primary: true, name: "bl_id" })
-  blId: number;
+  blId!: number;
 
   @Column("integer", { primary: true, name: "lk_id" })
-  lkId: number;
+  lkId!: number;
 
   @Column("character varying", { name: "bl_name", length: 255 })
-  blName: string;
+  blName!: string;
 
   @Column("character varying", { name: "lk_name", length: 255 })
-  lkName: string;
+  lkName!: string;
 
   @Column("integer", { name: "cases" })
-  cases: number;
+  cases!: number;
 
   @Column("double precision", { name: "cases_per_100k", precision: 53 })
-  casesPer_100k: number;
+  casesPer_100k!: number;
 
   @Column("double precision", { name: "cases_7_per_100k", precision: 53 })
-  cases_7Per_100k: number;
+  cases_7Per_100k!: number;
 
   @Column("integer", { name: "deaths" })
-  deaths: number;
+  deaths!: number;
 
   @Column("date", { primary: true, name: "date" })
-  date: string;
+  date!: string;
 }
