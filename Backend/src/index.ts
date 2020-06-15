@@ -5,7 +5,6 @@ import * as bodyParser from  "body-parser";
 import * as dbrequests from "./database/db-request/db-requests"
 import routes from "./routes";
 
-
 createConnection()
 .then(connection => {
     // create and setup express app
