@@ -3,7 +3,7 @@ import { Request, Response } from 'express'
 import e from 'express'
 import * as bodyParser from 'body-parser'
 import * as dbrequests from './database/db-request/db-requests'
-import routes from './routes/geodata'
+import routes from './routes'
 
 createConnection()
   .then((connection) => {

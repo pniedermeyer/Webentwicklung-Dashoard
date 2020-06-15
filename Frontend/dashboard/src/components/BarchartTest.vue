@@ -1,35 +1,52 @@
-
 <script>
 import {HorizontalBar} from 'vue-chartjs'
 
 export default {
   extends: HorizontalBar,
+  name: 'barchart',
   props: {
-    label: {
+    test: {
       type: String
       },
-    chartData: {
-      type: Array
-    },
-    options: {
-      type: Object
-    }
-
   },
   mounted () {
+      console.log(this.test);
+      const chartOptions = {
+            scales: {
+              xAxes: [{
+                  ticks: {
+                      beginAtZero: true
+                  }
+              }]
+            },
+        responsive: true,
+        maintainAspectRatio: false,
 
-    const county = this.chartData.map(d => d)
-    const totals = this.chartData.map(d => d)
+      }
 
+//TODO: Erstzen mit request
+    const data = require('../../../../Backend/example_response.json')
+    let arrCounties = []
+    let arrCases = []
+    console.log(data.states)
+    
+    data.states[0].counties.forEach (county => {
+
+      console.log(county)
+
+      arrCounties.push(county.LK)
+      arrCases.push(county.cases_LK)
+      console.log(arrCounties)
+      console.log(arrCases)
+    })
 
     this.renderChart ({
-      labels: county,
+      labels: arrCounties,
       datasets: [{
-        label: this.label,
-        data: totals
+        label: "Total 100k",
+        data: arrCases
       }]
-    },this.options)
+    },chartOptions)
   }
-
 }
 </script>
