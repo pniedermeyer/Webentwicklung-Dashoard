@@ -1,7 +1,7 @@
 import { Column, Entity, Index } from 'typeorm'
 
 @Index('geo_data_pkey', ['blId', 'lkId', 'res', 'ringId'], { unique: true })
-@Entity('geo_data', { schema: 'public' })
+@Entity('geodata', { schema: 'public' })
 export class GeoData {
   @Column('integer', { primary: true, name: 'bl_id' })
   blId!: number
