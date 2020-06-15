@@ -30,6 +30,30 @@
           "recovered_LK": 0,
           "change_LK": 0,
           "new_cases_LK": 0
+        },
+        {
+          "LK_ID": 1,
+          "LK": "SK Kiel",
+          "GEN": "Kiel",
+          "cases_LK": 34,
+          "deaths_LK": 8,
+          "cases_per_100k_LK": 60,
+          "cases7_per_100k_LK": 7,
+          "recovered_LK": 0,
+          "change_LK": 0,
+          "new_cases_LK": 0
+        },
+        {
+          "LK_ID": 1,
+          "LK": "SK Lübeck",
+          "GEN": "Lübeck",
+          "cases_LK": 21,
+          "deaths_LK": 2,
+          "cases_per_100k_LK": 30,
+          "cases7_per_100k_LK": 2,
+          "recovered_LK": 0,
+          "change_LK": 0,
+          "new_cases_LK": 0
         }
       ]
     }
