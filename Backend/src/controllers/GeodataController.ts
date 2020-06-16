@@ -39,6 +39,8 @@ class GeoDataController {
             x: x,
             y: y
           }).execute()
+          x = []
+          y = []
         })
         ring_id = 0
       })

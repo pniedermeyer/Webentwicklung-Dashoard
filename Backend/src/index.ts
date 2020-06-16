@@ -2,8 +2,9 @@ import { createConnection } from 'typeorm'
 import { Request, Response } from 'express'
 import e from 'express'
 import * as bodyParser from 'body-parser'
-import * as dbrequests from './database/db-request/db-requests'
+// import * as dbrequests from './database/db-request/db-requests'
 import routes from './routes'
+import GeoDataController from './controllers/GeoDataController'
 
 createConnection()
   .then((connection) => {
@@ -20,3 +21,6 @@ createConnection()
     })
   })
   .catch((error) => console.log(error))
+
+GeoDataController.writeGeoDataInResolution(0)
+console.log('We did it')
