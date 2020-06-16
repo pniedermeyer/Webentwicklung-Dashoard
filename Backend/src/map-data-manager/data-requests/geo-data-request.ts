@@ -55,11 +55,9 @@ class GeoDataAPI {
     function convertRings(rings: any) {
       return rings.map((ring: any) => {
         return (ring = ring.map((point: any) => {
-          const longitude = (point[0] * Math.PI) / 180
-          const latitude = (point[1] * Math.PI) / 180
           return {
-            x: webMercator.calculateX(0, longitude),
-            y: webMercator.calculateY(0, latitude),
+            x: point[0],
+            y: point[1],
           }
         }))
       })

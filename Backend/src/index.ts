@@ -4,23 +4,50 @@ import e from 'express'
 import * as bodyParser from 'body-parser'
 // import * as dbrequests from './database/db-request/db-requests'
 import routes from './routes'
+<<<<<<< HEAD
 import GeoDataController from './controllers/GeoDataController'
+=======
+import mapDataManager from './map-data-manager/map-data-manager'
+import { rp } from './controllers/GeodataController'
+import cors from 'cors'
+>>>>>>> 7ab1f354037180d26476095abec668a05343eda2
 
-createConnection()
-  .then((connection) => {
-    // create and setup express app
-    const app = e()
+const app = e()
 
-    app.use(bodyParser.json())
+app.use(cors())
 
-    // Set all routes from routes folder
-    app.use('/', routes)
-
-    app.listen(3000, () => {
-      console.log('Server started on port 3000!')
-    })
+app.get('/geo-data', (req, res) => {
+  console.log('/geo-data')
+  // res.json({ test: 'test' })
+  mapDataManager.getGeoData().then((data) => {
+    let d = rp(data, 0.00003)
+    res.send(d)
   })
+<<<<<<< HEAD
   .catch((error) => console.log(error))
 
 GeoDataController.writeGeoDataInResolution(0)
 console.log('We did it')
+=======
+})
+
+app.listen(3000, () => {
+  console.log('Server started on port 3000!')
+})
+
+// createConnection()
+//   .then((connection) => {
+//     // create and setup express app
+//     const app = e()
+
+//     app.use(bodyParser.json())
+
+//     // Set all routes from routes folder
+//     app.use('/', routes)
+
+//     app.listen(3000, () => {
+//       console.log('Server started on port 3000!')
+//     })
+//   })
+//   .catch((error) => console.log(error))
+>>>>>>> 7ab1f354037180d26476095abec668a05343eda2
