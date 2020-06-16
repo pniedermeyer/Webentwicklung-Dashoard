@@ -6,8 +6,11 @@ import * as dbrequests from './database/db-request/db-requests'
 import routes from './routes'
 import mapDataManager from './map-data-manager/map-data-manager'
 import { rp } from './controllers/GeodataController'
+import cors from 'cors'
 
 const app = e()
+
+app.use(cors)
 
 app.get('/geo-data', (req, res) => {
   console.log('/geo-data')
