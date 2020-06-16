@@ -52,6 +52,7 @@ export default {
     };
   },
   created() {
+      this.fetchData();
     this.initialize();
     this.handleOptionsChange();
   },
@@ -60,16 +61,18 @@ export default {
       let that = this;
       that.error = null;
       that.loading = true;
-
-      let url = `http://localhost:8080/geo-data/`;
+        console.log('fetch data')
+      let url = `http://localhost:3000/geo-data/`;
       axios
         .get(url)
         .then(function(response) {
           that.loading = false;
+          console.log('fetch data success')
           console.log(response.data)
           that.comments = response.data;
         })
         .catch(function(error) {
+            console.log('fetch data error')
           console.log(error);
           that.error = error.toString();
         });
@@ -107,6 +110,7 @@ export default {
 
         const response = await window.fetch(url)
         const data = await response.json()
+
         return data
     },
     getSelectedOptions () {
@@ -203,28 +207,31 @@ export default {
         return element
     },
     initialize () {
-        this.getCountiesAsync()
-            .then(function (counties) {
+      let url = `http://localhost:3000/geo-data/`;
+      axios
+        .get(url)
+        .then(function (response) {
+            console.log('counties' +  response.data)
+            let counties = response.data
             // Sort Alphabetical by counties
             counties.sort(function (a, b) {
                 var countyA = a[1].toUpperCase() // ignore upper and lowercase
                 var countyB = b[1].toUpperCase() // ignore upper and lowercase
                 return countyA < countyB ? -1 : 1
             })
-
             const countySelector = document.getElementById('BL_ID')
 
-            counties.forEach(county => {
-                const option = document.createElement('option')
-                option.value = county[0]
-                option.innerHTML = county[1]
-                countySelector.appendChild(option)
-            })
-            })
-            .catch(function (err) {
+                counties.forEach(county => {
+                    const option = document.createElement('option')
+                    option.value = county[0]
+                    option.innerHTML = county[1]
+                    countySelector.appendChild(option)
+                })
+        })
+        .catch(function(error) {
             console.error('Something went wrong while requesting counties!')
-            console.error(err)
-            })
+            console.error(error)
+        });
     }
     }
 };
