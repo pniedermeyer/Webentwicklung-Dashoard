@@ -16,7 +16,8 @@
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-chartjs": "^3.5.0",
-    "vue-grid-layout": "^2.3.7"
+    "vue-grid-layout": "^2.3.7",
+    "vue-select": "^3.10.3"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",
