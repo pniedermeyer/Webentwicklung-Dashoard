@@ -10,7 +10,7 @@ import cors from 'cors'
 
 const app = e()
 
-app.use(cors)
+app.use(cors())
 
 app.get('/geo-data', (req, res) => {
   console.log('/geo-data')
