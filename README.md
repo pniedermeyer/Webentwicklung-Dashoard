@@ -1,5 +1,12 @@
 # Dashboard-Prototyp
 ## Aufbau einer lokalen Entwicklungsumgebung
+### Vorbereitung (Für beide vorgehen)
+In die github registry einloggen:
+- Einen "Github personal access token" erstellen: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line. Dieser muss mindestens die berechtigung ``read:packages`` haben
+- ``docker login docker.pkg.github.com`` in CMD eingeben
+- Als Nutzernamen euren Github Benutzernamen nutzen
+- Als passwort den "Github personal access token" nutzen
+
 ### Mit docker
 Einfach im root-folder ``docker-compose start --build`` aufrufen. Danach stehen folgende services zur Verfügung:
 - ``localhost:8888``: Die gesamte Webanwendung (Unter / das dashboard und unter /data, [...] die API-endpunkte)

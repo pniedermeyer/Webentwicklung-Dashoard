@@ -2,13 +2,14 @@ version: '2'
 
 services:
   db:
-    image: library/postgres:12.3-alpine
+    image: docker.pkg.github.com/pniedermeyer/webentwicklung-dashoard/postgres_dashboard:1.3
+    #image: library/postgres:12.3-alpine
     environment:
       POSTGRES_PASSWORD: "admin"
       PGDATA: "/postgres"
     # Persist postgres data to volume, as file share doesn't work correctly for windows
-    volumes:
-      - pgdata:/postgres
+    #volumes:
+    #  - pgdata:/postgres
     ports:
       - 5432:5432
   backend:
