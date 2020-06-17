@@ -74,7 +74,9 @@ export default {
   margin-top: 60px;
 }
 
-svg_element_primary_color_scheme {
-
+.svg_element_primary_color_scheme {
+  fill: teal;
+  stroke: black;
+  stroke-width: 0.05pt;
 }
 </style>
