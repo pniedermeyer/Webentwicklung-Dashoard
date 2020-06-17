@@ -4,21 +4,27 @@ import { getConnection } from 'typeorm'
 import { GeoData } from '../entity/GeoData'
 import GeoDataAPI from '../map-data-manager/data-requests/geo-data-request'
 import douglasPeucker from '../map-data-manager/utilities/douglas-peuker'
+import WebMercator from '../map-data-manager/utilities/web-mecrator'
 
 class GeoDataController {
-  static geoData = async (req: Request, res: Response) => {
+  static async geoData(req: Request, res: Response) {
     let geoData
-    GeoData
+    let blid = req.params.blid
     try {
-      geoData = await getConnection().getRepository(GeoData).find()
+      geoData = await getConnection()
+        .getRepository(GeoData)
+        .find({ where: { blId: req.params.blid, lkid: req.params.lkid, res: req.params.res } })
+      console.log('this is a output test')
     } catch (error) {
       res.status(401).send()
     }
-    res.send(geoData)
+    res.send('LUTSCHER!')
+    //res.send(geoData)
   }
 
   static async writeGeoDataInResolution(resolution: number) {
     let data: any = await GeoDataAPI.get()
+    data = rp(data, resolution)
     let lk_id = 0
     let ring_id = 0
     let x: number[] = []
@@ -32,14 +38,19 @@ class GeoDataController {
             x.push(point.x)
             y.push(point.y)
           })
-          getConnection().createQueryBuilder().insert().into(GeoData).values({
-            blId: bl.BL_ID,
-            lkId: lk_id,
-            ringId: ring_id,
-            res: resolution,
-            x: x,
-            y: y
-          }).execute()
+          getConnection()
+            .createQueryBuilder()
+            .insert()
+            .into(GeoData)
+            .values({
+              blId: bl.BL_ID,
+              lkId: lk_id,
+              ringId: ring_id,
+              res: resolution,
+              x: x,
+              y: y,
+            })
+            .execute()
           x = []
           y = []
         })
@@ -167,6 +178,16 @@ function reducePoints(geoData: any, epsilon: any): any {
   geoData.forEach((state: any) => {
     state.counties.forEach((county: any) => {
       county.geometry.rings = county.geometry.rings.map((ring: any) => ring.filtered)
+
+      county.geometry.rings.forEach((ring: Point[]) => {
+        ring.forEach((point: Point) => {
+          let longitude = (point.x * Math.PI) / 180
+          let latitude = (point.y * Math.PI) / 180
+
+          point.x = WebMercator.calculateX(0, longitude)
+          point.y = WebMercator.calculateY(0, latitude)
+        })
+      })
     })
   })
   return geoData

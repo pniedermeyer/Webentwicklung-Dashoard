@@ -3,6 +3,6 @@ import GeoDataController from '../controllers/GeodataController'
 
 const router = Router()
 
-router.get('/geo-data', GeoDataController.geoData)
+router.get('/', GeoDataController.geoData)
 
 export default router

@@ -2,6 +2,7 @@ import * as Counties from './constants/map-data-manager-constants'
 import GeoDataAPI from './data-requests/geo-data-request'
 import Scheduler from './scheduler/scheduler'
 import RkiDataAPI from './data-requests/rki-data-request'
+import GeoDataController from '../controllers/GeodataController'
 
 class MapDataManager {
   private settings = {
@@ -61,8 +62,8 @@ class MapDataManager {
     return RkiDataAPI.get()
   }
 
-  getGeoData({ county = [this.counties.ALL] } = {}) {
-    return GeoDataAPI.get()
+  getGeoData(req: Request, res: Response) {
+    return GeoDataController.geoData
   }
 
   /**

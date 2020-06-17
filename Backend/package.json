@@ -4,8 +4,9 @@
   "description": "Corona Dashboard",
   "main": "index.ts",
   "scripts": {
-    "start": "npx ts-node src/index.ts",
+    "start": "node --inspect=5858 -r ts-node/register ./src/index.ts",
     "tsc": "tsc",
+    "start:watch": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

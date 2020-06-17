@@ -1,5 +1,5 @@
 import express from 'express'
-import mapDataManager from './map-data-manager/map-data-manager.js'
+import mapDataManager from '../src/map-data-manager/map-data-manager.js'
 
 // const express = require('express')
 const app = express()

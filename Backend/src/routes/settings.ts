@@ -1,8 +1,8 @@
-import { Router } from "express";
-import SettingsController from "../controllers/SettingsController"
+import { Router } from 'express'
+import SettingsController from '../controllers/SettingsController'
 
 const router = Router()
 
-router.get('/settings', SettingsController.settings)
+router.get('/', SettingsController.settings)
 
-export default router;
+export default router

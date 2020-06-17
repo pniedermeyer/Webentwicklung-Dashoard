@@ -20,11 +20,45 @@ class RkiDataAPI {
     return DataAPI.get(this.request, normaliseData)
 
     function normaliseData(originalData: any) {
+      const germanyData: any = {
+        name: 'Deutschland',
+        cases_DE: 0,
+        deaths_DE: 0,
+        cases_per_100k_DE: 0,
+        cases7_per_100k_DE: 0,
+        recovered_DE: 0,
+        change_DE: 0,
+        new_cases_DE: 0,
+        states: new Array(16),
+      }
+
+      germanyData.states = originalData.reduce((acc: any, county: any) => {
+        const index = county.attributes.BL_ID - 1
+
+        if (!acc[index]) {
+          acc[index] = {
+            BL_ID: county.attributes.BL_ID,
+            name: county.attributes.BL,
+            cases_BL: 0,
+            deaths_BL: 0,
+            cases_per_100k_BL: 0,
+            cases7_per_100k_BL: 0,
+            recovered_BL: 0,
+            change_BL: 0,
+            new_cases_BL: 0,
+            counties: [],
+          }
+        }
+
+        const state = acc[index]
+        const county = {}
+      }, germanyData.states)
+
       if (data === null) {
-        data = originalData.features
+        data = germanyData
       }
       console.log('NEW  DATA TRANSFORMED!!!!')
-      return originalData
+      return germanyData
     }
   }
 }
