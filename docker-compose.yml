@@ -1,0 +1,22 @@
+version: '2'
+
+services:
+  db:
+    extends:
+      file: Backend/docker/docker-compose.yml
+      service: db
+  backend:
+    extends:
+      file: Backend/docker/docker-compose.yml
+      service: backend
+  dashboard:
+    extends:
+      file: Frontend/docker-compose.yml
+      service: dashboard
+  apache:
+    extends:
+      file: httpd/docker-compose.yml
+      service: proxy
+
+volumes:
+  pgdata:
