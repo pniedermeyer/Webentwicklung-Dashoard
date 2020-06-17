@@ -62,7 +62,7 @@ class GeoDataController {
         }
       }
     })
-    console.log('jsonresponse', jsonResponse[1].counties[1])
+    // console.log('jsonresponse', jsonResponse[1].counties[1])
 
     // let mappedData = geoData[0].x.map((dataX: any, index: any) => {
     //   return { x: dataX, y: geoData[0].y[geoData[0].y.length - (index + 1)] }
