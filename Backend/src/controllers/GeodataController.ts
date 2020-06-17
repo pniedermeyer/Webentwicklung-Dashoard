@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import { Request, Response, json } from 'express'
 import { getRepository } from 'typeorm'
 import { getConnection } from 'typeorm'
 import { GeoData } from '../entity/GeoData'
@@ -9,22 +9,72 @@ import WebMercator from '../map-data-manager/utilities/web-mecrator'
 class GeoDataController {
   static async geoData(req: Request, res: Response) {
     let geoData
-    let blid = req.params.blid
     try {
       geoData = await getConnection()
         .getRepository(GeoData)
-        .find({ where: { blId: req.params.blid, lkid: req.params.lkid, res: req.params.res } })
-      console.log('this is a output test')
+        .find({ where: { res: req.query.res } })
+      res.send(await GeoDataController.mapPoints(geoData))
+      // res.send(await GeoDataController.test(geoData))
     } catch (error) {
-      res.status(401).send()
+      console.log(error)
+      res.status(401).send('ERROR while fetching Data from Database!')
     }
-    res.send('LUTSCHER!')
-    //res.send(geoData)
   }
 
-  static async writeGeoDataInResolution(resolution: number) {
+  // static async test(geoData: any) {
+  //   const jsonResponse: any = []
+  //   geoData.forEach((county: GeoData) => {
+  //     // console.log(county.blId)
+  //     if (!jsonResponse[county.blId - 1]) {
+  //       jsonResponse[county.blId - 1] = {
+  //         BL_ID: county.blId,
+  //         counties: [],
+  //       }
+  //     }
+
+  //     const state = jsonResponse[county.blId - 1]
+  //     if (!state.counties[county.lkId - 1]) {
+  //       state.counties[county.lkId - 1] = {
+  //         LK_ID: county.lkId,
+  //         geometry: {
+  //           rings: [],
+  //         },
+  //       }
+  //     }
+  //   })
+  //   return jsonResponse
+  // }
+
+  static async mapPoints(geoData: any) {
+    const jsonResponse: any = []
+    geoData.forEach((bl: any) => {
+      if (typeof jsonResponse[bl.blId] === 'undefined') {
+        jsonResponse[bl.blId] = {
+          BL_ID: bl.blId,
+          counties: [],
+        }
+      }
+    })
+    geoData.forEach((e: any) => {
+      if (typeof jsonResponse[e.blId].counties[e.lkId] === 'undefined') {
+        jsonResponse[e.blId].counties[e.lkId] = {
+          geometry: [],
+        }
+      }
+    })
+    console.log('jsonresponse', jsonResponse[1].counties[1])
+
+    // let mappedData = geoData[0].x.map((dataX: any, index: any) => {
+    //   return { x: dataX, y: geoData[0].y[geoData[0].y.length - (index + 1)] }
+    // })
+    // console.log(mappedData)
+    return geoData
+  }
+
+  static async writeGeoDataInResolution(resolution: String) {
     let data: any = await GeoDataAPI.get()
-    data = rp(data, resolution)
+    const res = mapResolutionToInt(resolution)
+    data = rp(data, mapResolutionToEpsilon(resolution))
     let lk_id = 0
     let ring_id = 0
     let x: number[] = []
@@ -46,7 +96,7 @@ class GeoDataController {
               blId: bl.BL_ID,
               lkId: lk_id,
               ringId: ring_id,
-              res: resolution,
+              res: res,
               x: x,
               y: y,
             })
@@ -72,6 +122,32 @@ interface Bbox {
 interface Point {
   x: number
   y: number
+}
+
+function mapResolutionToInt(resolution: String) {
+  switch (resolution) {
+    case 'low':
+      return 2
+      break
+    case 'medium':
+      return 1
+    default:
+      return 0
+      break
+  }
+}
+
+function mapResolutionToEpsilon(resolution: String) {
+  switch (resolution) {
+    case 'low':
+      return 0.0001
+      break
+    case 'medium':
+      return 0.00001
+    default:
+      return 0
+      break
+  }
 }
 
 function doOverlap(bbox1: Bbox, bbox2: Bbox): boolean {

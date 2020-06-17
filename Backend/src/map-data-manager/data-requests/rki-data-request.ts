@@ -32,7 +32,7 @@ class RkiDataAPI {
         states: new Array(16),
       }
 
-      germanyData.states = originalData.reduce((acc: any, county: any) => {
+      germanyData.states = originalData.features.reduce((acc: any, county: any) => {
         const index = county.attributes.BL_ID - 1
 
         if (!acc[index]) {
@@ -51,7 +51,42 @@ class RkiDataAPI {
         }
 
         const state = acc[index]
-        const county = {}
+        let recovered = county.attributes.recovered
+        if (recovered === null) {
+          recovered = 0
+        }
+
+        const newCounty = {
+          LK_ID: 1,
+          LK: county.attributes.county,
+          GEN: county.attributes.GEN,
+          cases_LK: county.attributes.cases,
+          deaths_LK: county.attributes.deaths,
+          cases_per_100k_LK: county.attributes.cases_per_100k,
+          cases7_per_100k_LK: county.attributes.cases7_per_100k,
+          recovered_LK: recovered,
+          change_LK: 0,
+          new_cases_LK: 0,
+        }
+        state.counties.push(newCounty)
+
+        state.cases_BL += newCounty.cases_LK
+        state.deaths_BL += newCounty.deaths_LK
+        state.cases_per_100k_BL += newCounty.cases_per_100k_LK
+        state.cases7_per_100k_BL += newCounty.cases7_per_100k_LK
+        state.recovered_BL += newCounty.recovered_LK
+        state.change_BL += newCounty.change_LK
+        state.new_cases_BL += newCounty.new_cases_LK
+
+        germanyData.cases_DE += newCounty.cases_LK
+        germanyData.deaths_DE += newCounty.deaths_LK
+        germanyData.cases_per_100k_DE += newCounty.cases_per_100k_LK
+        germanyData.cases7_per_100k_DE += newCounty.cases7_per_100k_LK
+        germanyData.recovered_DE += newCounty.recovered_LK
+        germanyData.change_DE += newCounty.change_LK
+        germanyData.new_cases_DE += newCounty.new_cases_LK
+
+        return acc
       }, germanyData.states)
 
       if (data === null) {

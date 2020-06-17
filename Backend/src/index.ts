@@ -8,6 +8,7 @@ import mapDataManager from './map-data-manager/map-data-manager'
 import { rp } from './controllers/GeodataController'
 import cors from 'cors'
 import RkiDataAPI from './map-data-manager/data-requests/rki-data-request'
+import writeGeoDataInResolutions from './lib/db-imports'
 
 // const app = e()
 
@@ -33,6 +34,8 @@ import RkiDataAPI from './map-data-manager/data-requests/rki-data-request'
 //   console.log('Server started on port 3000!')
 // })
 
+// writeGeoDataInResolutions()
+
 createConnection()
   .then((connection) => {
     // create and setup express app
@@ -43,8 +46,8 @@ createConnection()
     app.use('/', routes)
     app.use(cors())
 
-    app.listen(3000, () => {
-      console.log('Server started on port 3000!')
+    app.listen(3001, () => {
+      console.log('Server started on port 3001!')
     })
   })
   .catch((error) => console.log(error))

@@ -15,7 +15,7 @@ class GeoDataAPI {
     if (geoData !== null) {
       console.log('from cash')
       return new Promise((resolve, reject) => {
-        resolve(geoData)
+        resolve(JSON.parse(JSON.stringify(geoData)))
       })
     }
     return DataAPI.get(this.request, normaliseData)
@@ -49,7 +49,7 @@ class GeoDataAPI {
         geoData = tmp
       }
       console.log('NEW  DATA TRANSFORMED!!!!')
-      return geoData
+      return JSON.parse(JSON.stringify(geoData))
     }
 
     function convertRings(rings: any) {

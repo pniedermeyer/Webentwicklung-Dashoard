@@ -1,8 +1,8 @@
-import { Router } from "express";
-import InfectionsController from "../controllers/InfectionsController"
+import { Router } from 'express'
+import InfectionsController from '../controllers/InfectionsController'
 
 const router = Router()
 
-router.get('/data', InfectionsController.infectionData)
+router.get('/', InfectionsController.infectionData)
 
-export default router;
+export default router
