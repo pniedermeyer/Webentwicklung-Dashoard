@@ -13,63 +13,76 @@ class GeoDataController {
       geoData = await getConnection()
         .getRepository(GeoData)
         .find({ where: { res: req.query.res } })
-      res.send(await GeoDataController.mapPoints(geoData))
-      // res.send(await GeoDataController.test(geoData))
+      // res.send(await GeoDataController.mapPoints(geoData))
+      res.send(await GeoDataController.test(geoData))
     } catch (error) {
       console.log(error)
       res.status(401).send('ERROR while fetching Data from Database!')
     }
   }
 
-  // static async test(geoData: any) {
-  //   const jsonResponse: any = []
-  //   geoData.forEach((county: GeoData) => {
-  //     // console.log(county.blId)
-  //     if (!jsonResponse[county.blId - 1]) {
-  //       jsonResponse[county.blId - 1] = {
-  //         BL_ID: county.blId,
-  //         counties: [],
-  //       }
-  //     }
-
-  //     const state = jsonResponse[county.blId - 1]
-  //     if (!state.counties[county.lkId - 1]) {
-  //       state.counties[county.lkId - 1] = {
-  //         LK_ID: county.lkId,
-  //         geometry: {
-  //           rings: [],
-  //         },
-  //       }
-  //     }
-  //   })
-  //   return jsonResponse
-  // }
-
-  static async mapPoints(geoData: any) {
+  static async test(geoData: any) {
     const jsonResponse: any = []
-    geoData.forEach((bl: any) => {
-      if (typeof jsonResponse[bl.blId] === 'undefined') {
-        jsonResponse[bl.blId] = {
-          BL_ID: bl.blId,
+    geoData.forEach((county: GeoData) => {
+      if (!jsonResponse[county.blId - 1]) {
+        jsonResponse[county.blId - 1] = {
+          BL_ID: county.blId,
           counties: [],
         }
       }
-    })
-    geoData.forEach((e: any) => {
-      if (typeof jsonResponse[e.blId].counties[e.lkId] === 'undefined') {
-        jsonResponse[e.blId].counties[e.lkId] = {
-          geometry: [],
+
+      const state = jsonResponse[county.blId - 1]
+      if (!state.counties[county.lkId - 1]) {
+        state.counties[county.lkId - 1] = {
+          LK_ID: county.lkId,
+          geometry: {
+            rings: [],
+          },
         }
       }
-    })
-    // console.log('jsonresponse', jsonResponse[1].counties[1])
 
-    // let mappedData = geoData[0].x.map((dataX: any, index: any) => {
-    //   return { x: dataX, y: geoData[0].y[geoData[0].y.length - (index + 1)] }
-    // })
-    // console.log(mappedData)
-    return geoData
+      const rings = state.counties[county.lkId - 1].geometry.rings
+
+      if (!rings[county.ringId - 1]) {
+        rings[county.ringId - 1] = []
+      }
+
+      const ring = rings[county.ringId - 1]
+      county.x.forEach((value: number, index: number) => {
+        ring.push({
+          x: value,
+          y: county.y[index],
+        })
+      })
+    })
+    return jsonResponse
   }
+
+  // static async mapPoints(geoData: any) {
+  //   const jsonResponse: any = []
+  //   geoData.forEach((bl: any) => {
+  //     if (typeof jsonResponse[bl.blId] === 'undefined') {
+  //       jsonResponse[bl.blId] = {
+  //         BL_ID: bl.blId,
+  //         counties: [],
+  //       }
+  //     }
+  //   })
+  //   geoData.forEach((e: any) => {
+  //     if (typeof jsonResponse[e.blId].counties[e.lkId] === 'undefined') {
+  //       jsonResponse[e.blId].counties[e.lkId] = {
+  //         geometry: [],
+  //       }
+  //     }
+  //   })
+  //   // console.log('jsonresponse', jsonResponse[1].counties[1])
+
+  //   // let mappedData = geoData[0].x.map((dataX: any, index: any) => {
+  //   //   return { x: dataX, y: geoData[0].y[geoData[0].y.length - (index + 1)] }
+  //   // })
+  //   // console.log(mappedData)
+  //   return geoData
+  // }
 
   static async writeGeoDataInResolution(resolution: String) {
     let data: any = await GeoDataAPI.get()
