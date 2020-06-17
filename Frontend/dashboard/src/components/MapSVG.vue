@@ -52,7 +52,7 @@ export default {
   methods: {
     fetchGeoData(res = 0) {
       let that = this;
-      let url = `http://localhost:3001/geodata?` + 'res=' + res;
+      let url = `http://localhost:8888/geodata?` + 'res=' + res;
       console.log(url)
       axios
         .get(url)
@@ -98,7 +98,8 @@ export default {
             pathString = "M" + pathString.substring(1);
 
             var path = this.createSVGElement("path", {
-              d: pathString
+              d: pathString,
+              class: 'svg_element_primary_color_scheme svg_map_element svg_map_ring',
             });
             mapSvg.appendChild(path);
           });
