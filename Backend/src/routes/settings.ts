@@ -3,6 +3,6 @@ import SettingsController from "../controllers/SettingsController"
 
 const router = Router()
 
-router.get('/data', SettingsController.settings)
+router.get('/settings', SettingsController.settings)
 
 export default router;
