@@ -5,18 +5,9 @@ export default {
   extends: HorizontalBar,
   name: 'barchart',
   props: {
-    test: {
-      type: String
-      },
-/*     infectionData: {
-      type: Object
-    },
-    topXCountys: {
+    graphsShown: {
       type: Number
     },
-    states: {
-      type: String
-    }, */
     BLID: {
       type: Number
     },
@@ -30,17 +21,29 @@ export default {
   mounted () {
     drawChart(this)
   },
+  methods: {
+    handle (point, event) {
+      event[0]? this.$emit('updateSelectedLK', this.arrID[event[0]._index]):""
+    }
+  },
+  data: () => ({
+      arrID: [],
+      selectedData: []
+    }),
   watch: { 
     BLID: function() {
       drawChart(this)
+    },
+    graphsShown: function(){
+      //console.log("Update graphs shown")
+      drawChart(this)
     }
   }
-
 }
 //END EXPORT
 
 function drawChart(parent){
-        console.log(parent.test);
+  //console.log(parent.graphsShown)
       const chartOptions = {
             scales: {
               xAxes: [{
@@ -51,6 +54,7 @@ function drawChart(parent){
             },
         responsive: true,
         maintainAspectRatio: false,
+        onClick:parent.handle
       }
 
 // TODO: Erstzen mit request
@@ -58,10 +62,11 @@ function drawChart(parent){
     let arrCounties = []
     let arrCases = []
     let arrTopCounty = []
-    console.log(data.states)
+    //console.log(data.states)
+    parent.arrID = []
     
     //let states1 = 1
-    let topXCountys1 = 3
+    let topXCountys1 = parent.graphsShown
 
 
     //arrTopCounty = selectTopCounty(this.topXCountys, this.states, this.infectionData)
@@ -69,12 +74,13 @@ function drawChart(parent){
 
     arrTopCounty.forEach (county => {
 
-      console.log(county)
+      //console.log(county)
 
       arrCounties.push(county.LK)
       arrCases.push(county.cases_per_100k_LK)
-      console.log(arrCounties)
-      console.log(arrCases)
+      parent.arrID.push(county.LK_ID)
+      //console.log(arrCounties)
+      //console.log(arrCases)
     })
 
     parent.renderChart ({
@@ -91,24 +97,14 @@ function drawChart(parent){
     //let topXCountys = 5
     let arrTopCountys = []
     const countys = selectCounty(states, infectionData)
+
+    if(topXCountys > countys.length) topXCountys = countys.length
+
     for (let i = 0; i < topXCountys; i++){
       arrTopCountys.push(countys[i])
     }
     return arrTopCountys
   }
-
-function compare(a, b) {
-  const countyA = a.cases_per_100k_LK;
-  const countyB = b.cases_per_100k_LK;
-
-  let comparison = 0;
-  if (countyA > countyB) {
-    comparison = 1;
-  } else if (countyA < countyB) {
-    comparison = -1;
-  }
-  return comparison;
-}
 
   function selectCounty (states, infectionData) {
     let selectetCounty = []
@@ -129,7 +125,10 @@ function compare(a, b) {
         }
       })
     }
-    selectetCounty.sort(compare).reverse()
-    return selectetCounty
+      let sortedSelectetCounty = selectetCounty.slice(0);
+      sortedSelectetCounty.sort(function(a,b) {
+          return a.cases_per_100k_LK - b.cases_per_100k_LK;
+      });
+      return sortedSelectetCounty.reverse()
   }
 </script>

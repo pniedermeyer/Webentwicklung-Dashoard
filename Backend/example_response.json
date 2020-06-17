@@ -32,7 +32,7 @@
           "new_cases_LK": 0
         },
         {
-          "LK_ID": 1,
+          "LK_ID": 2,
           "LK": "SK Kiel",
           "GEN": "Kiel",
           "cases_LK": 34,
@@ -44,7 +44,7 @@
           "new_cases_LK": 0
         },
         {
-          "LK_ID": 1,
+          "LK_ID": 3,
           "LK": "SK Lübeck",
           "GEN": "Lübeck",
           "cases_LK": 21,
@@ -81,7 +81,7 @@
           "new_cases_LK": 0
         },
         {
-          "LK_ID": 1,
+          "LK_ID": 3,
           "LK": "SK Merzich",
           "GEN": "Kiel",
           "cases_LK": 3,
@@ -93,7 +93,7 @@
           "new_cases_LK": 0
         },
         {
-          "LK_ID": 1,
+          "LK_ID": 5,
           "LK": "SK Neinkeirje",
           "GEN": "Lübeck",
           "cases_LK": 21,

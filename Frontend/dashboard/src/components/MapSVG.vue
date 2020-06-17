@@ -9,23 +9,39 @@
                 <select id="BL_ID" name="BL_ID">
                 <option value="0">Alle</option>
                 </select>
+                vue:<select v-model="selectedBL">
+                    <option disabled value="">Bitte wählen Sie</option>
+                    <option v-for="res in resolutions" v-bind:value="res.value" v-bind:key="res.value">
+                        {{ res.text }}
+                    </option>
+                </select> <span>Selected: {{ resolution }}</span>
             </div>
             <div>
                 <!-- resolution -->
                 <label for="resolution">Auflösung:</label>
-                <select id="resolution" name="resolution">
+
+                alt:<select id="resolution" name="resolution">
                 <option value="low">Niedrig</option>
                 <option selected="selected" value="medium">Mittel</option>
                 <option value="high">Hoch</option>
                 </select>
+                
+                vue:<select v-model="resolution">
+                    <option disabled value="">Bitte wählen Sie</option>
+                    <option v-for="res in resolutions" v-bind:value="res.value" v-bind:key="res.value">
+                        {{ res.text }}
+                    </option>
+                </select> <span>Selected: {{ resolution }}</span>
+
             </div>
             <div>
                 <!-- zoomlevel -->
                 <label for="zoom">Zoomlevel:</label>
-                <input type="number" id="zoom" name="zoom" value="7">
+                alt:<input type="number" id="zoom" name="zoom" value="7">
+                vue:<input type="number" v-model="zoom" value="7"> <p> {{ zoom }} </p>
             </div>
             <div>
-                <input type="submit" value="JSON Antwort anzeigen">
+                <input type="submit" value="JSON Antwort anzeigen"> // vor vue (gelöscht später)
             </div>
             </form>
         </div>
@@ -45,19 +61,30 @@ export default {
   data() {
     return {
       error: null,
-      loading: "",
-      comment: "",
-      commentMade: false,
-      comments: []
+      zoom: Number,
+      resolution: '',
+      resolutions: [
+        { text: 'Niedrig', value: 'low' },
+        { text: 'Mittel', value: 'medium' },
+        { text: 'Hoch', value: 'high' }
+        ],
+      selectedBL: null,
+      selectedLK: null,
     };
   },
+  props: {
+      LK_ID: Number,
+      BL_ID: Number
+  },
   created() {
-      this.fetchData();
+    this.fetchGeoData();
     this.initialize();
-    this.handleOptionsChange();
   },
   methods: {
-    fetchData() {
+/*    emitToParent(event) {
+        this.$emit('childToParent', 'test')
+    },*/
+    fetchGeoData() {
       let that = this;
       that.error = null;
       that.loading = true;
@@ -75,26 +102,6 @@ export default {
             console.log('fetch data error')
           console.log(error);
           that.error = error.toString();
-        });
-    },
-    submitComment() {
-      let that = this;
-      let user = that.$store.state.auth.session.user;
-
-      axios
-        .post("/api/v1/comments", {
-          text: that.comment,
-          problemId: this.problemId,
-          userId: user._id
-        })
-        .then(function(response) {
-          // response.data contains the new comment
-          response.data.user = user;
-          that.comments.push(response.data);
-          that.commentMade = true;
-        })
-        .catch(function(error) {
-          console.log(error);
         });
     },
     async getCountiesAsync () {

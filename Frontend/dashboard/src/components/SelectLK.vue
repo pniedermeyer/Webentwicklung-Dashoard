@@ -13,7 +13,7 @@
 export default {
     data: () => ({
       items: [""],
-      selected: 0,
+      selected: "",
     }),
     props: {
       data: {
@@ -28,15 +28,19 @@ export default {
     },
     methods: {
       setSelected(value) {
-        this.$emit('updateSelectedBL', value)
-        console.log(value)  
+        this.selected=value
+        this.$emit('updateSelectedLK', value)
       }
     },
     mounted(){
+      console.log(this.selected)
       updateData(this);
     },
     watch: { 
       selectedBLID: function() {
+        updateData(this)
+      },
+      selectedLKID: function() {
         updateData(this)
       }
     }
@@ -44,7 +48,7 @@ export default {
 
 function updateData(parent){
   parent.items = parent.data.states.find(element => element.BL_ID == parent.selectedBLID).counties
-  parent.selected = parent.items.find(element => element.LK_ID == parent.selectedLK_ID)
+  parent.selected = parent.items.find(element => element.LK_ID == parent.selectedLKID)
 }
 
 </script>

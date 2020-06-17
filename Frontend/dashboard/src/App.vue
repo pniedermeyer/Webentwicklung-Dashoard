@@ -3,14 +3,15 @@
     <b-container class="bv-example-row">
       <b-row>
         <b-col>1 of 3: 
-          <bar-chart :infectionData="data" v-bind:BLID="selectedBL_ID"></bar-chart>
+          <NumberInput v-bind:graphsShown="graphsShown" v-on:updateGraphsShown="updateGraphsShown"></NumberInput>
+          <bar-chart :infectionData="data" v-bind:BLID="selectedBL_ID" v-bind:graphsShown="graphsShown" v-on:updateSelectedLK="updateSelectedLK"></bar-chart>
         </b-col>
         <b-col>2 of 3
-            <MapSVG> </MapSVG>
+            <MapSVG v-bind:BLID="selectedBL_ID" v-bind:LKID="selectedLK_ID"> </MapSVG>
         </b-col>
         <b-col>1 of 3
-            <SelectComponent :data="data" :selectedID="selectedBL_ID" v-on:updateSelectedBL="updateSelectedBL"></SelectComponent>
-            <SelectLK :data="data" v-bind:selectedBLID="selectedBL_ID" v-bind:selectedLKID="selectedLK_ID" v-on:updateSelectedBL="updateSelectedBL"></SelectLK>
+            <SelectComponent :data="data" v-bind:selectedID="selectedBL_ID" v-on:updateSelectedBL="updateSelectedBL"></SelectComponent>
+            <SelectLK :data="data" v-bind:selectedBLID="selectedBL_ID" v-bind:selectedLKID="selectedLK_ID" v-on:updateSelectedLK="updateSelectedLK"></SelectLK>
         </b-col>
       </b-row>
     </b-container>
@@ -22,6 +23,7 @@ import BarChart from './components/BarchartTest.vue'
 import MapSVG from './components/MapSVG.vue'
 import SelectComponent from './components/SelectComponent.vue'
 import SelectLK from './components/SelectLK.vue'
+import NumberInput from './components/SelectTopCountys.vue'
 
 //import axios from 'axios'
 
@@ -31,26 +33,34 @@ export default {
     BarChart,
     MapSVG,
     SelectComponent,
-    SelectLK
+    SelectLK,
+    NumberInput
   },
   data () {
     return {
       //test: "HIPASCAL",
       data: require('../../../Backend/example_response.json'),
       selectedBL_ID: 3,
-      selectedLK_ID: 0
+      selectedLK_ID: 0,
+      graphsShown: 5
     }
   },
   methods:{
     updateSelectedBL(event){
-      console.log("old selectedBL_ID" + this.selectedBL_ID)
-      console.log(event)
-      this.selectedBL_ID = event;
+      this.selectedBL_ID = event
+      this.selectedLK_ID = null
+    },
+    updateSelectedLK(event){
+      this.selectedLK_ID = event
+    },
+    updateGraphsShown(event) {
+      //console.log("Update Graphs shown: "+event)
+      this.graphsShown = event
     }
   }
   // async getData (){
   //   const { geoData } = await axios.get('http://localhost:8080/geo-data/')
-  //   //const {   } = await axios.get('http://localhost:8080/data/')
+  //   //const { data } = await axios.get('http://localhost:8080/data/')
   //   console.log(geoData)
   // }
 }

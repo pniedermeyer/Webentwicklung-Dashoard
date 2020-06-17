@@ -25,15 +25,24 @@ export default {
     },
     methods: {
       setSelected(value) {
+        this.selected = value
         this.$emit('updateSelectedBL', value)
         console.log(value)  
       }
     },
+    watch: { 
+      selectedID: function() {
+        updateData(this)
+      },
+    },
     mounted(){
-      console.log(this.selectedID)
       this.items = this.data.states
-      this.selected = this.data.states.find(element => element.BL_ID == this.selectedID)
+      updateData(this)
     }
+}
+
+function updateData(parent){
+  parent.selected = parent.data.states.find(element => element.BL_ID == parent.selectedID)
 }
 
 </script>
