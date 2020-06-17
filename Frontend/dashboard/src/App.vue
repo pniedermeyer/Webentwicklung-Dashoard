@@ -9,7 +9,7 @@
         <b-col>2 of 3
             <MapSVG v-bind:BLID="selectedBL_ID" v-bind:LKID="selectedLK_ID"> </MapSVG>
         </b-col>
-        <b-col>1 of 3
+        <b-col>3 of 3
             <SelectComponent :data="data" v-bind:selectedID="selectedBL_ID" v-on:updateSelectedBL="updateSelectedBL"></SelectComponent>
             <SelectLK :data="data" v-bind:selectedBLID="selectedBL_ID" v-bind:selectedLKID="selectedLK_ID" v-on:updateSelectedLK="updateSelectedLK"></SelectLK>
         </b-col>
@@ -25,7 +25,6 @@ import SelectComponent from './components/SelectComponent.vue'
 import SelectLK from './components/SelectLK.vue'
 import NumberInput from './components/SelectTopCountys.vue'
 
-//import axios from 'axios'
 
 export default {
   name: 'App',
@@ -38,7 +37,6 @@ export default {
   },
   data () {
     return {
-      //test: "HIPASCAL",
       data: require('../../../Backend/example_response.json'),
       selectedBL_ID: 3,
       selectedLK_ID: 0,
