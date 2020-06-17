@@ -16,7 +16,7 @@ class MapDataManager {
   private static instance: MapDataManager
   private static scheduler: Scheduler
 
-  public counties: any = Counties
+  public counties: any = Counties.Counties
 
   constructor() {
     this.counties = Counties
@@ -56,12 +56,12 @@ class MapDataManager {
     }
   }
 
-  getData({ fromDate = '', toDate = '', county = [Counties.ALL], resolution = this.settings.resolutions.high } = {}) {
+  getData({ fromDate = '', toDate = '', county = [this.counties.ALL], resolution = this.settings.resolutions.high } = {}) {
     console.log('getData()')
     return RkiDataAPI.get()
   }
 
-  getGeoData({ county = [Counties.ALL] } = {}) {
+  getGeoData({ county = [this.counties.ALL] } = {}) {
     return GeoDataAPI.get()
   }
 

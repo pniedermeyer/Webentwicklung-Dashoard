@@ -1,7 +1,7 @@
-import DataAPI from './data-request.js'
-import webMercator from '../utilities/web-mercator.js'
+import DataAPI from './data-request'
+import webMercator from '../utilities/web-mecrator'
 
-let geoData = null
+let geoData: any = null
 
 class GeoDataAPI {
   private static request = {
@@ -21,7 +21,7 @@ class GeoDataAPI {
     return DataAPI.get(this.request, normaliseData)
 
     function normaliseData(originalData: any) {
-      let tmp = originalData.features.reduce((acc, cur) => {
+      let tmp = originalData.features.reduce((acc: any, cur: any) => {
         let index = cur.attributes.BL_ID - 1
 
         if (!acc[index]) {
@@ -52,14 +52,12 @@ class GeoDataAPI {
       return geoData
     }
 
-    function convertRings(rings) {
-      return rings.map((ring) => {
-        return (ring = ring.map((point) => {
-          const longitude = (point[0] * Math.PI) / 180
-          const latitude = (point[1] * Math.PI) / 180
+    function convertRings(rings: any) {
+      return rings.map((ring: any) => {
+        return (ring = ring.map((point: any) => {
           return {
-            x: webMercator.calculateX(0, longitude),
-            y: webMercator.calculateY(0, latitude),
+            x: point[0],
+            y: point[1],
           }
         }))
       })

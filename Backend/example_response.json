@@ -9,7 +9,7 @@
   "new_cases_DE": 0,
   "states": [
     {
-      "BL_ID": 1,
+      "BL_ID": 3,
       "name": "Schleswig-Holstein",
       "cases_BL": 44,
       "deaths_BL": 3,
@@ -50,6 +50,55 @@
           "cases_LK": 21,
           "deaths_LK": 2,
           "cases_per_100k_LK": 30,
+          "cases7_per_100k_LK": 2,
+          "recovered_LK": 0,
+          "change_LK": 0,
+          "new_cases_LK": 0
+        }
+      ]
+    },
+    {
+      "BL_ID": 1,
+      "name": "Saarland",
+      "cases_BL": 24,
+      "deaths_BL": 3,
+      "cases_per_100k_BL": 9,
+      "cases7_per_100k_BL": 1,
+      "recovered_BL": 0,
+      "change_BL": 0,
+      "new_cases_BL": 0,
+      "counties": [
+        {
+          "LK_ID": 1,
+          "LK": "SK Saarbrigge",
+          "GEN": "Flensburg",
+          "cases_LK": 8,
+          "deaths_LK": 3,
+          "cases_per_100k_LK": 9,
+          "cases7_per_100k_LK": 5,
+          "recovered_LK": 0,
+          "change_LK": 0,
+          "new_cases_LK": 0
+        },
+        {
+          "LK_ID": 1,
+          "LK": "SK Merzich",
+          "GEN": "Kiel",
+          "cases_LK": 3,
+          "deaths_LK": 8,
+          "cases_per_100k_LK": 6,
+          "cases7_per_100k_LK": 7,
+          "recovered_LK": 0,
+          "change_LK": 0,
+          "new_cases_LK": 0
+        },
+        {
+          "LK_ID": 1,
+          "LK": "SK Neinkeirje",
+          "GEN": "Lübeck",
+          "cases_LK": 21,
+          "deaths_LK": 2,
+          "cases_per_100k_LK": 3,
           "cases7_per_100k_LK": 2,
           "recovered_LK": 0,
           "change_LK": 0,

@@ -1,4 +1,4 @@
-import DataAPI from './data-request.js'
+import DataAPI from './data-request'
 
 let data: any = null
 
@@ -19,7 +19,7 @@ class RkiDataAPI {
     }
     return DataAPI.get(this.request, normaliseData)
 
-    function normaliseData(originalData) {
+    function normaliseData(originalData: any) {
       if (data === null) {
         data = originalData.features
       }

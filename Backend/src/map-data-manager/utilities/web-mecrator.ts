@@ -1,10 +1,10 @@
 // calculate coordinates
 class WebMercator {
-  calculateX(zoomLevel: number, longitude: number) {
+  static calculateX(zoomLevel: number, longitude: number) {
     return (256 / 2) * Math.PI * Math.pow(2, zoomLevel) * (longitude + Math.PI)
   }
 
-  calculateY(zoomLevel: number, latitude: number) {
+  static calculateY(zoomLevel: number, latitude: number) {
     return (256 / 2) * Math.PI * Math.pow(2, zoomLevel) * (Math.PI - Math.log(Math.tan(Math.PI / 4 + latitude / 2)))
   }
 }
