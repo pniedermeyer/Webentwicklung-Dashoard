@@ -10,11 +10,11 @@ createConnection()
   .then((connection) => {
     // create and setup express app
     const app = e()
+    app.use(cors())
     app.use(bodyParser.json())
 
     // Set all routes from routes folder
     app.use('/', routes)
-    app.use(cors())
 
     app.listen(3001, () => {
       console.log('Server started on port 3001!')

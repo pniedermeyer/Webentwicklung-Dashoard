@@ -37,7 +37,7 @@ class RkiDataAPI {
 
         if (!acc[index]) {
           acc[index] = {
-            BL_ID: county.attributes.BL_ID,
+            BL_ID: index + 1,
             name: county.attributes.BL,
             cases_BL: 0,
             deaths_BL: 0,
