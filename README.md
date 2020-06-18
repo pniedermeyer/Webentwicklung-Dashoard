@@ -8,7 +8,7 @@ In die github registry einloggen:
 - Als passwort den "Github personal access token" nutzen
 
 ### Mit docker
-Einfach im root-folder ``docker-compose start --build`` aufrufen. Danach stehen folgende services zur Verfügung:
+Einfach im root-folder ``docker-compose up --build`` aufrufen. Danach stehen folgende services zur Verfügung:
 - ``localhost:8888``: Die gesamte Webanwendung (Unter / das dashboard und unter /data, [...] die API-endpunkte)
 - ``localhost:3001``: Das Backend
 - ``localhost:5858``: Der debug-Port für das Backend
