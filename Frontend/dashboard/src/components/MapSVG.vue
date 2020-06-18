@@ -60,7 +60,7 @@ export default {
       //     'Access-Control-Allow-Origin': 'http://localhost:3001',
       //   },
       // }
-      let url = `http://localhost:3001/geodata?` + 'res=' + res
+      let url = `http://localhost:8888/geodata?` + 'res=' + res
       console.log(url)
       // axios
       //   .request(request)

@@ -1,4 +1,36 @@
 # Dashboard-Prototyp
+## Aufbau einer lokalen Entwicklungsumgebung
+### Vorbereitung (Für beide vorgehen)
+In die github registry einloggen:
+- Einen "Github personal access token" erstellen: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line. Dieser muss mindestens die berechtigung ``read:packages`` haben
+- ``docker login docker.pkg.github.com`` in CMD eingeben
+- Als Nutzernamen euren Github Benutzernamen nutzen
+- Als passwort den "Github personal access token" nutzen
+
+### Mit docker
+Einfach im root-folder ``docker-compose up --build`` aufrufen. Danach stehen folgende services zur Verfügung:
+- ``localhost:8888``: Die gesamte Webanwendung (Unter / das dashboard und unter /data, [...] die API-endpunkte)
+- ``localhost:3001``: Das Backend
+- ``localhost:5858``: Der debug-Port für das Backend
+- ``localhost:8080``: Das Frontend
+- ``localhost:5959``: Der debug-Port für das Frontend
+- ``localhost:5432``: postgres-Datenbank
+
+Docker liest die dateien direkt von der FFestplatte. Daher sollten live-reload funktionalitäten weiterhin laufen.
+Falls es doch einmal nicht funktionieren soll, können folgende befehle zum neustart einzelner Komponenten genutzt werden
+(Funktioniert für linux und windows shell):
+- backend: ``docker-compose stop backend && (echo "y" | docker-compose rm backend) && docker-compose build backend && docker-compose create backend && docker-compose start backend``
+- frontend: ``docker-compose stop dashboard && (echo "y" | docker-compose rm dashboard) && docker-compose build dashboard && docker-compose create dashboard && docker-compose start dashboard``
+
+Alternativ können auch alle Komponenten mit folgendem Befehl neu erstellt werden:
+``docker-compose down && docker-compose up --build``
+
+### "Ohne" docker (Alter weg)
+- Mittels folgenden Befehl eine Postgres-DB starten: ``docker run -it --rm --network bridge -d -e PGDATA=/postgres --name dashboard_db_postgres -p 5432:5432 -e POSTGRES_PASSWORD=admin docker.pkg.github.com/pniedermeyer/webentwicklung-dashoard/postgres_dashboard:1.3``
+- Die Services wie gewohnt starten (npm run / npm serve o.ä.)
+- In der Datei Frontend/dashboard/src/components/MapSVG.vue den port der URL von ``8888`` auf ``3001`` setzen
+- In der Datei Backend/ormconfig.json den Wert "host" von ``db`` auf ``localhost`` setzen
+
 ## 8.6. Aufgabe (Corona-Dashboard)
 Es soll ein Prototyp für ein Dashboard erstellt werden, das Informationen zur Verbreitung des Corona-Virus in Deutschland anzeigt.
 

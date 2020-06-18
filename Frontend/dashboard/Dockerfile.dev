@@ -1,0 +1,5 @@
+FROM node:12
+WORKDIR /usr/src/app/Frontend/dashboard
+#Workdir is passed through via FS => npm i needs to be done normally on the host
+#RUN npm i
+ENTRYPOINT npm run serve

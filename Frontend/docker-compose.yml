@@ -1,0 +1,13 @@
+version: '2'
+services:
+  dashboard:
+    build:
+      context: dashboard
+      dockerfile: Dockerfile.dev
+    volumes:
+      - "../:/usr/src/app/"
+    ports:
+      - "8080:8080"
+      - "5959:5959"
+    environment:
+      DANGEROUSLY_DISABLE_HOST_CHECK: "true"
