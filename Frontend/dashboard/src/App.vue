@@ -6,7 +6,7 @@
           1 of 3:
           <NumberInput v-bind:graphsShown="graphsShown" v-on:updateGraphsShown="updateGraphsShown"></NumberInput>
           <bar-chart
-            :infectionData="data"
+            :infectionData="infectionData"
             v-bind:BLID="selectedBL_ID"
             v-bind:graphsShown="graphsShown"
             v-on:updateSelectedLK="updateSelectedLK"
@@ -19,7 +19,7 @@
         <b-col>
           3 of 3
           <GlobalOptions
-            :data="data"
+            :infectionData="infectionData"
             v-bind:selectedBLID="selectedBL_ID"
             v-bind:selectedLKID="selectedLK_ID"
             v-on:updateSelectedBL="updateSelectedBL"
@@ -36,6 +36,7 @@ import BarChart from "./components/BarchartTest.vue";
 import MapSVG from "./components/MapSVG.vue";
 import GlobalOptions from "./components/GlobalOptions.vue";
 import NumberInput from "./components/SelectBarsCount.vue";
+import axios from "axios"
 
 export default {
   name: "App",
@@ -47,7 +48,7 @@ export default {
   },
   data() {
     return {
-      data: require("../../../Backend/example_response.json"),
+      infectionData: require("../../../Backend/example_response.json"),
       selectedBL_ID: 3,
       selectedLK_ID: 0,
       graphsShown: 5
@@ -64,13 +65,15 @@ export default {
     updateGraphsShown(event) {
       //console.log("Update Graphs shown: "+event)
       this.graphsShown = event;
-    }
+    },
+  },
+  mounted () {
+    var self = this
+    axios
+      .get('http://localhost:3001/data/')
+      .then(response => (self.infectionData = response.data))
   }
-  // async getData (){
-  //   const { geoData } = await axios.get('http://localhost:8080/geo-data/')
-  //   //const { data } = await axios.get('http://localhost:8080/data/')
-  //   console.log(geoData)
-  // }
+  
 };
 </script>
 

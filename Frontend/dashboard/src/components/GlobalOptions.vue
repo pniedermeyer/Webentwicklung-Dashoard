@@ -24,11 +24,11 @@ export default {
     data: () => ({
       states: [""],
       counties: [""],
-      selectedState: 0,
-      selectedCounty: 0,
+      selectedState: null,
+      selectedCounty: null,
     }),
     props: {
-      data: {
+      infectionData: {
         type: Object
       },
       selectedBLID: {
@@ -52,7 +52,7 @@ export default {
       },
       selectCountiesToState(stateId){
         if(stateId){
-          let state = this.data.states.find(state => state.BL_ID === stateId)
+          let state = this.states.find(state => state.BL_ID === stateId)
           this.counties = state.counties
         }else{
           this.counties = [""]
@@ -61,23 +61,23 @@ export default {
       },
     },
     watch: { 
-      selectedBLID: function() {
-        updateData(this)
+      selectedBLID: function(val) {
+        if(val !== this.selectedState){
+          this.setSelState(val)
+        }
       },
-      selectedLKID: function() {
-        updateData(this)
+      selectedLKID: function(val) {
+        if(val !== this.selectedCounty){
+          this.setSelCounty(val)
+        }
+      },
+      infectionData: function() {
+        this.states = this.infectionData.states
       }
     },
     mounted(){
-      this.states = this.data.states
-      updateData(this)
+      this.states = this.infectionData.states
     }
-}
-
-function updateData(parent){
-  parent.counties = parent.data.states.find(state => state.BL_ID === parent.selectedBLID).counties
-  parent.selectedState = parent.data.states.find(state => state.BL_ID === parent.selectedBLID)
-  parent.selectedCounty = parent.selectedState.counties.find(county => county.LK_ID === parent.selectedLKID)
 }
 
 </script>
