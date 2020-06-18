@@ -52,7 +52,7 @@ export default {
   methods: {
     fetchGeoData(res = 0) {
       let that = this;
-      let url = `http://localhost:8888/geodata?` + 'res=' + res;
+      let url = `http://localhost:3001/geodata?` + 'res=' + res;
       console.log(url)
       axios
         .get(url)
