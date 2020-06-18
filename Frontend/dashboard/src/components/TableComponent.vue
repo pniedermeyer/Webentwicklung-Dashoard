@@ -4,19 +4,20 @@
     <b-tabs card>
       <b-tab title="Tabelle 1" active>
           <b-table striped hover :tabitems="tabitems"></b-table>
-          <v-select multiple='true' label="name" :options="views" :reduce="views => views.id"></v-select>
+          <v-select multiple label="name" :options="views.filter(element => element.correspondingTO == 1)" :reduce="views => views.id"></v-select>
       </b-tab>
       <b-tab title="Tabelle 2">
-           <b-table striped hover :tabitems="tabitems"></b-table>
+          <b-table striped hover :tabitems="tabitems"></b-table>
       </b-tab>
     </b-tabs>
   </b-card>
-
   <b-table striped hover :tabitems="tabitems"></b-table>
   </div>
 </template>
 
 <script>
+// :options="selected.length < 2 ? options: []">
+
   export default {
     name: 'infectionTable',
     props: {

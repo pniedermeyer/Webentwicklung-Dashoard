@@ -2,15 +2,15 @@
   <div>
     <div>
       <h1>Bundesland</h1>
-      <v-select label="name" :options="states" :reduce="item => item.BL_ID" :value="selectedState" @input="setSelState"></v-select>
+      <v-select label="name" :options="states" :reduce="item => item.BL_ID" :value="selectedState" @input="setSelState" :clearable="false"></v-select>
     </div>
     <div>
       <h1>Landkreis</h1>
-      <v-select label="LK" :options="counties" :reduce="item => item.LK_ID" :value="selectedCounty" @input="setSelCounty"></v-select>
+      <v-select label="LK" :options="counties" :reduce="item => item.LK_ID" :value="selectedCounty" @input="setSelCounty" :clearable="false"></v-select>
     </div>
     <div>
       <h1>Fallzahlen</h1>
-      <v-select :options="caseOptions" :reduce="option => option.code" :value="selectedCaseOption" @input="setCasesOption"></v-select>
+      <v-select :options="caseOptions" :reduce="option => option.code" :value="selectedCaseOption" @input="setCasesOption" :clearable="false"></v-select>
     </div>
   </div>
 </template>

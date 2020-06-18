@@ -19,9 +19,7 @@
         </b-col>
         <b-col>
           3 of 3
-             <SelectComponent :data="data" v-bind:selectedID="selectedBL_ID" v-on:updateSelectedBL="updateSelectedBL"></SelectComponent>
-            <SelectLK :data="data" v-bind:selectedBLID="selectedBL_ID" v-bind:selectedLKID="selectedLK_ID" v-on:updateSelectedLK="updateSelectedLK"></SelectLK>
-            <TableComponent :infectionData="data"/>
+            <TableComponent :infectionData="infectionData"/>
           <GlobalOptions
             :infectionData="infectionData"
             v-bind:selectedBLID="selectedBL_ID"
@@ -36,8 +34,6 @@
 </template>
 
 <script>
-import SelectComponent from './components/SelectComponent.vue'
-import SelectLK from './components/SelectLK.vue'
 import NumberInput from './components/SelectBarsCount.vue'
 import TableComponent from './components/TableComponent.vue'
 import BarChart from "./components/BarchartTest.vue"
@@ -50,8 +46,6 @@ export default {
   components: {
     BarChart,
     MapSVG,
-    SelectComponent,
-    SelectLK,
     NumberInput,
     TableComponent,
     GlobalOptions
