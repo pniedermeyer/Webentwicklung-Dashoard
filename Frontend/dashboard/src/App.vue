@@ -2,66 +2,79 @@
   <div selectedBL_ID="app">
     <b-container class="bv-example-row">
       <b-row>
-        <b-col>1 of 3: 
+        <b-col>
+          1 of 3:
           <NumberInput v-bind:graphsShown="graphsShown" v-on:updateGraphsShown="updateGraphsShown"></NumberInput>
-          <bar-chart :infectionData="data" v-bind:BLID="selectedBL_ID" v-bind:graphsShown="graphsShown" v-on:updateSelectedLK="updateSelectedLK"></bar-chart>
+          <bar-chart
+            :infectionData="infectionData"
+            v-bind:BLID="selectedBL_ID"
+            v-bind:graphsShown="graphsShown"
+            v-on:updateSelectedLK="updateSelectedLK"
+          ></bar-chart>
         </b-col>
-        <b-col>2 of 3
-            <MapSVG v-bind:BLID="selectedBL_ID" v-bind:LKID="selectedLK_ID"> </MapSVG>
+        <b-col>
+          2 of 3
+          <MapSVG v-bind:BLID="selectedBL_ID" v-bind:LKID="selectedLK_ID"></MapSVG>
         </b-col>
-        <b-col>3 of 3
-            <SelectComponent :data="data" v-bind:selectedID="selectedBL_ID" v-on:updateSelectedBL="updateSelectedBL"></SelectComponent>
-            <SelectLK :data="data" v-bind:selectedBLID="selectedBL_ID" v-bind:selectedLKID="selectedLK_ID" v-on:updateSelectedLK="updateSelectedLK"></SelectLK>
+        <b-col>
+          3 of 3
+          <GlobalOptions
+            :infectionData="infectionData"
+            v-bind:selectedBLID="selectedBL_ID"
+            v-bind:selectedLKID="selectedLK_ID"
+            v-on:updateSelectedBL="updateSelectedBL"
+            v-on:updateSelectedLK="updateSelectedLK"
+          ></GlobalOptions>
         </b-col>
       </b-row>
     </b-container>
-  </div> 
+  </div>
 </template>
 
 <script>
-import BarChart from './components/BarchartTest.vue'
-import MapSVG from './components/MapSVG.vue'
-import SelectComponent from './components/SelectComponent.vue'
-import SelectLK from './components/SelectLK.vue'
-import NumberInput from './components/SelectTopCountys.vue'
-
+import BarChart from "./components/BarchartTest.vue";
+import MapSVG from "./components/MapSVG.vue";
+import GlobalOptions from "./components/GlobalOptions.vue";
+import NumberInput from "./components/SelectBarsCount.vue";
+import axios from "axios"
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     BarChart,
     MapSVG,
-    SelectComponent,
-    SelectLK,
+    GlobalOptions,
     NumberInput
   },
-  data () {
+  data() {
     return {
-      data: require('../../../Backend/example_response.json'),
+      infectionData: require("../../../Backend/example_response.json"),
       selectedBL_ID: 3,
       selectedLK_ID: 0,
       graphsShown: 5
-    }
+    };
   },
-  methods:{
-    updateSelectedBL(event){
-      this.selectedBL_ID = event
-      this.selectedLK_ID = null
+  methods: {
+    updateSelectedBL(event) {
+      this.selectedBL_ID = event;
+      this.selectedLK_ID = null;
     },
-    updateSelectedLK(event){
-      this.selectedLK_ID = event
+    updateSelectedLK(event) {
+      this.selectedLK_ID = event;
     },
     updateGraphsShown(event) {
       //console.log("Update Graphs shown: "+event)
-      this.graphsShown = event
-    }
+      this.graphsShown = event;
+    },
+  },
+  mounted () {
+    var self = this
+    axios
+      .get('http://localhost:3001/data/')
+      .then(response => (self.infectionData = response.data))
   }
-  // async getData (){
-  //   const { geoData } = await axios.get('http://localhost:8080/geo-data/')
-  //   //const { data } = await axios.get('http://localhost:8080/data/')
-  //   console.log(geoData)
-  // }
-}
+  
+};
 </script>
 
 <style>

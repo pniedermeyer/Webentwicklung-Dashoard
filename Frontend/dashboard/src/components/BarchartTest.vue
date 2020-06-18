@@ -11,6 +11,9 @@ export default {
     BLID: {
       type: Number
     },
+    infectionData: {
+      type: Object
+    }
   },
 
 /* render(){
@@ -37,6 +40,9 @@ export default {
     graphsShown: function(){
       //console.log("Update graphs shown")
       drawChart(this)
+    },
+    infectionData: function(){
+      drawChart(this)
     }
   }
 }
@@ -58,7 +64,7 @@ function drawChart(parent){
       }
 
 // TODO: Erstzen mit request
-    const data = require('../../../../Backend/example_response.json')
+    const data = parent.infectionData
     let arrCounties = []
     let arrCases = []
     let arrTopCounty = []
