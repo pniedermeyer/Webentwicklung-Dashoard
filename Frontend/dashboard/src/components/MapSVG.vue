@@ -98,7 +98,8 @@ export default {
             pathString = "M" + pathString.substring(1);
 
             var path = this.createSVGElement("path", {
-              d: pathString
+              d: pathString,
+              class: 'svg_element_primary_color_scheme svg_map_element svg_map_ring',
             });
             mapSvg.appendChild(path);
           });
