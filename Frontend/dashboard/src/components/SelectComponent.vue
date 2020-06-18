@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Bundeslandauswahl</h1>
-    <v-select label="name" :options="items" :reduce="item => item.BL_ID" :value="selected" @input="setSelected"></v-select>
+    <v-select label="name" :options="items" :reduce="item => item.BL_ID" :value="selected" @input="setSelected" :clearable="false"></v-select>
   </div>
 </template>
 

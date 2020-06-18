@@ -114,13 +114,14 @@ export default {
             pathString += 'Z'
             pathString = 'M' + pathString.substring(1)
 
-            var path = this.createSVGElement('path', {
+            var path = this.createSVGElement("path", {
               d: pathString,
-            })
-            mapSvg.appendChild(path)
-          })
-        })
-      })
+              class: 'svg_element_primary_color_scheme svg_map_element svg_map_ring',
+            });
+            mapSvg.appendChild(path);
+          });
+        });
+      });
     },
     createSVGElement(name, attributes) {
       var element = document.createElementNS('http://www.w3.org/2000/svg', name)

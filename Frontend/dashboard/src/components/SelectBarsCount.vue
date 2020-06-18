@@ -9,7 +9,7 @@
 export default {
     data() {
       return {
-        value: 1,
+        value: 3,
       }
     },
     methods: {
