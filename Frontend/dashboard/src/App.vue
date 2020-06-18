@@ -36,16 +36,13 @@
 </template>
 
 <script>
-import BarChart from './components/BarchartTest.vue'
-import MapSVG from './components/MapSVG.vue'
 import SelectComponent from './components/SelectComponent.vue'
 import SelectLK from './components/SelectLK.vue'
-import NumberInput from './components/SelectTopCountys.vue'
+import NumberInput from './components/SelectBarsCount.vue'
 import TableComponent from './components/TableComponent.vue'
-import BarChart from "./components/BarchartTest.vue";
-import MapSVG from "./components/MapSVG.vue";
-import GlobalOptions from "./components/GlobalOptions.vue";
-import NumberInput from "./components/SelectBarsCount.vue";
+import BarChart from "./components/BarchartTest.vue"
+import MapSVG from "./components/MapSVG.vue"
+import GlobalOptions from "./components/GlobalOptions.vue"
 import axios from "axios"
 
 export default {
@@ -56,9 +53,8 @@ export default {
     SelectComponent,
     SelectLK,
     NumberInput,
-    TableComponent
-    GlobalOptions,
-    NumberInput
+    TableComponent,
+    GlobalOptions
   },
   data() {
     return {

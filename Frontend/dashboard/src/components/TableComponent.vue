@@ -4,7 +4,7 @@
     <b-tabs card>
       <b-tab title="Tabelle 1" active>
           <b-table striped hover :tabitems="tabitems"></b-table>
-          <v-select  label="name" :options="views" :reduce="views => views.LK_ID"></v-select>
+          <v-select multiple='true' label="name" :options="views" :reduce="views => views.id"></v-select>
       </b-tab>
       <b-tab title="Tabelle 2">
            <b-table striped hover :tabitems="tabitems"></b-table>
