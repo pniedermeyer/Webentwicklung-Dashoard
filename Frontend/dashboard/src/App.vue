@@ -1,5 +1,6 @@
 <template>
   <div selectedBL_ID="app">
+    <h1>Corona Dashboard</h1>
     <b-container class="bv-example-row">
       <b-row>
         <b-col>1 of 3: 
@@ -12,6 +13,7 @@
         <b-col>3 of 3
             <SelectComponent :data="data" v-bind:selectedID="selectedBL_ID" v-on:updateSelectedBL="updateSelectedBL"></SelectComponent>
             <SelectLK :data="data" v-bind:selectedBLID="selectedBL_ID" v-bind:selectedLKID="selectedLK_ID" v-on:updateSelectedLK="updateSelectedLK"></SelectLK>
+            <TableComponent :infectionData="data"/>
         </b-col>
       </b-row>
     </b-container>
@@ -24,7 +26,7 @@ import MapSVG from './components/MapSVG.vue'
 import SelectComponent from './components/SelectComponent.vue'
 import SelectLK from './components/SelectLK.vue'
 import NumberInput from './components/SelectTopCountys.vue'
-
+import TableComponent from './components/TableComponent.vue'
 
 export default {
   name: 'App',
@@ -33,7 +35,8 @@ export default {
     MapSVG,
     SelectComponent,
     SelectLK,
-    NumberInput
+    NumberInput,
+    TableComponent
   },
   data () {
     return {

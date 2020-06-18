@@ -66,11 +66,10 @@ function drawChart(parent){
     parent.arrID = []
     
     //let states1 = 1
-    let topXCountys1 = parent.graphsShown
 
 
     //arrTopCounty = selectTopCounty(this.topXCountys, this.states, this.infectionData)
-    arrTopCounty = selectTopCounty(topXCountys1, parent.BLID, data)
+    arrTopCounty = selectTopCounty(parent.graphsShown, parent.BLID, data)
 
     arrTopCounty.forEach (county => {
 
@@ -87,7 +86,7 @@ function drawChart(parent){
       labels: arrCounties,
       datasets: [{
         label: "Total 100k",
-        backgroundColor: '#00ff00',
+        backgroundColor: ['#00ff00', '#ff8fff', '#ff00ff'],
         data: arrCases
       }]
     },chartOptions)
