@@ -10,7 +10,7 @@
     </div>
     <div>
       <h1>Fallzahlen</h1>
-      <v-select :options="caseOptions" @input="setCasesOption"></v-select>
+      <v-select :options="caseOptions" :reduce="option => option.code" :value="selectedCaseOption" @input="setCasesOption"></v-select>
     </div>
   </div>
 </template>
@@ -66,9 +66,9 @@ export default {
         this.selectedCounty = null
       },
       setCasesOption(value){
-        this.selectedCaseOption = value.code
-        this.$emit('updateCasesOption', value.code)
-        console.log('Cases option: ' + value.code)
+        this.selectedCaseOption = value
+        this.$emit('updateCasesOption', value)
+        console.log('Cases option: ' + value)
       }
     },
     watch: { 
