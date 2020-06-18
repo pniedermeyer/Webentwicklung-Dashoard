@@ -10,7 +10,7 @@
     </div>
     <div>
       <h1>Fallzahlen</h1>
-      <v-select label="cases" ></v-select>
+      <v-select :options="caseOptions" @input="setCasesOption"></v-select>
     </div>
   </div>
 </template>
@@ -23,9 +23,15 @@
 export default {
     data: () => ({
       states: [""],
-      counties: [""],
       selectedState: null,
+      counties: [""],
       selectedCounty: null,
+      caseOptions: [
+        { label: "Alle Fälle", code: "cases"},
+        { label: "Fälle / 100k", code: "cases_per_100k" },
+        { label: "Fälle / 100k letzte 7 Tage", code: "cases7_per_100k"},
+      ],
+      selectedCaseOption: "cases"
     }),
     props: {
       infectionData: {
@@ -59,6 +65,11 @@ export default {
         }
         this.selectedCounty = null
       },
+      setCasesOption(value){
+        this.selectedCaseOption = value.code
+        this.$emit('updateCasesOption', value.code)
+        console.log('Cases option: ' + value.code)
+      }
     },
     watch: { 
       selectedBLID: function(val) {
