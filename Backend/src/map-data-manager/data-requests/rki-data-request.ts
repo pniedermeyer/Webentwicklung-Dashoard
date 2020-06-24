@@ -20,6 +20,7 @@ class RkiDataAPI {
     return DataAPI.get(this.request, normaliseData)
 
     function normaliseData(originalData: any) {
+      let lk_id = 0
       const germanyData: any = {
         name: 'Deutschland',
         cases_DE: 0,
@@ -31,10 +32,9 @@ class RkiDataAPI {
         new_cases_DE: 0,
         states: new Array(16),
       }
-
       germanyData.states = originalData.features.reduce((acc: any, county: any) => {
         const index = county.attributes.BL_ID - 1
-
+        lk_id += 1
         if (!acc[index]) {
           acc[index] = {
             BL_ID: index + 1,
@@ -48,6 +48,7 @@ class RkiDataAPI {
             new_cases_BL: 0,
             counties: [],
           }
+          lk_id = 1
         }
 
         const state = acc[index]
@@ -57,7 +58,7 @@ class RkiDataAPI {
         }
 
         const newCounty = {
-          LK_ID: 1,
+          LK_ID: lk_id,
           LK: county.attributes.county,
           GEN: county.attributes.GEN,
           cases_LK: county.attributes.cases,
