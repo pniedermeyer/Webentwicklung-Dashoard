@@ -1,11 +1,9 @@
 <template>
   <div>
-    Hier SVG Shit
     <div>
       <div>
         <!-- resolution -->
-        <label for="resolution">Auflösung:</label>
-
+        <label for="resolution">🗺️Auflösung:</label>
         <select v-model="resolution" v-on:change="resolutionChanged()">
           <option disabled value>Bitte wählen Sie</option>
           <option v-for="res in resolutions" v-bind:value="res.value" v-bind:key="res.value">{{ res.text }}</option>
@@ -13,7 +11,7 @@
       </div>
       <div>
         <!-- zoomlevel -->
-        <label for="zoom">Zoomlevel:</label>
+        <label for="zoom">🔎Zoomlevel:</label>
         <input type="number" v-model="zoom" step="20" min="0" v-on:change="zoomLevelChanged()" />
       </div>
     </div>

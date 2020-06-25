@@ -1,17 +1,20 @@
 <template>
   <div>
     <div>
-      <h1>Bundesland</h1>
+      <h1>🗺️Bundesland</h1>
       <v-select label="name" :options="states" :reduce="item => item.BL_ID" :value="selectedState" @input="setSelState" :clearable="false"></v-select>
     </div>
     <div>
-      <h1>Landkreis</h1>
+      <h1>🗾Landkreis</h1>
       <v-select label="LK" :options="counties" :reduce="item => item.LK_ID" :value="selectedCounty" @input="setSelCounty" :clearable="false"></v-select>
     </div>
     <div>
-      <h1>Fallzahlen</h1>
+      <h1>💯Fallzahlen</h1>
       <v-select :options="caseOptions" :reduce="option => option.code" :value="selectedCaseOption" @input="setCasesOption" :clearable="false"></v-select>
     </div>
+    <div>
+        <button v-on:click="saveUserSettings()">💾Einstellungen speichern</button>
+    </div>  
   </div>
 </template>
 
@@ -69,6 +72,10 @@ export default {
         this.selectedCaseOption = value
         this.$emit('updateCasesOption', value)
         console.log('Cases option: ' + value)
+      },
+      saveUserSettings() {
+        //Hier Settings speichern!
+        console.log("Jetzt könnten wir speichern!")
       }
     },
     watch: { 
@@ -93,3 +100,18 @@ export default {
 
 </script>
 
+<style >
+button {
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  color: #333;
+  background-color:rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: '微软雅黑',arail;
+  cursor: pointer;
+}
+v-select {
+  cursor: pointer;
+}
+</style>

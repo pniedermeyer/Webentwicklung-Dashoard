@@ -230,3 +230,4 @@ yarn-error.log
 
 # End of https://www.toptal.com/developers/gitignore/api/vue,vuejs,node,intellij+all,code
 # End of https://www.toptal.com/developers/gitignore/api/vue,vuejs,node,intellij+all,code
+package-lock.json

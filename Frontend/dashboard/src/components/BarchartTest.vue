@@ -68,6 +68,7 @@ function drawChart(parent){
     let arrCounties = []
     let arrCases = []
     let arrTopCounty = []
+    let backgroundColor = []
     //console.log(data.states)
     parent.arrID = []
     
@@ -88,14 +89,22 @@ function drawChart(parent){
       //console.log(arrCases)
     })
 
+    backgroundColor = getColor();
+
     parent.renderChart ({
       labels: arrCounties,
       datasets: [{
         label: "Total 100k",
-        backgroundColor: ['#00ff00', '#ff8fff', '#ff00ff'],
+        backgroundColor: backgroundColor,
         data: arrCases
       }]
     },chartOptions)
+}
+
+//return the colours for the Barchart
+// TODO IMPLEMENTIEREN
+function getColor(){
+  return (['#11EE11', '#33CC33', '#55AA55', '#778877', '#996699', '#BB44BB', '#DD22DD']);
 }
 
  function selectTopCounty (topXCountys, states, infectionData) {

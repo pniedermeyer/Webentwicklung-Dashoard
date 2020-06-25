@@ -19,14 +19,17 @@
         </b-col>
         <b-col>
           3 of 3
-            <TableComponent :infectionData="infectionData"/>
-          <GlobalOptions
+            <GlobalOptions
             :infectionData="infectionData"
             v-bind:selectedBLID="selectedBL_ID"
             v-bind:selectedLKID="selectedLK_ID"
             v-on:updateSelectedBL="updateSelectedBL"
-            v-on:updateSelectedLK="updateSelectedLK"
-          ></GlobalOptions>
+            v-on:updateSelectedLK="updateSelectedLK">
+            </GlobalOptions>
+            <TableComponent 
+              :infectionData="infectionData"
+              v-bind:selectedBLID="selectedBL_ID"
+              v-bind:selectedLKID="selectedLK_ID"/>
         </b-col>
       </b-row>
     </b-container>
@@ -53,7 +56,7 @@ export default {
   data() {
     return {
       infectionData: require("../../../Backend/example_response.json"),
-      selectedBL_ID: 3,
+      selectedBL_ID: 0,
       selectedLK_ID: 0,
       graphsShown: 5
     };
@@ -61,7 +64,7 @@ export default {
   methods: {
     updateSelectedBL(event) {
       this.selectedBL_ID = event;
-      this.selectedLK_ID = null;
+      this.selectedLK_ID = 0;
     },
     updateSelectedLK(event) {
       this.selectedLK_ID = event;
@@ -69,13 +72,25 @@ export default {
     updateGraphsShown(event) {
       //console.log("Update Graphs shown: "+event)
       this.graphsShown = event;
-    },
+    }
   },
   mounted () {
     var self = this
     axios
       .get('http://localhost:3001/data/')
       .then(response => (self.infectionData = response.data))
+  },
+  created() {
+        window.addEventListener('beforeunload', (event) => {
+        // Cancel the event as stated by the standard.
+        event.preventDefault();
+        // Chrome requires returnValue to be set.
+        event.returnValue = 'TEST';
+
+        console.log("TRY TO CLOSE")
+
+        //Hier gespeicherte Sachen versenden!
+      });
   }
   
 };
