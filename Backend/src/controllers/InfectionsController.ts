@@ -155,7 +155,7 @@ function normalizeData(infections: any) {
 
 function getPrevDay(blId: number, lkId: number, data: any, currentDate: string): any {
   return data.find((entry: any) => {
-    return entry.bl_id === blId && entry.lk_id == lkId && entry.date !== currentDate
+    return entry.blId === blId && entry.lkId == lkId && entry.date !== currentDate
   })
 }
 
