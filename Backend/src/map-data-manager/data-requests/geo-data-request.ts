@@ -1,5 +1,4 @@
 import DataAPI from './data-request'
-import webMercator from '../utilities/web-mecrator'
 
 let geoData: any = null
 

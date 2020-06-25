@@ -13,15 +13,14 @@ class GeoDataController {
       geoData = await getConnection()
         .getRepository(GeoData)
         .find({ where: { res: req.query.res } })
-      // res.send(await GeoDataController.mapPoints(geoData))
-      res.send(await GeoDataController.test(geoData))
+      res.send(await GeoDataController.mapPoints(geoData))
     } catch (error) {
       console.log(error)
       res.status(401).send('ERROR while fetching Data from Database!')
     }
   }
 
-  static async test(geoData: any) {
+  static async mapPoints(geoData: any) {
     const jsonResponse: any = []
     geoData.forEach((county: GeoData) => {
       if (!jsonResponse[county.blId - 1]) {
