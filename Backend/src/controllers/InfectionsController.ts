@@ -19,19 +19,20 @@ class InfectionsController {
     } else {
       query.where.date = getCurrentDate()
     }
-    console.log(query)
     try {
       infections = await getConnection()
         .getRepository(Infections)
         .find(query)
-      res.send(infections)
+
+      // Solange nicht aktiv, bis wir das korrekte Format für den Datenaustausch festgelegt haben
+      //res.send(infections)
     } catch (error) {
       console.log(error)
       res.status(401).send('FEHLER')
     }
 
     //Nur vorrübergehende Lösung bis die Anbundung an die Datenbank fertig ist. So kann das Frontend mit aktuellen Daten arbeiten
-    //res.send(await RkiDataAPI.get())
+    res.send(await RkiDataAPI.get())
   }
 
   static async writeInfections() {
