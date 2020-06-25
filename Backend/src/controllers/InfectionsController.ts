@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { getRepository, Raw } from 'typeorm'
+import { getRepository } from 'typeorm'
 import { getConnection } from 'typeorm'
 import { Infections } from '../entity/Infections'
 import RkiDataAPI from '../map-data-manager/data-requests/rki-data-request'
@@ -7,7 +7,11 @@ import RkiDataAPI from '../map-data-manager/data-requests/rki-data-request'
 class InfectionsController {
   static async infectionData(req: Request, res: Response) {
     let infections
-    const query: any = { where: [{ date: getCurrentDate() }, { date: getOneBeforeCurrentDate() }] }
+    const query: any = { where: [{ 
+      date: getCurrentDate() 
+    }, { 
+      date: getOneBeforeCurrentDate() 
+    }]}
     try {
       infections = await getConnection().getRepository(Infections).find(query)
       const data = normalizeData(infections)
@@ -74,7 +78,8 @@ function getCurrentDate() {
 
 function getOneBeforeCurrentDate() {
   const today: Date = new Date()
-  const yesterday: Date = new Date(today.getDate() - 1)
+  const yesterday: Date = new Date(today.getTime())
+  yesterday.setDate(today.getDate() - 1)
   return formatDate(yesterday)
 }
 
@@ -103,8 +108,8 @@ function normalizeData(infections: any) {
 
   newFormat.states = infections
     .filter((county: any) => county.date === currentDate)
-    .reduce((acc: any, county: any) => {
-      const index = county.bl_id - 1
+    .reduce((acc: any, county: Infections) => {
+      const index = county.blId - 1
       if (!acc[index]) {
         acc[index] = {
           BL_ID: county.blId,
@@ -120,7 +125,6 @@ function normalizeData(infections: any) {
         }
       }
       const state = acc[index]
-
       const newCounty = {
         LK_ID: county.lkId,
         LK: county.lkName,
@@ -154,9 +158,11 @@ function normalizeData(infections: any) {
 }
 
 function getPrevDay(blId: number, lkId: number, data: any, currentDate: string): any {
-  return data.find((entry: any) => {
-    return entry.blId === blId && entry.lkId == lkId && entry.date !== currentDate
-  })
+  for (const infection of data) {
+    if (blId === infection.blId && lkId === infection.lkId && currentDate !== infection.date) {
+      return infection
+    }
+  }
 }
 
 export default InfectionsController
