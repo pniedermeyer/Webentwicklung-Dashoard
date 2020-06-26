@@ -109,7 +109,7 @@ function normalizeData(infections: any) {
   newFormat.states = infections
     .filter((county: any) => county.date === currentDate)
     .reduce((acc: any, county: Infections) => {
-      const index = county.blId - 1
+      const index: number = county.blId - 1
       if (!acc[index]) {
         acc[index] = {
           BL_ID: county.blId,
@@ -137,7 +137,7 @@ function normalizeData(infections: any) {
         change_LK: county.cases - getPrevDay(county.blId, county.lkId, infections, currentDate).cases,
         new_cases_LK: 0,
       }
-      state.counties.push(newCounty)
+      state.counties[county.lkId - 1] = newCounty
 
       state.cases_BL += newCounty.cases_LK
       state.deaths_BL += newCounty.deaths_LK
@@ -154,7 +154,10 @@ function normalizeData(infections: any) {
       newFormat.recovered_DE += newCounty.recovered_LK
       newFormat.change_DE += newCounty.change_LK
       newFormat.new_cases_DE += newCounty.new_cases_LK
-    }, [])
+      
+      return acc
+    }, newFormat.states)
+  return newFormat
 }
 
 function getPrevDay(blId: number, lkId: number, data: any, currentDate: string): any {
