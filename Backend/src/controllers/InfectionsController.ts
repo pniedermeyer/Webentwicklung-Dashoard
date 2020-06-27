@@ -7,11 +7,16 @@ import RkiDataAPI from '../map-data-manager/data-requests/rki-data-request'
 class InfectionsController {
   static async infectionData(req: Request, res: Response) {
     let infections
-    const query: any = { where: [{ 
-      date: getCurrentDate() 
-    }, { 
-      date: getOneBeforeCurrentDate() 
-    }]}
+    const query: any = {
+      where: [
+        {
+          date: getCurrentDate(),
+        },
+        {
+          date: getOneBeforeCurrentDate(),
+        },
+      ],
+    }
     try {
       infections = await getConnection().getRepository(Infections).find(query)
       const data = normalizeData(infections)
@@ -125,6 +130,11 @@ function normalizeData(infections: any) {
         }
       }
       const state = acc[index]
+      const prevDay = getPrevDay(county.blId, county.lkId, infections, currentDate)
+      let change_LK = county.cases
+      if (!prevDay) {
+        change_LK = county.cases - prevDay.cases
+      }
       const newCounty = {
         LK_ID: county.lkId,
         LK: county.lkName,
@@ -134,7 +144,7 @@ function normalizeData(infections: any) {
         cases_per_100k_LK: county.casesPer_100k,
         cases7_per_100k_LK: county.cases_7Per_100k,
         recovered_LK: 0,
-        change_LK: county.cases - getPrevDay(county.blId, county.lkId, infections, currentDate).cases,
+        change_LK: change_LK,
         new_cases_LK: 0,
       }
       state.counties[county.lkId - 1] = newCounty
@@ -154,7 +164,7 @@ function normalizeData(infections: any) {
       newFormat.recovered_DE += newCounty.recovered_LK
       newFormat.change_DE += newCounty.change_LK
       newFormat.new_cases_DE += newCounty.new_cases_LK
-      
+
       return acc
     }, newFormat.states)
   return newFormat
