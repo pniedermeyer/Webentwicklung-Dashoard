@@ -132,7 +132,7 @@ function normalizeData(infections: any) {
       const state = acc[index]
       const prevDay = getPrevDay(county.blId, county.lkId, infections, currentDate)
       let change_LK = county.cases
-      if (!prevDay) {
+      if (prevDay !== undefined && prevDay !== null) {
         change_LK = county.cases - prevDay.cases
       }
       const newCounty = {
