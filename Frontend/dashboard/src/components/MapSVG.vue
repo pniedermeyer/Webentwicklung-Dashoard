@@ -16,7 +16,7 @@
       </div>
     </div>
 
-    <div>
+    <div id="mapContainer">
       <svg version="1.1" id="map_area" />
     </div>
   </div>
@@ -131,3 +131,10 @@ export default {
   },
 }
 </script>
+
+<style>
+#mapContainer {
+  max-height: 80rem;
+  overflow: auto;
+}
+</style>
