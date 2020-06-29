@@ -13,7 +13,13 @@ export default {
     },
     infectionData: {
       type: Object
-    }
+    },
+    selectedCaseOption: {
+      type: String
+    },
+    caseOptions: {
+      type: Array
+    },
   },
 
 /* render(){
@@ -43,6 +49,10 @@ export default {
     },
     infectionData: function(){
       drawChart(this)
+    },
+    selectedCaseOption: function(){
+      console.log(this.selectedCaseOption)
+      drawChart(this)
     }
   }
 }
@@ -69,6 +79,8 @@ function drawChart(parent){
     let arrCases = []
     let arrTopCounty = []
     let backgroundColor = []
+    let label = ''
+    const hundred = 100
     //console.log(data.states)
     parent.arrID = []
     
@@ -76,17 +88,29 @@ function drawChart(parent){
 
 
     //arrTopCounty = selectTopCounty(this.topXCountys, this.states, this.infectionData)
-    arrTopCounty = selectTopCounty(parent.graphsShown, parent.BLID, data)
+    arrTopCounty = selectTopCounty(parent.graphsShown, parent.BLID, data, parent.selectedCaseOption)
 
     arrTopCounty.forEach (county => {
-
-      //console.log(county)
-
       arrCounties.push(county.LK)
-      arrCases.push(county.cases_per_100k_LK)
       parent.arrID.push(county.LK_ID)
+      switch(parent.selectedCaseOption){
+        case 'cases':
+          arrCases.push(county.cases_LK)
+          break;
+      case 'cases7_per_100k':
+          arrCases.push(Math.round(county.cases7_per_100k_LK * hundred) / hundred)
+          break;
+        default:
+          arrCases.push(Math.round(county.cases_per_100k_LK * hundred) / hundred)
+      }
       //console.log(arrCounties)
       //console.log(arrCases)
+    })
+
+    parent.caseOptions.forEach(option => {
+      if(option.code === parent.selectedCaseOption){
+        label = option.label
+      }
     })
 
     backgroundColor = getColor();
@@ -94,7 +118,7 @@ function drawChart(parent){
     parent.renderChart ({
       labels: arrCounties,
       datasets: [{
-        label: "Total 100k",
+        label: label,
         backgroundColor: backgroundColor,
         data: arrCases
       }]
@@ -107,10 +131,11 @@ function getColor(){
   return (['#11EE11', '#33CC33', '#55AA55', '#778877', '#996699', '#BB44BB', '#DD22DD']);
 }
 
- function selectTopCounty (topXCountys, states, infectionData) {
+ function selectTopCounty (topXCountys, states, infectionData, caseOption) {
     //let topXCountys = 5
     let arrTopCountys = []
-    const countys = selectCounty(states, infectionData)
+    console.log(caseOption)
+    const countys = selectCounty(states, infectionData, caseOption)
 
     if(topXCountys > countys.length) topXCountys = countys.length
 
@@ -120,7 +145,8 @@ function getColor(){
     return arrTopCountys
   }
 
-  function selectCounty (states, infectionData) {
+  function selectCounty (states, infectionData, caseOption) {
+    console.log('Select:' + caseOption)
     let selectetCounty = []
 
 
@@ -139,10 +165,29 @@ function getColor(){
         }
       })
     }
-      let sortedSelectetCounty = selectetCounty.slice(0);
-      sortedSelectetCounty.sort(function(a,b) {
+      let sortedSelectetCounty = []
+      switch(caseOption) {
+        case 'cases':
+          console.log("cases in switch")
+          sortedSelectetCounty = selectetCounty.slice(0)
+          sortedSelectetCounty.sort(function(a,b) {
+            return a.cases_LK - b.cases_LK;
+          });
+          break;
+        case 'cases7_per_100k':
+          console.log("cases7 in switch")
+          sortedSelectetCounty = selectetCounty.slice(0)
+          sortedSelectetCounty.sort(function(a,b) {
+            return a.cases7_per_100k_LK - b.cases7_per_100k_LK;
+          });
+          break;
+      default:
+        sortedSelectetCounty = selectetCounty.slice(0)
+        sortedSelectetCounty.sort(function(a,b) {
           return a.cases_per_100k_LK - b.cases_per_100k_LK;
-      });
-      return sortedSelectetCounty.reverse()
+        });
+      
+    }
+    return sortedSelectetCounty.reverse()
   }
 </script>

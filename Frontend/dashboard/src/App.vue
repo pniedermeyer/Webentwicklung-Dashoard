@@ -11,6 +11,8 @@
             v-bind:BLID="selectedBL_ID"
             v-bind:graphsShown="graphsShown"
             v-on:updateSelectedLK="updateSelectedLK"
+            v-bind:caseOptions='caseOptions'
+            v-bind:selectedCaseOption="selectedCaseOptions"
           ></bar-chart>
         </b-col>
         <b-col>
@@ -19,17 +21,20 @@
         </b-col>
         <b-col>
           3 of 3
-            <GlobalOptions
+          <GlobalOptions
             :infectionData="infectionData"
             v-bind:selectedBLID="selectedBL_ID"
             v-bind:selectedLKID="selectedLK_ID"
+            v-bind:selectedCaseOption="selectedCaseOptions"
+            v-bind:caseOptions= "caseOptions"
             v-on:updateSelectedBL="updateSelectedBL"
-            v-on:updateSelectedLK="updateSelectedLK">
-            </GlobalOptions>
-            <TableComponent 
-              :infectionData="infectionData"
-              v-bind:selectedBLID="selectedBL_ID"
-              v-bind:selectedLKID="selectedLK_ID"/>
+            v-on:updateSelectedLK="updateSelectedLK"
+            v-on:updateCaseOptions="updateCaseOptions">
+          </GlobalOptions>
+          <TableComponent 
+            :infectionData="infectionData"
+            v-bind:selectedBLID="selectedBL_ID"
+            v-bind:selectedLKID="selectedLK_ID"/>
         </b-col>
       </b-row>
     </b-container>
@@ -43,6 +48,14 @@ import BarChart from "./components/BarchartTest.vue"
 import MapSVG from "./components/MapSVG.vue"
 import GlobalOptions from "./components/GlobalOptions.vue"
 import axios from "axios"
+import sendUserData from "./functions/sendUserData.js"
+
+//So gelöst, falls mal die Sprache gewechselt werden muss
+const caseOptions =  [
+        { label: "Alle Fälle", code: "cases"},
+        { label: "Fälle / 100k", code: "cases_per_100k" },
+        { label: "Fälle / 100k letzte 7 Tage", code: "cases7_per_100k"},
+      ]
 
 export default {
   name: "App",
@@ -58,7 +71,9 @@ export default {
       infectionData: require("../../../Backend/example_response.json"),
       selectedBL_ID: 0,
       selectedLK_ID: 0,
-      graphsShown: 5
+      graphsShown: 5,
+      selectedCaseOptions: "cases7_per_100k",
+      caseOptions: caseOptions
     };
   },
   methods: {
@@ -67,15 +82,31 @@ export default {
       this.selectedLK_ID = 0;
     },
     updateSelectedLK(event) {
-      this.selectedLK_ID = event;
+      this.selectedLK_ID = event
     },
     updateGraphsShown(event) {
-      //console.log("Update Graphs shown: "+event)
       this.graphsShown = event;
+      this.sendUserData();
+    },
+    updateCaseOptions(event) {
+      this.selectedCaseOptions = event
+    },
+    sendUserData(){
+      sendUserData(
+        "sdoifn",
+        this.selectedBL_ID,
+        this.selectedLK_ID,
+        this.selectedCaseOptions,
+        "Mapresolution",
+        "zoom",
+        this.graphsShown,
+        "selectedTab",
+        "viewDetails"
+      )
     }
   },
   mounted () {
-    var self = this
+    let self = this
     axios
       .get('http://localhost:3001/data/')
       .then(response => (self.infectionData = response.data))

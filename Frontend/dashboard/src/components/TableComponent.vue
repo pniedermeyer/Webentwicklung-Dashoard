@@ -14,8 +14,7 @@
       </b-tab>
       <b-tab title="Landkreis" @click="changeTab(2)" :disabled="selectedLKID?false:true">
       </b-tab>
-    </b-tabs>
-                
+    </b-tabs>               
   </b-card>
   </div>
 </template>
@@ -181,9 +180,9 @@ function getDatatoID(parent, id=-1){
     case 4:
       return parent.infectionData.deaths_DE
     case 6:
-      return parent.infectionData.cases_per_100k_DE
+      return Math.round(parent.infectionData.cases_per_100k_DE * 100) / 100
     case 8:
-      return parent.infectionData.cases7_per_100k_DE
+      return Math.round(parent.infectionData.cases7_per_100k_DE * 100) / 100
     case 10:
       return parent.infectionData.recovered_DE
     case 12:
@@ -196,9 +195,9 @@ function getDatatoID(parent, id=-1){
     case 24:
       return parent.infectionDataBL.deaths_BL
     case 26:
-      return parent.infectionDataBL.cases_per_100k_BL
+      return Math.round(parent.infectionDataBL.cases_per_100k_BL * 100) / 100
     case 28:
-      return parent.infectionDataBL.cases7_per_100k_BL
+      return Math.round(parent.infectionDataBL.cases7_per_100k_BL * 100) / 100
     case 30:
       return parent.infectionDataBL.recovered_BL
     case 32:
@@ -211,9 +210,9 @@ function getDatatoID(parent, id=-1){
     case 44:
       return parent.infectionDataLK.deaths_LK
     case 46:
-      return parent.infectionDataLK.cases_per_100k_LK
+      return Math.round(parent.infectionDataLK.cases_per_100k_LK * 100) / 100
     case 48:
-      return parent.infectionDataLK.cases7_per_100k_LK
+      return Math.round(parent.infectionDataLK.cases7_per_100k_LK * 100) / 100
     case 50:
       return parent.infectionDataLK.recovered_LK
     case 52:
@@ -222,8 +221,5 @@ function getDatatoID(parent, id=-1){
       return ""
   }
 }
-
-
 </script>
-
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

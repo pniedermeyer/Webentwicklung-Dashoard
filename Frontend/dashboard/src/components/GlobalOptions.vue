@@ -28,13 +28,7 @@ export default {
       states: [""],
       selectedState: null,
       counties: [""],
-      selectedCounty: null,
-      caseOptions: [
-        { label: "Alle Fälle", code: "cases"},
-        { label: "Fälle / 100k", code: "cases_per_100k" },
-        { label: "Fälle / 100k letzte 7 Tage", code: "cases7_per_100k"},
-      ],
-      selectedCaseOption: "cases"
+      selectedCounty: null
     }),
     props: {
       infectionData: {
@@ -45,7 +39,13 @@ export default {
       },
       selectedLKID: {
         type: Number
-      }
+      },
+      selectedCaseOption: {
+        type: String
+      },
+      caseOptions: {
+        type: Array
+      },
     },
     methods: {
       setSelState(value) {
@@ -69,8 +69,8 @@ export default {
         this.selectedCounty = null
       },
       setCasesOption(value){
-        this.selectedCaseOption = value
-        this.$emit('updateCasesOption', value)
+        // this.selectedCaseOption = value
+        this.$emit('updateCaseOptions', value)
         console.log('Cases option: ' + value)
       },
       saveUserSettings() {
