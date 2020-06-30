@@ -62,14 +62,6 @@ import GlobalOptions from "./components/GlobalOptions.vue"
 import axios from "axios"
 import sendUserData from "./functions/sendUserData.js"
 
-/*
-window.addEventListener('popstate', function(event) {
-  var url = event.currentTarget.location.hash.substring(1);
-  url = decodeURIComponent(url)
-  var settings = JSON.parse(url);
-  this.urlToSettingsChange(settings)
-});
-*/
 
 //So gelöst, falls mal die Sprache gewechselt werden muss
 const caseOptions =  [
