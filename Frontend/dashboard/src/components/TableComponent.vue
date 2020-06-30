@@ -65,6 +65,8 @@
         this.selectedItemsID[this.tab].sort((a,b) => a < b?-1:0)
 
         fillItems(this)
+
+        this.$emit("addOption", this.selectedItems)
       },
       removeOption(element){
         this.selectedItems[this.tab].splice(this.selectedItems[this.tab].findIndex(o => o === element),1)
@@ -72,10 +74,12 @@
         this.selectedItemsID[this.tab].splice(this.selectedItems[this.tab].findIndex(o => o === element.id),1)
 
         fillItems(this)
+        this.$emit("removeOption", this.selectedItems)
       },
       changeTab(tab){
         this.tab = tab
         fillItems(this)
+        this.$emit("changeTab", this.tab)
       },
       test(e){
         console.log(e)

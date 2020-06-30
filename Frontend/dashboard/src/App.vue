@@ -42,6 +42,9 @@
           </GlobalOptions>
           <TableComponent 
             :infectionData="infectionData"
+            v-on:addOption="labelSelectOptionModify"
+            v-on:removeOption="labelSelectOptionModify"
+            v-on:changeTab="labelSelectChangeTab"
             v-bind:selectedBLID="selectedBL_ID"
             v-bind:selectedLKID="selectedLK_ID"/>
         </b-col>
@@ -96,7 +99,9 @@ export default {
       caseOptions: caseOptions,
       baseColor: baseColor,
       map_resolution: "1",
-      map_zoom: "340"
+      map_zoom: "340",
+      label_select_options: TableComponent.data().selectedItems,
+      label_select_tab: TableComponent.data().tab
     };
   },
   methods: {
@@ -127,6 +132,14 @@ export default {
       this.map_quality = event;
       this.updateUserUrl()
     },
+    labelSelectOptionModify(event) {
+      this.label_select_options = event
+      this.updateUserUrl()
+    },
+    labelSelectChangeTab(event) {
+      this.label_select_tab = event
+      this.updateUserUrl()
+    },
     sendUserData(){
       sendUserData(
         "sdoifn",
@@ -153,11 +166,11 @@ export default {
         mapresolution: this.map_resolution,
         mapzoom: this.map_zoom,
         graphsShown: this.graphsShown,
-        selectedTab: "selectedTab",
-        viewDetails: "viewDetails"
+        selectedTab: this.label_select_tab,
+        viewDetails: this.label_select_options
       }
 
-      window.history.pushState(userData, "_THIS:IS_NOT_USED_CRRENTLY_", "#"+JSON.stringify(userData))
+      window.history.pushState(userData, "_THIS:IS_NOT_USED_CURRENTLY_", "#"+JSON.stringify(userData))
     },
     /**
      * Updates the URL in the browser, so that it contains the current configuration of the webapp
