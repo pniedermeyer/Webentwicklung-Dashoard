@@ -19,11 +19,13 @@
     <div id="mapContainer">
       <svg version="1.1" id="map_area" />
     </div>
+    <div id="map"></div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import L from 'leaflet'
 
 export default {
   name: 'MapSVG',
@@ -32,17 +34,20 @@ export default {
       zoom: 100,
       resolution: 0,
       resolutions: [
-        { text: 'Niedrig', value: 0 },
+        { text: 'Niedrig', value: 2 },
         { text: 'Mittel', value: 1 },
-        { text: 'Hoch', value: 2 },
+        { text: 'Hoch', value: 0 },
       ],
       selectedBL: null,
       selectedLK: null,
+      minCases: 0,
+      maxCases: 0,
     }
   },
   props: {
     LK_ID: Number,
     BL_ID: Number,
+    infectionData: Object,
   },
   created() {
     this.fetchGeoData()
@@ -96,45 +101,95 @@ export default {
       svg.setAttribute('width', this.zoom)
     },
     drawMapData(data) {
-      const mapSvg = document.getElementById('map_area')
+      let map = L.map('mapContainer', {
+        center: [51.505, -0.09],
+        zoom: 13,
+      })
 
-      if (!Array.isArray(data)) {
-        data = [data]
-      }
+      // const accessToken = 'pk.eyJ1IjoicHJhd2xleSIsImEiOiJja2MwdW90bmcxNHNhMzBuNGo1ajhlaGxrIn0.NeGOU_d2zDQV2B1LrI_m3g'
 
-      data.forEach((state) => {
-        state.counties.forEach((county) => {
-          county.geometry.rings.forEach((ring) => {
-            var pathString = ''
-            ring.forEach((coordinate) => {
-              pathString += 'L ' + coordinate.x + ',' + coordinate.y + ' '
-            })
-            pathString += 'Z'
-            pathString = 'M' + pathString.substring(1)
+      // L.tileLayer(
+      //   "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
+      //   {
+      //     attribution:
+      //       'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      //     maxZoom: 18,
+      //     id: "mapbox/streets-v11",
+      //     tileSize: 512,
+      //     zoomOffset: -1,
+      //     accessToken: accessToken
+      //   }
+      // ).addTo(map);
+      console.log(data)
+      this.setMinMax(this.infectionData)
 
-            var path = this.createSVGElement("path", {
-              d: pathString,
-              class: 'svg_element_primary_color_scheme svg_map_element svg_map_ring',
-            });
-            mapSvg.appendChild(path);
-          });
-        });
-      });
+      L.geoJson(data, { style: this.style }).addTo(map)
     },
-    createSVGElement(name, attributes) {
-      var element = document.createElementNS('http://www.w3.org/2000/svg', name)
-      for (const attName in attributes) {
-        element.setAttribute(attName, String(attributes[attName]))
+    setMinMax(data) {
+      console.log(data)
+
+      this.minCases = data.states[0].counties[0]['cases_LK']
+      this.maxCases = this.minCases
+
+      data.states.forEach((state) => {
+        state.counties.forEach((county) => {
+          const cases = county['cases_LK']
+          if (this.minCases > cases) {
+            this.minCases = cases
+          }
+
+          if (this.maxCases < cases) {
+            this.maxCases = cases
+          }
+        })
+      })
+      // this.minCases = data.features[0].properties.cases_per_100k
+      // this.maxCases = this.minCases
+      // data.features.forEach((feature) => {
+      //   const cases_p_100k = feature.properties.cases_per_100k
+
+      //   if (this.minCases > cases_p_100k) {
+      //     this.minCases = cases_p_100k
+      //   }
+
+      //   if (this.maxCases < cases_p_100k) {
+      //     this.maxCases = cases_p_100k
+      //   }
+      // })
+    },
+    style(feature) {
+      return {
+        fillColor: 'red',
+        weight: 1,
+        opacity: 1,
+        color: 'gray',
+        dashArray: '3',
+        fillOpacity: this.getOpacity(feature.properties.county, feature.properties.BL),
       }
-      return element
+    },
+    getOpacity(countyName, stateName) {
+      /*
+        opacity: y1 = 0.1 (min)
+                 y2 = 0.9 (max)
+        cases: x1 = min
+               x2 = max
+        formel: y1 + ((y2 - y1) / (x2 - x1)) * (x - x1)
+       */
+
+      const county = this.infectionData.states.filter((state) => state.name === stateName)[0].counties.find((county) => county.LK === countyName)
+      console.log(county)
+      console.log(this.minCases, this.maxCases)
+      return 0.1 + ((0.9 - 0.1) / (this.maxCases - this.minCases)) * (county['cases_LK'] - this.minCases)
     },
   },
 }
 </script>
 
 <style>
+@import '../../node_modules/leaflet/dist/leaflet.css';
 #mapContainer {
-  max-height: 80rem;
+  /* max-height: 40rem;
   overflow: auto;
+  height: 40rem; */
 }
 </style>

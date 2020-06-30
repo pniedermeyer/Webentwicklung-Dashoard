@@ -11,13 +11,13 @@
             v-bind:BLID="selectedBL_ID"
             v-bind:graphsShown="graphsShown"
             v-on:updateSelectedLK="updateSelectedLK"
-            v-bind:caseOptions='caseOptions'
+            v-bind:caseOptions="caseOptions"
             v-bind:selectedCaseOption="selectedCaseOptions"
           ></bar-chart>
         </b-col>
         <b-col>
           2 of 3
-          <MapSVG v-bind:BLID="selectedBL_ID" v-bind:LKID="selectedLK_ID"></MapSVG>
+          <MapSVG v-bind:BLID="selectedBL_ID" v-bind:LKID="selectedLK_ID" v-bind:infectionData="infectionData"></MapSVG>
         </b-col>
         <b-col>
           3 of 3
@@ -26,15 +26,13 @@
             v-bind:selectedBLID="selectedBL_ID"
             v-bind:selectedLKID="selectedLK_ID"
             v-bind:selectedCaseOption="selectedCaseOptions"
-            v-bind:caseOptions= "caseOptions"
+            v-bind:caseOptions="caseOptions"
             v-on:updateSelectedBL="updateSelectedBL"
             v-on:updateSelectedLK="updateSelectedLK"
-            v-on:updateCaseOptions="updateCaseOptions">
+            v-on:updateCaseOptions="updateCaseOptions"
+          >
           </GlobalOptions>
-          <TableComponent 
-            :infectionData="infectionData"
-            v-bind:selectedBLID="selectedBL_ID"
-            v-bind:selectedLKID="selectedLK_ID"/>
+          <TableComponent :infectionData="infectionData" v-bind:selectedBLID="selectedBL_ID" v-bind:selectedLKID="selectedLK_ID" />
         </b-col>
       </b-row>
     </b-container>
@@ -44,87 +42,84 @@
 <script>
 import NumberInput from './components/SelectBarsCount.vue'
 import TableComponent from './components/TableComponent.vue'
-import BarChart from "./components/BarchartTest.vue"
-import MapSVG from "./components/MapSVG.vue"
-import GlobalOptions from "./components/GlobalOptions.vue"
-import axios from "axios"
-import sendUserData from "./functions/sendUserData.js"
+import BarChart from './components/BarchartTest.vue'
+import MapSVG from './components/MapSVG.vue'
+import GlobalOptions from './components/GlobalOptions.vue'
+import axios from 'axios'
+import sendUserData from './functions/sendUserData.js'
 
 //So gelöst, falls mal die Sprache gewechselt werden muss
-const caseOptions =  [
-        { label: "Alle Fälle", code: "cases"},
-        { label: "Fälle / 100k", code: "cases_per_100k" },
-        { label: "Fälle / 100k letzte 7 Tage", code: "cases7_per_100k"},
-      ]
+const caseOptions = [
+  { label: 'Alle Fälle', code: 'cases' },
+  { label: 'Fälle / 100k', code: 'cases_per_100k' },
+  { label: 'Fälle / 100k letzte 7 Tage', code: 'cases7_per_100k' },
+]
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
     BarChart,
     MapSVG,
     NumberInput,
     TableComponent,
-    GlobalOptions
+    GlobalOptions,
   },
   data() {
     return {
-      infectionData: require("../../../Backend/example_response.json"),
+      infectionData: require('../../../Backend/example_response.json'),
       selectedBL_ID: 0,
       selectedLK_ID: 0,
       graphsShown: 5,
-      selectedCaseOptions: "cases7_per_100k",
-      caseOptions: caseOptions
-    };
+      selectedCaseOptions: 'cases7_per_100k',
+      caseOptions: caseOptions,
+    }
   },
   methods: {
     updateSelectedBL(event) {
-      this.selectedBL_ID = event;
-      this.selectedLK_ID = 0;
+      this.selectedBL_ID = event
+      this.selectedLK_ID = 0
     },
     updateSelectedLK(event) {
       this.selectedLK_ID = event
     },
     updateGraphsShown(event) {
-      this.graphsShown = event;
-      this.sendUserData();
+      this.graphsShown = event
+      this.sendUserData()
     },
     updateCaseOptions(event) {
       this.selectedCaseOptions = event
     },
-    sendUserData(){
+    sendUserData() {
       sendUserData(
-        "sdoifn",
+        'sdoifn',
         this.selectedBL_ID,
         this.selectedLK_ID,
         this.selectedCaseOptions,
-        "Mapresolution",
-        "zoom",
+        'Mapresolution',
+        'zoom',
         this.graphsShown,
-        "selectedTab",
-        "viewDetails"
+        'selectedTab',
+        'viewDetails'
       )
-    }
+    },
   },
-  mounted () {
+  mounted() {
     let self = this
-    axios
-      .get('http://localhost:3001/data/')
-      .then(response => (self.infectionData = response.data))
+    axios.get('http://localhost:3001/data/').then((response) => (self.infectionData = response.data))
   },
   created() {
-        window.addEventListener('beforeunload', (event) => {
-        // Cancel the event as stated by the standard.
-        event.preventDefault();
-        // Chrome requires returnValue to be set.
-        event.returnValue = 'TEST';
+    window.addEventListener('beforeunload', (event) => {
+      // Cancel the event as stated by the standard.
+      event.preventDefault()
+      // Chrome requires returnValue to be set.
+      event.returnValue = 'TEST'
 
-        console.log("TRY TO CLOSE")
+      console.log('TRY TO CLOSE')
 
-        //Hier gespeicherte Sachen versenden!
-      });
-  }
-  
-};
+      //Hier gespeicherte Sachen versenden!
+    })
+  },
+}
 </script>
 
 <style>

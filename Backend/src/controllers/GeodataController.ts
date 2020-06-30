@@ -5,19 +5,91 @@ import { GeoData } from '../entity/GeoData'
 import GeoDataAPI from '../map-data-manager/data-requests/geo-data-request'
 import douglasPeucker from '../map-data-manager/utilities/douglas-peuker'
 import WebMercator from '../map-data-manager/utilities/web-mecrator'
+import axios from 'axios'
+import { GeoTest } from '../entity/GeoTest'
+import reducePointsT from '../map-data-manager/utilities/reduce-points'
+import { FeatureCollection } from 'geojson'
 
 class GeoDataController {
   static async geoData(req: Request, res: Response) {
-    let geoData
+    let geoData: GeoTest[]
     try {
       geoData = await getConnection()
-        .getRepository(GeoData)
-        .find({ where: { res: req.query.res } })
-      res.send(await GeoDataController.mapPoints(geoData))
+        .getRepository(GeoTest)
+        .find({ where: { id: 2 } })
+
+      reducePointsT(geoData[0].geojson)
+      res.send(geoData[0].geojson)
+      // res.send(await GeoDataController.mapPoints(geoData))
+      // let data: any = await GeoDataController.write()
+      // res.send(data)
     } catch (error) {
       console.log(error)
       res.status(401).send('ERROR while fetching Data from Database!')
     }
+  }
+
+  static async write(resolution: string) {
+    let data: any = await GeoDataController.getGeoJSON()
+    console.log('WRITE DATA')
+    // const res = mapResolutionToInt(resolution)
+    // data = rp(data, mapResolutionToEpsilon(resolution))
+    getConnection()
+      .createQueryBuilder()
+      .insert()
+      .into(GeoTest)
+      .values({
+        geojson: data,
+      })
+      .execute()
+    return data
+    // data.forEach((bl: { counties: any[]; BL_ID: any }) => {
+    //   bl.counties.forEach((lk) => {
+    //     lk_id += 1
+    //     lk.geometry.rings.forEach(async (ring: any[]) => {
+    //       ring_id += 1
+    //       ring.forEach((point: { x: number; y: number }) => {
+    //         x.push(point.x)
+    //         y.push(point.y)
+    //       })
+    //       getConnection()
+    //         .createQueryBuilder()
+    //         .insert()
+    //         .into(GeoData)
+    //         .values({
+    //           blId: bl.BL_ID,
+    //           lkId: lk_id,
+    //           ringId: ring_id,
+    //           res: res,
+    //           x: x,
+    //           y: y,
+    //         })
+    //         .execute()
+    //       x = []
+    //       y = []
+    //     })
+    //     ring_id = 0
+    //   })
+    //   lk_id = 0
+    // })
+  }
+
+  static async getGeoJSON() {
+    const request: any = {
+      method: 'get',
+      url:
+        'https://services7.arcgis.com/mOBPykOjAyBO2ZKk/arcgis/rest/services/RKI_Landkreisdaten/FeatureServer/0/query?where=1%3D1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=true&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pgeojson&token=',
+    }
+    return new Promise((resolve, reject) => {
+      axios
+        .request(request)
+        .then((response) => {
+          resolve(response.data)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
   }
 
   static async mapPoints(geoData: any) {
