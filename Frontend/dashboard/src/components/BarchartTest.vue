@@ -1,5 +1,6 @@
 <script>
 import {HorizontalBar} from 'vue-chartjs'
+import {calcFillcolor} from '../functions/calcFillcolor'
 
 export default {
   extends: HorizontalBar,
@@ -20,6 +21,7 @@ export default {
     caseOptions: {
       type: Array
     },
+    baseColor: Number,
   },
 
 /* render(){
@@ -37,7 +39,12 @@ export default {
   },
   data: () => ({
       arrID: [],
-      selectedData: []
+      selectedData: [],
+      maxCases: {
+        maxCasesLk: -1,
+        maxCasesPer100kLk: -1,
+        max7CasesPer100kLk: -1
+      } 
     }),
   watch: { 
     BLID: function() {
@@ -48,6 +55,7 @@ export default {
       drawChart(this)
     },
     infectionData: function(){
+      evaluateMaxData(this)
       drawChart(this)
     },
     selectedCaseOption: function(){
@@ -73,7 +81,7 @@ function drawChart(parent){
         onClick:parent.handle
       }
 
-// TODO: Erstzen mit request
+    // TODO: Erstzen mit request
     const data = parent.infectionData
     let arrCounties = []
     let arrCases = []
@@ -83,9 +91,19 @@ function drawChart(parent){
     const hundred = 100
     //console.log(data.states)
     parent.arrID = []
-    
-    //let states1 = 1
 
+    // assign max value
+    let maxInfectionval
+    switch(parent.selectedCaseOption){
+      case 'cases':
+        maxInfectionval = parent.maxCases.maxCasesLk
+        break;
+      case 'cases7_per_100k':
+        maxInfectionval = parent.maxCases.max7CasesPer100kLk
+        break;
+      default:
+        maxInfectionval = parent.maxCases.maxCasesPer100kLk
+    }
 
     //arrTopCounty = selectTopCounty(this.topXCountys, this.states, this.infectionData)
     arrTopCounty = selectTopCounty(parent.graphsShown, parent.BLID, data, parent.selectedCaseOption)
@@ -93,16 +111,20 @@ function drawChart(parent){
     arrTopCounty.forEach (county => {
       arrCounties.push(county.LK)
       parent.arrID.push(county.LK_ID)
+      let infectionVal = -1
       switch(parent.selectedCaseOption){
         case 'cases':
-          arrCases.push(county.cases_LK)
+          infectionVal = county.cases_LK
           break;
-      case 'cases7_per_100k':
-          arrCases.push(Math.round(county.cases7_per_100k_LK * hundred) / hundred)
+        case 'cases7_per_100k':
+          infectionVal = Math.round(county.cases7_per_100k_LK * hundred) / hundred
           break;
         default:
-          arrCases.push(Math.round(county.cases_per_100k_LK * hundred) / hundred)
+          infectionVal = Math.round(county.cases_per_100k_LK * hundred) / hundred
       }
+      arrCases.push(infectionVal)
+      const fillCol = calcFillcolor({ baseColor: parent.baseColor, value: infectionVal, maxValue: maxInfectionval })
+      backgroundColor.push(fillCol)
       //console.log(arrCounties)
       //console.log(arrCases)
     })
@@ -113,8 +135,6 @@ function drawChart(parent){
       }
     })
 
-    backgroundColor = getColor();
-
     parent.renderChart ({
       labels: arrCounties,
       datasets: [{
@@ -123,12 +143,6 @@ function drawChart(parent){
         data: arrCases
       }]
     },chartOptions)
-}
-
-//return the colours for the Barchart
-// TODO IMPLEMENTIEREN
-function getColor(){
-  return (['#11EE11', '#33CC33', '#55AA55', '#778877', '#996699', '#BB44BB', '#DD22DD']);
 }
 
  function selectTopCounty (topXCountys, states, infectionData, caseOption) {
@@ -189,5 +203,15 @@ function getColor(){
       
     }
     return sortedSelectetCounty.reverse()
+  }
+
+  function evaluateMaxData(parent){
+    parent.infectionData.states.forEach(state => {
+      state.counties.forEach(county => {
+        parent.maxCases.maxCasesLk = county.cases_LK > parent.maxCases.maxCasesLk ? county.cases_LK : parent.maxCases.maxCasesLk
+        parent.maxCases.maxCasesPer100kLk = county.cases_per_100k_LK > parent.maxCases.maxCasesPer100kLk ? county.cases_per_100k_LK : parent.maxCases.maxCasesPer100kLk
+        parent.maxCases.max7CasesPer100kLk = county.cases7_per_100k_LK > parent.maxCases.max7CasesPer100kLk ? county.cases7_per_100k_LK : parent.maxCases.max7CasesPer100kLk
+      })
+    })
   }
 </script>

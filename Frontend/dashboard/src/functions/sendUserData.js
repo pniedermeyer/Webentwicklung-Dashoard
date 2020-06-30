@@ -32,5 +32,4 @@ export default function sendUserData (
     selectedTab +
     viewDetails)
   console.log(arguments)
-
 }

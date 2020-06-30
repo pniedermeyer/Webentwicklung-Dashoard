@@ -24,6 +24,7 @@
 
 <script>
 import axios from 'axios'
+import { calcFillcolor } from '../functions/calcFillcolor'
 
 export default {
   name: 'MapSVG',
@@ -43,6 +44,7 @@ export default {
   props: {
     LK_ID: Number,
     BL_ID: Number,
+    baseColor: Number
   },
   created() {
     this.fetchGeoData()
@@ -115,6 +117,7 @@ export default {
             var path = this.createSVGElement("path", {
               d: pathString,
               class: 'svg_element_primary_color_scheme svg_map_element svg_map_ring',
+              fill: calcFillcolor({ baseColor: this.baseColor, value: 100, maxValue: 100 })
             });
             mapSvg.appendChild(path);
           });

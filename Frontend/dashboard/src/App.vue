@@ -13,11 +13,15 @@
             v-on:updateSelectedLK="updateSelectedLK"
             v-bind:caseOptions='caseOptions'
             v-bind:selectedCaseOption="selectedCaseOptions"
+            v-bind:baseColor="baseColor"
           ></bar-chart>
         </b-col>
         <b-col>
           2 of 3
-          <MapSVG v-bind:BLID="selectedBL_ID" v-bind:LKID="selectedLK_ID"></MapSVG>
+          <MapSVG 
+            v-bind:BLID="selectedBL_ID" 
+            v-bind:LKID="selectedLK_ID" 
+            v-bind:baseColor="baseColor"></MapSVG>
         </b-col>
         <b-col>
           3 of 3
@@ -26,7 +30,7 @@
             v-bind:selectedBLID="selectedBL_ID"
             v-bind:selectedLKID="selectedLK_ID"
             v-bind:selectedCaseOption="selectedCaseOptions"
-            v-bind:caseOptions= "caseOptions"
+            v-bind:caseOptions="caseOptions"
             v-on:updateSelectedBL="updateSelectedBL"
             v-on:updateSelectedLK="updateSelectedLK"
             v-on:updateCaseOptions="updateCaseOptions">
@@ -57,6 +61,8 @@ const caseOptions =  [
         { label: "Fälle / 100k letzte 7 Tage", code: "cases7_per_100k"},
       ]
 
+const baseColor = 120
+
 export default {
   name: "App",
   components: {
@@ -73,13 +79,15 @@ export default {
       selectedLK_ID: 0,
       graphsShown: 5,
       selectedCaseOptions: "cases7_per_100k",
-      caseOptions: caseOptions
+      caseOptions: caseOptions,
+      baseColor: baseColor
     };
   },
   methods: {
     updateSelectedBL(event) {
       this.selectedBL_ID = event;
       this.selectedLK_ID = 0;
+      console.log(this.baseColor)
     },
     updateSelectedLK(event) {
       this.selectedLK_ID = event
@@ -138,7 +146,6 @@ export default {
 }
 
 .svg_element_primary_color_scheme {
-  fill: teal;
   stroke: black;
   stroke-width: 0.05pt;
 }
