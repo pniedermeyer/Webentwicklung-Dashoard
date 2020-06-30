@@ -59,6 +59,15 @@ import GlobalOptions from "./components/GlobalOptions.vue"
 import axios from "axios"
 import sendUserData from "./functions/sendUserData.js"
 
+/*
+window.addEventListener('popstate', function(event) {
+  var url = event.currentTarget.location.hash.substring(1);
+  url = decodeURIComponent(url)
+  var settings = JSON.parse(url);
+  this.urlToSettingsChange(settings)
+});
+*/
+
 //So gelöst, falls mal die Sprache gewechselt werden muss
 const caseOptions =  [
         { label: "Alle Fälle", code: "cases"},
@@ -149,6 +158,18 @@ export default {
       }
 
       window.history.pushState(userData, "_THIS:IS_NOT_USED_CRRENTLY_", "#"+JSON.stringify(userData))
+    },
+    /**
+     * Updates the URL in the browser, so that it contains the current configuration of the webapp
+     */
+    urlToSettingsChange(settings) {
+      console.log(settings)
+      this.selectedBL_ID = settings.selectedBL_ID
+      this.selectedLK_ID = settings.selectedLK_ID
+      this.selectedCaseOptions = settings.selectedCaseOptions
+      this.map_resolution = settings.map_resolution
+      this.map_zoom = settings.map_zoom
+      this.graphsShown = settings.graphsShown
     }
   },
   mounted () {
@@ -158,7 +179,9 @@ export default {
       .then(response => (self.infectionData = response.data))
   },
   created() {
-        window.addEventListener('beforeunload', (event) => {
+        let that = this
+
+      window.addEventListener('beforeunload', (event) => {
         // Cancel the event as stated by the standard.
         event.preventDefault();
         // Chrome requires returnValue to be set.
@@ -167,6 +190,13 @@ export default {
         console.log("TRY TO CLOSE")
 
         //Hier gespeicherte Sachen versenden!
+      });
+
+      window.addEventListener('popstate', function(event) {
+        var url = event.currentTarget.location.hash.substring(1);
+        url = decodeURIComponent(url)
+        var settings = JSON.parse(url);
+        that.urlToSettingsChange(settings)
       });
   }
   
