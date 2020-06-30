@@ -115,3 +115,55 @@ v-select {
   cursor: pointer;
 }
 </style>
+
+
+<!-- 
+GET /settings
+Mit GET /settings kann man auf gespeicherte settings zugreifen. Im Request Body werden die
+Settings, die benötigt werden übergeben. In der Response, werden dann nur die Settings, deren
+Wert in der Request true war zurückgegeben.
+
+Header:
+x-guid: string (user ID, das könnte man auch in die URL packen, Ich weiß nicht wie es die andren 
+Endpunkte machen)
+
+Request-Body:
+{
+    zoom: boolean,
+    graphs: boolean,
+    selected_county: boolean,
+    selected_district: boolean,
+    selected_metric: boolean,
+    selected_table: boolean
+}
+
+Response-Body:
+{
+    zoom?: number,
+    graphs?: number,
+    selectedCounty?: number,
+    selectedDistrict?: number,
+    selectedMetric?: 'cases_per_100k' | 'cases7_per_100k',
+    selectedTable?: number[][]
+}
+
+
+
+PUT /settings
+Mit PUT /settings kann man settings speichern. Es müssen nicht alle setting werde übergeben werden,
+das Backend wird nur die speichern, die tatsächlich teil des Requests war. Die anderen settings
+bleiben unverändert.
+
+Header:
+x-guid: string (user ID, das könnte man auch in die URL packen, Ich weiß nicht wie es die andren Endpunkte machen)
+
+Response-Body:
+{
+    zoom?: number,
+    graphs?: number,
+    selectedCounty?: number,
+    selectedDistrict?: number,
+    selectedMetric?: 'cases' | 'cases_per_100k' | 'cases7_per_100k',
+    selectedTable?: number[][]
+}
+-->
