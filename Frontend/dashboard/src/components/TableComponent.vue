@@ -66,7 +66,7 @@
 
         fillItems(this)
 
-        this.$emit("addOption", this.selectedItems)
+        this.$emit("addOption", this.selectedItemsID)
       },
       removeOption(element){
         this.selectedItems[this.tab].splice(this.selectedItems[this.tab].findIndex(o => o === element),1)
@@ -74,7 +74,7 @@
         this.selectedItemsID[this.tab].splice(this.selectedItems[this.tab].findIndex(o => o === element.id),1)
 
         fillItems(this)
-        this.$emit("removeOption", this.selectedItems)
+        this.$emit("removeOption", this.selectedItemsID)
       },
       changeTab(tab){
         this.tab = tab

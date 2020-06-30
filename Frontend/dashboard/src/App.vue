@@ -124,14 +124,6 @@ export default {
       this.map_quality = event;
       this.updateUserUrl()
     },
-    labelSelectOptionModify(event) {
-      this.label_select_options = event
-      this.updateUserUrl()
-    },
-    labelSelectChangeTab(event) {
-      this.label_select_tab = event
-      this.updateUserUrl()
-    },
     sendUserData(){
       sendUserData(
         "sdoifn",
@@ -162,7 +154,7 @@ export default {
         viewDetails: this.label_select_options
       }
 
-      window.history.pushState(userData, "_THIS:IS_NOT_USED_CURRENTLY_", "#"+JSON.stringify(userData))
+      window.history.pushState(userData, "_THIS_IS_NOT_USED_CURRENTLY_", "#"+JSON.stringify(userData))
     },
     /**
      * Updates the URL in the browser, so that it contains the current configuration of the webapp
