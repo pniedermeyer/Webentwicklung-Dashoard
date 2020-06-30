@@ -1,6 +1,6 @@
 <template>
 <div>
- <p>Wie viele Graphen? {{value}}</p>
+ <p>📊Wie viele Graphen? {{value}}</p>
   <v-number-input v-model="value" :min="1" :max="10" inline controls @change="change"></v-number-input>  
 </div>
 </template>
@@ -9,7 +9,7 @@
 export default {
     data() {
       return {
-        value: 1,
+        value: 3,
       }
     },
     methods: {

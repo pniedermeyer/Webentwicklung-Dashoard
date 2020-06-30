@@ -1,6 +1,6 @@
 import GeoDataController from '../controllers/GeodataController'
 
-function writeGeoDataInResolutions() {
+function writeGeoDataInResolutions () {
   GeoDataController.writeGeoDataInResolution('low')
   GeoDataController.writeGeoDataInResolution('medium')
   GeoDataController.writeGeoDataInResolution('high')
