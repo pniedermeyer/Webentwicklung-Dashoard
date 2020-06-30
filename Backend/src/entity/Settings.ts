@@ -1,20 +1,33 @@
-import { Column, Entity, Index } from 'typeorm'
+import { Column, Entity } from "typeorm";
 
-@Index('settings_pkey', ['guid', 'hash'], { unique: true })
-@Entity('settings', { schema: 'public' })
+enum Metric {
+    CASES = 'cases',
+    CASES_PER_100K = 'cases_per_100_k',
+    CASES7_PER_100K = 'cases7_per_100_K'
+}
+
+@Entity("settings", { schema: "public" })
 export class Settings {
-  @Column('integer', { name: 'lk_id' })
-  lkId!: number
+  public static readonly Metric = Metric;
 
-  @Column('integer', { name: 'bl_id' })
-  blId!: number
+  @Column("integer", { primary: true, name: "guid" })
+  guid!: number;
 
-  @Column('integer', { name: 'res' })
-  res!: number
+  @Column("integer", { name: "zoom" })
+  zoom!: number;
 
-  @Column('integer', { primary: true, name: 'guid' })
-  guid!: number
+  @Column("integer", { name: "graphs_shown" })
+  graphsShown!: number;
 
-  @Column('character varying', { primary: true, name: 'hash', length: 255 })
-  hash!: string
+  @Column("integer", { name: "lk_id" })
+  lkId!: number;
+
+  @Column("integer", { name: "bl_id" })
+  blId!: number;
+
+  @Column("text", { name: "metric" })
+  metric!: Metric;
+
+  @Column("text", { name: "table", transformer: {from: value => JSON.stringify(value), to: value => JSON.parse(value)} })
+  table!: number[][];
 }
