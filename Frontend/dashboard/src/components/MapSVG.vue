@@ -30,8 +30,6 @@ export default {
   name: 'MapSVG',
   data() {
     return {
-      zoom: 100,
-      resolution: 0,
       resolutions: [
         { text: 'Niedrig', value: 0 },
         { text: 'Mittel', value: 1 },
@@ -44,7 +42,9 @@ export default {
   props: {
     LK_ID: Number,
     BL_ID: Number,
-    baseColor: Number
+    baseColor: Number,
+    zoom: String,
+    resolution: String,
   },
   created() {
     this.fetchGeoData()
@@ -84,9 +84,11 @@ export default {
     zoomLevelChanged() {
       const mapSvg = document.getElementById('map_area')
       mapSvg.setAttribute('width', this.zoom)
+      this.$emit('zoomLevelChanged', this.zoom)
     },
     resolutionChanged() {
       this.fetchGeoData(this.resolution)
+      this.$emit('qualityLevelChanged', this.resolution)
     },
     processMapData(mapData) {
       const svg = document.getElementById('map_area')

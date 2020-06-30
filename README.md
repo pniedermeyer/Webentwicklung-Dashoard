@@ -25,6 +25,8 @@ Falls es doch einmal nicht funktionieren soll, können folgende befehle zum neus
 Alternativ können auch alle Komponenten mit folgendem Befehl neu erstellt werden:
 ``docker-compose down && docker-compose up --build``
 
+*Hinweis:* Die Ordner bzw. Laufwerke in welchen sich das projekt befindet muss unter Windows noch mittels des Docker Dashbaords freigegeben werden! (Einstellungen -> Resources -> Filesharing)
+
 ### "Ohne" docker (Alter weg)
 - Mittels folgenden Befehl eine Postgres-DB starten: ``docker run -it --rm --network bridge -d -e PGDATA=/postgres --name dashboard_db_postgres -p 5432:5432 -e POSTGRES_PASSWORD=admin docker.pkg.github.com/pniedermeyer/webentwicklung-dashoard/postgres_dashboard:1.3``
 - Die Services wie gewohnt starten (npm run / npm serve o.ä.)

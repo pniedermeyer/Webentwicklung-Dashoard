@@ -21,7 +21,12 @@
           <MapSVG 
             v-bind:BLID="selectedBL_ID" 
             v-bind:LKID="selectedLK_ID" 
-            v-bind:baseColor="baseColor"></MapSVG>
+            v-bind:baseColor="baseColor"
+            v-bind:resolution="map_resolution"
+            v-bind:zoom="map_zoom"
+            v-on:zoomLevelChanged="updateMapZoomLevel"
+            v-on:qualityLevelChanged="updateMapQualityLevel">
+          </MapSVG>
         </b-col>
         <b-col>
           3 of 3
@@ -80,7 +85,9 @@ export default {
       graphsShown: 5,
       selectedCaseOptions: "cases7_per_100k",
       caseOptions: caseOptions,
-      baseColor: baseColor
+      baseColor: baseColor,
+      map_resolution: "1",
+      map_zoom: "340"
     };
   },
   methods: {
@@ -88,16 +95,28 @@ export default {
       this.selectedBL_ID = event;
       this.selectedLK_ID = 0;
       console.log(this.baseColor)
+      this.updateUserUrl()
     },
     updateSelectedLK(event) {
       this.selectedLK_ID = event
+      this.updateUserUrl()
     },
     updateGraphsShown(event) {
-      this.graphsShown = event;
-      this.sendUserData();
+      this.graphsShown = event
+      this.sendUserData()
+      this.updateUserUrl()
     },
-    updateCaseOptions(event) {
-      this.selectedCaseOptions = event
+    updateCaseOptions() {
+      //this.selectedCaseOptions = event
+      this.updateUserUrl()
+    },
+    updateMapZoomLevel() {
+      //this.map_resolution = event;
+      this.updateUserUrl()
+    },
+    updateMapQualityLevel(event) {
+      this.map_quality = event;
+      this.updateUserUrl()
     },
     sendUserData(){
       sendUserData(
@@ -111,6 +130,25 @@ export default {
         "selectedTab",
         "viewDetails"
       )
+    },
+    /**
+     * Updates the URL in the browser, so that it contains the current configuration of the webapp
+     * This will also update the history-object, so that the user can undo a change by clicking on the back button
+     * The configuration will be stored in the "hash" part of the URL, so that it is shareable
+     */
+    updateUserUrl() {
+      let userData = {
+        selectedBL_ID: this.selectedBL_ID,
+        selectedLK_ID: this.selectedLK_ID,
+        selectedCaseOptions: this.selectedCaseOptions,
+        mapresolution: this.map_resolution,
+        mapzoom: this.map_zoom,
+        graphsShown: this.graphsShown,
+        selectedTab: "selectedTab",
+        viewDetails: "viewDetails"
+      }
+
+      window.history.pushState(userData, "_THIS:IS_NOT_USED_CRRENTLY_", "#"+JSON.stringify(userData))
     }
   },
   mounted () {
