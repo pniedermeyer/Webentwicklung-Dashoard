@@ -10,13 +10,7 @@
         </b-col>
         <b-col>
           2 of 3
-          <MapSVG
-            v-bind:selectedBL_ID="selectedBL_ID"
-            v-bind:selectedLK_ID="selectedLK_ID"
-            v-bind:infectionData="infectionData"
-            v-bind:selectedCaseOption="selectedCaseOption"
-            v-bind:baseColor="baseColor"
-          ></MapSVG>
+          <MapSVG v-bind:infectionData="infectionData" v-bind:baseColor="baseColor"></MapSVG>
         </b-col>
         <b-col>
           3 of 3
@@ -58,30 +52,12 @@ export default {
   data() {
     return {
       infectionData: require('../../../Backend/example_response.json'),
-      selectedBL_ID: 0,
-      selectedLK_ID: 0,
-      // graphsShown: 5,
       selectedCaseOption: 'cases7_per_100k',
       caseOptions: caseOptions,
       baseColor: baseColor,
     }
   },
   methods: {
-    /*     updateSelectedBL(event) {
-      this.selectedBL_ID = event;
-      this.selectedLK_ID = 0;
-      console.log(this.baseColor)
-    }, */
-    /*     updateSelectedLK(event) {
-      this.selectedLK_ID = event
-    }, */
-    /*     updateGraphsShown(event) {
-      this.graphsShown = event;
-      // this.sendUserData();
-    }, */
-    /*     updateCaseOptions(event) {
-      this.selectedCaseOptions = event
-    }, */
     sendUserData() {
       sendUserData(
         'sdoifn',
@@ -100,18 +76,6 @@ export default {
     let self = this
     axios.get('http://localhost:3001/data/').then((response) => (self.infectionData = response.data))
   },
-  created() {
-    /**  window.addEventListener('beforeunload', (event) => {
-        // Cancel the event as stated by the standard.
-        event.preventDefault();
-        // Chrome requires returnValue to be set.
-        event.returnValue = 'TEST';
-
-      console.log("TRY TO CLOSE");
-
-        //Hier gespeicherte Sachen versenden!
-      });*/
-  },
 }
 </script>
 
@@ -123,10 +87,5 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
-}
-
-.svg_element_primary_color_scheme {
-  stroke: black;
-  stroke-width: 0.05pt;
 }
 </style>
