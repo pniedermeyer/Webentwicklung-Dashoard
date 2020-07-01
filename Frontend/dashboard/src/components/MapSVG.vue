@@ -145,7 +145,7 @@ export default {
         weight: 1,
         opacity: 1,
         color: 'gray',
-        dashArray: '3',
+        dashArray: '0',
         fillOpacity: this.getOpacity(feature.properties.county, feature.properties.BL),
       }
     },

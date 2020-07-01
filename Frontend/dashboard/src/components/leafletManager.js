@@ -9,18 +9,24 @@ export default class leafletManager {
   #maxCases = 0
 
   constructor(mapId) {
-    //console.log('leafletManager constructor. Passed Map-ID: ', mapId)
     this.#mapId = mapId
   }
 
   initializeMap() {
-    //console.log('leafletManager Map init. Map-ID: ', this.#mapId)
     this.#map = leaflet.map(this.#mapId).setView([51.5, 10.8], 5)
   }
 
   addMapLayer() {
-    //console.log('leafletManager add Map layer')
-    this.#geoJsonLayer = leaflet.geoJSON(this.#geoData).addTo(this.#map)
+    if (this.#geoJsonLayer) {
+      this.#map.removeLayer(this.#geoJsonLayer)
+    }
+    this.#geoJsonLayer = leaflet
+      .geoJSON(this.#geoData, {
+        onEachFeature: function(f, l) {
+          l.bindPopup('<pre>' + f.properties.county + '</pre>')
+        },
+      })
+      .addTo(this.#map)
   }
 
   setGeoData(geoData) {
@@ -32,7 +38,6 @@ export default class leafletManager {
   }
 
   setMapStyle(selectedCase) {
-    console.log(selectedCase)
     let that = this
     this.setMinMax(this.#infectionData, selectedCase + '_LK')
     this.#geoJsonLayer.eachLayer(function(layer) {
@@ -59,7 +64,7 @@ export default class leafletManager {
       weight: 1,
       opacity: 1,
       color: 'gray',
-      dashArray: '3',
+      dashArray: '0',
       fillOpacity: this.getOpacity(feature.properties.county, feature.properties.BL, caseName),
     }
   }

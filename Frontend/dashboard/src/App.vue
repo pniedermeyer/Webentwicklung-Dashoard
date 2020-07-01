@@ -38,7 +38,7 @@ const caseOptions = [
   { label: 'Fälle / 100k letzte 7 Tage', code: 'cases7_per_100k' },
 ]
 
-const baseColor = 120
+const baseColor = 0
 
 export default {
   name: 'App',
