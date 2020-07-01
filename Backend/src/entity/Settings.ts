@@ -28,6 +28,6 @@ export class Settings {
   @Column("text", { name: "metric" })
   metric!: Metric;
 
-  @Column("text", { name: "table", transformer: {from: value => JSON.stringify(value), to: value => JSON.parse(value)} })
+  @Column("text", { name: "table" })
   table!: number[][];
 }

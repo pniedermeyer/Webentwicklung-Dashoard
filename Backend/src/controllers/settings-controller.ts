@@ -8,19 +8,24 @@ async function getHandler(req: express.Request, res: express.Response) {
   try {
     const result = await getConnection().query(
       `SELECT 
-            'zoom',
-            'graphs_shown' AS 'graphsShown',
-            'lkId' AS 'lk_ld',
-            'blId' AS 'bl_id',
-            'metric',
-            'table'
-       FROM 'settings' 
-       WHERE 'guid' = ?;`,
+            "zoom",
+            "graphs_shown" AS graphsShown,
+            "lk_id" AS lkId,
+            "bl_id" AS blId,
+            "metric",
+            "table"
+       FROM "settings" 
+       WHERE "guid" = $1;`,
       [req.header(GUID_HEADER)]
     );
 
     if (result.length > 0) {
-      res.send(_.pickBy(result[0], (value, key) => req.body[key]));
+        const response = _.pickBy(result[0], (value, key) => !!req.body[key.toLowerCase()]);
+        if (response.table) {
+            response.table = JSON.parse(response.table)
+        }
+
+      res.send(response);
     } else {
       res
         .status(404)
@@ -48,27 +53,27 @@ async function putHandler(
   res: express.Response
 ): Promise<void> {
   try {
-    const result = await getConnection().query(
+    await getConnection().query(
       `
-            INSERT INTO 'settings'
-            SET
-                'zoom' = COALESCE($2, DEFAULT),
-                'graphs_shown' = COALESCE($3, DEFAULT),
-                'lk_ld' = COALESCE($4, DEFAULT),
-                'bl_id' = COALESCE($5, DEFAULT),
-                'metric' = COALESCE($6, DEFAULT),
-                'table' = COALESCE($7, DEFAULT)
-            WHERE 'guid' = $1
-            ON CONFLICT('guid')
+            INSERT INTO "settings" ("guid", "zoom", "graphs_shown", "lk_id", "bl_id", "metric", "table") 
+            VALUES (
+                $1,
+                COALESCE($2, 1),
+                COALESCE($3, 1),
+                COALESCE($4, 0),
+                COALESCE($5, 0),
+                COALESCE($6, 'cases_per_100_k'),
+                COALESCE($7, '[]')
+            )
+            ON CONFLICT("guid")
             DO
                 UPDATE SET
-                    'zoom' = COALESCE($2, 'zoom'),
-                    'graphs_shown' = COALESCE($3, 'graphs_shown'),
-                    'lk_ld' = COALESCE($4, 'lk_ld'),
-                    'bl_id' = COALESCE($5, 'bl_id'),
-                    'metric' = COALESCE($6, 'metric'),
-                    'table' = COALESCE($7, 'table')
-                WHERE 'guid' = $1;
+                    "zoom" = COALESCE($2, settings.zoom),
+                    "graphs_shown" = COALESCE($3, settings.graphs_shown),
+                    "lk_id" = COALESCE($4, settings.lk_id),
+                    "bl_id" = COALESCE($5, settings.bl_id),
+                    "metric" = COALESCE($6, settings.metric),
+                    "table" = COALESCE($7, settings.table);
         `,
       [
         req.header(GUID_HEADER),
@@ -77,15 +82,11 @@ async function putHandler(
         req.body.lkId ?? null,
         req.body.blId ?? null,
         req.body.metric ?? null,
-        req.body.table ?? null,
+        req.body.table ? JSON.stringify(req.body.table) : null,
       ]
     );
 
-    if (result.affectedRows > 0) {
       res.send();
-    } else {
-      res.status(500).send(makeError('could not update database'));
-    }
   } catch (error) {
     res.status(500).send(makeInternalError());
   }
