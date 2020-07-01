@@ -20,9 +20,17 @@ import douglasPeucker from '../douglas-peuker'
  * ins Zwischenformat als Path Objekt abgelegt
  *
  * 2. Nachdem jeder Landkreis im Zwischenformat vorliegt wird jetzt ermittelt welche Landkreise eine gemeinsame Grenze
- * besitzen
+ * besitzen. Alle gemeinsamen Grenzen werden in einem seperaten Subpath gespeichert und die Paths verweisen nur auf diese.
+ * Dadurch können mehrere Paths auf den gleichen Subpath verweisen. Nun besteht ein Path aus einzelnen Punkten und verweisen auf
+ * Subpaths.
  *
- * 3.
+ * 3. Manche Stellen eines Landkreises besitzen keine Nachbar. Diese Punkte aus dem Path werden nun in eigene Subpaths umgewandelt
+ *
+ * 4. Nachdem jeder Path nur noch aus Subpaths besteht, werden alle Subpaths mittels dem douglas peucker geklättet.
+ *
+ * 5. Ersetzt die Verweise auf die Subpaths im Path mit den eigentlichen Punkten
+ *
+ * 6. Die Reduzierten Punkte werden nun im GeoJSON abgespeichert
  */
 
 class GeoJSONReduction {
@@ -33,22 +41,22 @@ class GeoJSONReduction {
     // 2. Schritt
     GeoJSONReduction.splitIntoCommonBorderLines(iss)
 
-    // x. Schritt
+    // 3. Schritt
     iss.forEach((is: intermediateStruct) => {
       GeoJSONReduction.reduceMainPathToSubpaths(is.mainPath)
     })
 
-    // y. Schritt
+    // 4. Schritt
     PathManager.getSubPaths().forEach((subPath: SubPath) => {
       subPath.points = douglasPeucker(subPath.points, epsilon)
     })
 
-    // z. Schritt
+    // 5. Schritt
     iss.forEach((is: intermediateStruct) => {
       PathManager.buildPath(is.mainPath)
     })
 
-    // Last Step
+    // 6. Schritt
     GeoJSONReduction.createNewGeoJSON(geoJSON, iss)
 
     // fs.writeFile('paths.json', JSON.stringify(PathManager.paths, null, 2), function (err) {
