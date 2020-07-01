@@ -3,6 +3,7 @@ export default class leafletManager {
   #mapId = null
   #map = null
   #geoJsonLayer = null
+  #geoData = null
 
   constructor(mapId) {
     //console.log('leafletManager constructor. Passed Map-ID: ', mapId)
@@ -14,12 +15,19 @@ export default class leafletManager {
     this.#map = leaflet.map(this.#mapId).setView([51.5, 10.8], 5)
   }
 
-  addMapLayer(geoData) {
+  addMapLayer() {
     //console.log('leafletManager add Map layer')
-    this.#geoJsonLayer = leaflet.geoJSON(geoData).addTo(this.#map)
+    this.#geoJsonLayer = leaflet.geoJSON(this.#geoData).addTo(this.#map)
   }
 
-  setMapStyle() {}
+  setGeoData(geoData){
+    this.#geoData = geoData
+  }
+
+  setMapStyle() {
+    this.#map.removeLayer(this.#geoJsonLayer);
+    this.#geoJsonLayer = leaflet.geoJSON(this.#geoData).addTo(this.#map);
+  }
 
   get zoom() {
     return ''

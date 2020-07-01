@@ -13,11 +13,6 @@
           >{{ res.text }}</option>
         </select>
       </div>
-      <div>
-        <!-- zoomlevel -->
-        <label for="zoom">🔎Zoomlevel:</label>
-        <input type="number" v-model="zoom" step="20" min="0" v-on:change="zoomLevelChanged()" />
-      </div>
     </div>
     <div id="map"></div>
   </div>
@@ -68,7 +63,8 @@ export default {
     geoData: function() {
       this.geoJsonLayer = new leafletManager("map");
       this.geoJsonLayer.initializeMap();
-      this.geoJsonLayer.addMapLayer(this.geoData);
+      this.geoJsonLayer.setGeoData(this.geoData)
+      this.geoJsonLayer.addMapLayer();
     }
   },
   methods: {
