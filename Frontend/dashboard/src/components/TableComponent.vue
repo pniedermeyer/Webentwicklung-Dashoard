@@ -58,6 +58,8 @@ import { mapFields } from 'vuex-map-fields';
         this.selectedItemsID[this.tab].sort((a,b) => a < b?-1:0)
 
         fillItems(this)
+
+        this.$emit("addOption", this.selectedItemsID)
       },
       removeOption(element){
         this.selectedItems[this.tab].splice(this.selectedItems[this.tab].findIndex(o => o === element),1)
@@ -65,10 +67,12 @@ import { mapFields } from 'vuex-map-fields';
         this.selectedItemsID[this.tab].splice(this.selectedItems[this.tab].findIndex(o => o === element.id),1)
 
         fillItems(this)
+        this.$emit("removeOption", this.selectedItemsID)
       },
       changeTab(tab){
         this.tab = tab
         fillItems(this)
+        this.$emit("changeTab", this.tab)
       },
       test(e){
         console.log(e)
