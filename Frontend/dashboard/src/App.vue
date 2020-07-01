@@ -5,33 +5,27 @@
       <b-row>
         <b-col>
           1 of 3:
-          <NumberInput v-bind:graphsShown="graphsShown" v-on:updateGraphsShown="updateGraphsShown"></NumberInput>
-          <bar-chart
-            :infectionData="infectionData"
-            v-bind:BLID="selectedBL_ID"
-            v-bind:graphsShown="graphsShown"
-            v-on:updateSelectedLK="updateSelectedLK"
-            v-bind:caseOptions='caseOptions'
-            v-bind:selectedCaseOption="selectedCaseOptions"
-            v-bind:baseColor="baseColor"
-          ></bar-chart>
+          <NumberInput></NumberInput>
+          <bar-chart :infectionData="infectionData" v-bind:baseColor="baseColor" :caseOptions="caseOptions"></bar-chart>
         </b-col>
         <b-col>
           2 of 3
-          <MapSVG 
-            v-bind:BLID="selectedBL_ID" 
-            v-bind:LKID="selectedLK_ID" 
+          <MapSVG
+            v-bind:selectedBL_ID="selectedBL_ID"
+            v-bind:selectedLK_ID="selectedLK_ID"
             v-bind:baseColor="baseColor"
             v-bind:resolution="map_resolution"
             v-bind:zoom="map_zoom"
             v-on:zoomLevelChanged="updateMapZoomLevel"
-            v-on:qualityLevelChanged="updateMapQualityLevel">
-          </MapSVG>
+            v-on:qualityLevelChanged="updateMapQualityLevel"
+            v-bind:infectionData="infectionData"
+            v-bind:selectedCaseOption="selectedCaseOption"
+            v-bind:baseColor="baseColor"></MapSVG>
         </b-col>
         <b-col>
           3 of 3
           <GlobalOptions
-            :infectionData="infectionData"
+            v-bind:infectionData="infectionData"
             v-bind:selectedBLID="selectedBL_ID"
             v-bind:selectedLKID="selectedLK_ID"
             v-bind:selectedCaseOption="selectedCaseOptions"
@@ -40,13 +34,13 @@
             v-on:updateSelectedLK="updateSelectedLK"
             v-on:updateCaseOptions="updateCaseOptions">
           </GlobalOptions>
-          <TableComponent 
+          <TableComponent
             :infectionData="infectionData"
+            v-bind:selectedBLID="selectedBL_ID"
+            v-bind:selectedLKID="selectedLK_ID"
             v-on:addOption="labelSelectOptionModify"
             v-on:removeOption="labelSelectOptionModify"
-            v-on:changeTab="labelSelectChangeTab"
-            v-bind:selectedBLID="selectedBL_ID"
-            v-bind:selectedLKID="selectedLK_ID"/>
+            v-on:changeTab="labelSelectChangeTab"/>
         </b-col>
       </b-row>
     </b-container>
@@ -56,48 +50,43 @@
 <script>
 import NumberInput from './components/SelectBarsCount.vue'
 import TableComponent from './components/TableComponent.vue'
-import BarChart from "./components/BarchartTest.vue"
-import MapSVG from "./components/MapSVG.vue"
-import GlobalOptions from "./components/GlobalOptions.vue"
-import axios from "axios"
-import sendUserData from "./functions/sendUserData.js"
-
+import BarChart from './components/Barchart.vue'
+import MapSVG from './components/MapSVG.vue'
+import GlobalOptions from './components/GlobalOptions.vue'
+import axios from 'axios'
+import sendUserData from './functions/sendUserData.js'
 
 //So gelöst, falls mal die Sprache gewechselt werden muss
-const caseOptions =  [
-        { label: "Alle Fälle", code: "cases"},
-        { label: "Fälle / 100k", code: "cases_per_100k" },
-        { label: "Fälle / 100k letzte 7 Tage", code: "cases7_per_100k"},
-      ]
+const caseOptions = [
+  { label: 'Alle Fälle', code: 'cases' },
+  { label: 'Fälle / 100k', code: 'cases_per_100k' },
+  { label: 'Fälle / 100k letzte 7 Tage', code: 'cases7_per_100k' },
+]
 
 const baseColor = 120
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
     BarChart,
     MapSVG,
     NumberInput,
     TableComponent,
-    GlobalOptions
+    GlobalOptions,
   },
   data() {
     return {
-      infectionData: require("../../../Backend/example_response.json"),
+      infectionData: require('../../../Backend/example_response.json'),
       selectedBL_ID: 0,
       selectedLK_ID: 0,
-      graphsShown: 5,
-      selectedCaseOptions: "cases7_per_100k",
+      // graphsShown: 5,
+      selectedCaseOption: 'cases7_per_100k',
       caseOptions: caseOptions,
       baseColor: baseColor,
-      map_resolution: "1",
-      map_zoom: "340",
-      label_select_options: TableComponent.data().selectedItems,
-      label_select_tab: TableComponent.data().tab
-    };
+    }
   },
   methods: {
-    updateSelectedBL(event) {
+    /*     updateSelectedBL(event) {
       this.selectedBL_ID = event;
       this.selectedLK_ID = 0;
       console.log(this.baseColor)
@@ -112,7 +101,7 @@ export default {
       this.sendUserData()
       this.updateUserUrl()
     },
-    updateCaseOptions() {
+    updateCaseOptions(event) {
       //this.selectedCaseOptions = event
       this.updateUserUrl()
     },
@@ -123,18 +112,18 @@ export default {
     updateMapQualityLevel(event) {
       this.map_quality = event;
       this.updateUserUrl()
-    },
+    }, */
     sendUserData(){
       sendUserData(
-        "sdoifn",
-        this.selectedBL_ID,
+        'sdoifn',
+        /*         this.selectedBL_ID,
         this.selectedLK_ID,
-        this.selectedCaseOptions,
-        "Mapresolution",
-        "zoom",
-        this.graphsShown,
-        "selectedTab",
-        "viewDetails"
+        this.selectedCaseOptions, */
+        'Mapresolution',
+        'zoom',
+        // this.graphsShown,
+        'selectedTab',
+        'viewDetails'
       )
     },
     /**
@@ -169,14 +158,12 @@ export default {
       this.graphsShown = settings.graphsShown
     }
   },
-  mounted () {
+  mounted() {
     let self = this
-    axios
-      .get('http://localhost:3001/data/')
-      .then(response => (self.infectionData = response.data))
+    axios.get('http://localhost:3001/data/').then((response) => (self.infectionData = response.data))
   },
   created() {
-        let that = this
+    /** let that = this
 
       window.addEventListener('beforeunload', (event) => {
         // Cancel the event as stated by the standard.
@@ -187,14 +174,14 @@ export default {
         console.log("TRY TO CLOSE")
 
         //Hier gespeicherte Sachen versenden!
-      });
+      });*/
 
-      window.addEventListener('popstate', function(event) {
-        var url = event.currentTarget.location.hash.substring(1);
-        url = decodeURIComponent(url)
-        var settings = JSON.parse(url);
-        that.urlToSettingsChange(settings)
-      });
+    window.addEventListener('popstate', function(event) {
+      var url = event.currentTarget.location.hash.substring(1);
+      url = decodeURIComponent(url)
+      var settings = JSON.parse(url);
+      that.urlToSettingsChange(settings)
+    });
   }
   
 };

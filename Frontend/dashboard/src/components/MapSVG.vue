@@ -6,140 +6,223 @@
         <label for="resolution">🗺️Auflösung:</label>
         <select v-model="resolution" v-on:change="resolutionChanged()">
           <option disabled value>Bitte wählen Sie</option>
-          <option v-for="res in resolutions" v-bind:value="res.value" v-bind:key="res.value">{{ res.text }}</option>
+          <option
+            v-for="res in resolutions"
+            v-bind:value="res.value"
+            v-bind:key="res.value"
+          >{{ res.text }}</option>
         </select>
       </div>
-      <div>
-        <!-- zoomlevel -->
-        <label for="zoom">🔎Zoomlevel:</label>
-        <input type="number" v-model="zoom" step="20" min="0" v-on:change="zoomLevelChanged()" />
-      </div>
     </div>
-
-    <div id="mapContainer">
-      <svg version="1.1" id="map_area" />
-    </div>
+    <div id="map"></div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
-import { calcFillcolor } from '../functions/calcFillcolor'
+import axios from "axios";
+import leaflet from "leaflet";
+import leafletManager from "./leafletManager";
 
 export default {
-  name: 'MapSVG',
+  name: "MapSVG",
   data() {
     return {
+      geoData: null,
+      map: null,
+      geoJsonLayer: null,
+      zoom: 100,
+      resolution: 0,
       resolutions: [
-        { text: 'Niedrig', value: 0 },
-        { text: 'Mittel', value: 1 },
-        { text: 'Hoch', value: 2 },
+        { text: "Niedrig", value: 2 },
+        { text: "Mittel", value: 1 },
+        { text: "Hoch", value: 0 }
       ],
       selectedBL: null,
       selectedLK: null,
-    }
+      minCases: 0,
+      maxCases: 0
+    };
   },
   props: {
-    LK_ID: Number,
-    BL_ID: Number,
-    baseColor: Number,
-    zoom: String,
-    resolution: String,
+    selectedBL_ID: Number,
+    selectedLK_ID: Number,
+    infectionData: Object,
+    selectedCaseOption: String,
+    baseColor: Number
   },
-  created() {
-    this.fetchGeoData()
+  watch: {
+    selectedBL_ID: function() {},
+    selectedLK_ID: function() {},
+    infectionData: function() {
+      this.drawMapData();
+    },
+    selectedCaseOption: function() {
+      this.drawMapData();
+    },
+    baseColor: function() {},
+    geoData: function() {
+      this.geoJsonLayer = new leafletManager("map");
+      this.geoJsonLayer.initializeMap();
+      this.geoJsonLayer.setGeoData(this.geoData)
+      this.geoJsonLayer.addMapLayer();
+    }
   },
   methods: {
     fetchGeoData(res = 0) {
-      let that = this
-
-      // const request = {
-      //   url: `http://localhost:3001/geodata?` + 'res=' + res,
-      //   method: 'get',
-      //   headers: {
-      //     'Access-Control-Allow-Origin': 'http://localhost:3001',
-      //   },
-      // }
-      let url = `http://localhost:8888/geodata?` + 'res=' + res
-      console.log(url)
-      // axios
-      //   .request(request)
-      //   .then(function(response) {
-      //     console.log('fetch data success' + response)
-      //     that.processMapData(response.data)
-      //   })
-      //   .catch(function(error) {
-      //     console.log('fetch data error:' + error)
-      //   })
+      let that = this;
+      let url = `http://localhost:3001/geodata?` + "res=" + res;
       axios
         .get(url)
         .then(function(response) {
-          console.log('fetch data success' + response)
-          that.processMapData(response.data)
+          that.geoData = response.data;
+          //that.addMapLayer(response.data);
+          console.log("fetch data success", response);
+          //that.drawMapData() TODO reuse
         })
         .catch(function(error) {
-          console.log('fetch data error:' + error)
-        })
+          console.log("fetch data error:", error);
+        });
     },
-    zoomLevelChanged() {
-      const mapSvg = document.getElementById('map_area')
-      mapSvg.setAttribute('width', this.zoom)
-      this.$emit('zoomLevelChanged', this.zoom)
-    },
+    zoomLevelChanged() {},
     resolutionChanged() {
-      this.fetchGeoData(this.resolution)
-      this.$emit('qualityLevelChanged', this.resolution)
+      this.fetchGeoData(this.resolution);
     },
-    processMapData(mapData) {
-      const svg = document.getElementById('map_area')
-      svg.innerHTML = ''
-      this.drawMapData(mapData)
-
-      const svgBbox = svg.getBBox()
-      svg.setAttribute('viewBox', svgBbox.x + ' ' + svgBbox.y + ' ' + svgBbox.width + ' ' + svgBbox.height)
-      svg.setAttribute('width', this.zoom)
+    initializeMap() {
+      //this.map = leaflet.map("map").setView([51.5, 10.8], 5);
+      //console.log("Map initialized");
+      //if (this.geoData) {
+      //this.addMapLayer();
+      //}
     },
-    drawMapData(data) {
-      const mapSvg = document.getElementById('map_area')
-
-      if (!Array.isArray(data)) {
-        data = [data]
+    addMapLayer() {
+      //if (this.map) {
+      //var map = leaflet.map("map").setView([51.5, 10.8], 5);
+      //console.log("Try to add map layer");
+      //if (this.geoJsonLayer) {
+      //this.map.removeLayer(this.geoJsonLayer);
+      //}
+      // this.geoJsonLayer =
+      //var tempy = leaflet.geoJson(this.geoData).addTo(this.map);
+      //console.log("Map Layer added");
+      //console.log(tempy);
+      //}
+    },
+    setMapStyle() {
+      this.map.removeLayer(this.geoJsonLayer);
+      this.geoJsonLayer = leaflet.geoJSON(this.geoData).addTo(this.map);
+    },
+    drawMapData() {
+      //console.log("Draw Map Data triggered");
+      /*let container = leaflet.DomUtil.get("map");
+      if (container != null) {
+        container._leaflet_id = null;
       }
+      let map = leaflet.map("map").setView([51.5, 10.8], 5);*/
+      /* Some example Events 
+      map.on('zoomend', function() {
+        console.log('Map Zoom changed: ', map.getZoom())
+      })
+      map.on('moveend', function() {
+        console.log('Map moved: ', map.getCenter())
+      })
+      map.on('click', function(e) {
+        console.log('Map clicked: ', e)
+      }) */
+      // const accessToken = 'pk.eyJ1IjoicHJhd2xleSIsImEiOiJja2MwdW90bmcxNHNhMzBuNGo1ajhlaGxrIn0.NeGOU_d2zDQV2B1LrI_m3g'
+      // leaflet.tileLayer(
+      //   "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
+      //   {
+      //     attribution:
+      //       'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      //     maxZoom: 18,
+      //     id: "mapbox/streets-v11",
+      //     tileSize: 512,
+      //     zoomOffset: -1,
+      //     accessToken: accessToken
+      //   }
+      // ).addTo(map);
+      // console.log(data)
+      //his.setMinMax(this.infectionData);
+      //leaflet.geoJson(this.geoData, { style: this.style }).addTo(map);
+    },
+    setMinMax(data) {
+      this.minCases = data.states[0].counties[0][this.selectedCasesOption];
+      this.maxCases = this.minCases;
 
-      data.forEach((state) => {
-        state.counties.forEach((county) => {
-          county.geometry.rings.forEach((ring) => {
-            var pathString = ''
-            ring.forEach((coordinate) => {
-              pathString += 'L ' + coordinate.x + ',' + coordinate.y + ' '
-            })
-            pathString += 'Z'
-            pathString = 'M' + pathString.substring(1)
+      data.states.forEach(state => {
+        state.counties.forEach(county => {
+          const cases = county[this.selectedCasesOption];
+          if (this.minCases > cases) {
+            this.minCases = cases;
+          }
 
-            var path = this.createSVGElement("path", {
-              d: pathString,
-              class: 'svg_element_primary_color_scheme svg_map_element svg_map_ring',
-              fill: calcFillcolor({ baseColor: this.baseColor, value: 100, maxValue: 100 })
-            });
-            mapSvg.appendChild(path);
-          });
+          if (this.maxCases < cases) {
+            this.maxCases = cases;
+          }
         });
       });
+      // this.minCases = data.features[0].properties.cases_per_100k
+      // this.maxCases = this.minCases
+      // data.features.forEach((feature) => {
+      //   const cases_p_100k = feature.properties.cases_per_100k
+
+      //   if (this.minCases > cases_p_100k) {
+      //     this.minCases = cases_p_100k
+      //   }
+
+      //   if (this.maxCases < cases_p_100k) {
+      //     this.maxCases = cases_p_100k
+      //   }
+      // })
     },
-    createSVGElement(name, attributes) {
-      var element = document.createElementNS('http://www.w3.org/2000/svg', name)
-      for (const attName in attributes) {
-        element.setAttribute(attName, String(attributes[attName]))
-      }
-      return element
+    featureStyling(feature) {
+      return {
+        fillColor: "red",
+        weight: 1,
+        opacity: 1,
+        color: "gray",
+        dashArray: "3",
+        fillOpacity: this.getOpacity(
+          feature.properties.county,
+          feature.properties.BL
+        )
+      };
     },
+    getOpacity(countyName, stateName) {
+      /*
+        opacity: y1 = 0.1 (min)
+                 y2 = 0.9 (max)
+        cases: x1 = min
+               x2 = max
+        formel: y1 + ((y2 - y1) / (x2 - x1)) * (x - x1)
+       */
+
+      const county = this.infectionData.states
+        .filter(state => state.name === stateName)[0]
+        .counties.find(county => county.LK === countyName);
+      // console.log(county)
+      // console.log(this.minCases, this.maxCases)
+      return (
+        0.1 +
+        ((0.9 - 0.1) / (this.maxCases - this.minCases)) *
+          (county["cases_LK"] - this.minCases)
+      );
+    }
   },
-}
+  created() {},
+  mounted() {
+    this.initializeMap();
+    this.fetchGeoData();
+  }
+};
 </script>
 
 <style>
-#mapContainer {
-  max-height: 80rem;
+@import "../../node_modules/leaflet/dist/leaflet.css";
+#map {
+  height: 400px;
+  /* max-height: 40rem;
   overflow: auto;
+  height: 40rem; */
 }
 </style>
