@@ -18,9 +18,6 @@ export default {
     }
   }),
   props: {
-    // graphsShown: {
-    //   type: Number
-    // },
     BLID: {
       type: Number
     },
@@ -35,39 +32,35 @@ export default {
     },
     baseColor: Number,
   },
-
-/* render(){
-  console.log("ID in Barchart" + this.id)
-  return ""
-}, */
-
   mounted () {
     drawChart(this)
   },
   methods: {
     handle (point, event) {
-      event[0]? this.$emit('updateSelectedLK', this.arrID[event[0]._index]):""
+      event[0]&&this.selectedBL_ID!=0 ? this.selectedLK_ID = this.arrID[event[0]._index]:""
     }
   },
   computed: {
     ...mapFields([
       'graphsShown',
+      'selectedBL_ID',
+      'selectedCaseOptions',
+      'selectedLK_ID'
     ])
   },
   watch: { 
-    BLID: function() {
+    selectedBL_ID: function() {
       drawChart(this)
     },
     graphsShown: function(){
-      //console.log("Update graphs shown")
       drawChart(this)
     },
     infectionData: function(){
       evaluateMaxData(this)
       drawChart(this)
     },
-    selectedCaseOption: function(){
-      console.log(this.selectedCaseOption)
+    selectedCaseOptions: function(){
+      console.log(this.selectedCaseOptions)
       drawChart(this)
     }
   }
@@ -76,7 +69,7 @@ export default {
 
 
 function drawChart (parent){
-  //console.log(parent.graphsShown)
+  console.log(parent.selectedBL_ID)
       const chartOptions = {
             scales: {
               xAxes: [{
@@ -90,7 +83,6 @@ function drawChart (parent){
         onClick:parent.handle
       }
 
-    // TODO: Erstzen mit request
     const data = parent.infectionData
     let arrCounties = []
     let arrCases = []
@@ -103,7 +95,7 @@ function drawChart (parent){
 
     // assign max value
     let maxInfectionval
-    switch(parent.selectedCaseOption){
+    switch(parent.selectedCaseOptions){
       case 'cases':
         maxInfectionval = parent.maxCases.maxCasesLk
         break;
@@ -115,13 +107,13 @@ function drawChart (parent){
     }
 
     //arrTopCounty = selectTopCounty(this.topXCountys, this.states, this.infectionData)
-    arrTopCounty = selectTopCounty(parent.graphsShown, parent.BLID, data, parent.selectedCaseOption)
+    arrTopCounty = selectTopCounty(parent.graphsShown, parent.selectedBL_ID, data, parent.selectedCaseOptions)
 
     arrTopCounty.forEach (county => {
       arrCounties.push(county.LK)
       parent.arrID.push(county.LK_ID)
       let infectionVal = -1
-      switch(parent.selectedCaseOption){
+      switch(parent.selectedCaseOptions){
         case 'cases':
           infectionVal = county.cases_LK
           break;
@@ -139,7 +131,7 @@ function drawChart (parent){
     })
 
     parent.caseOptions.forEach(option => {
-      if(option.code === parent.selectedCaseOption){
+      if(option.code === parent.selectedCaseOptions){
         label = option.label
       }
     })

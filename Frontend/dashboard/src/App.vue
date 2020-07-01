@@ -5,14 +5,11 @@
       <b-row>
         <b-col>
           1 of 3:
-          <NumberInput v-bind:graphsShown="graphsShown" v-on:updateGraphsShown="updateGraphsShown"></NumberInput>
+          <NumberInput ></NumberInput>
           <bar-chart
             :infectionData="infectionData"
-            v-bind:BLID="selectedBL_ID"
-            v-on:updateSelectedLK="updateSelectedLK"
-            v-bind:caseOptions='caseOptions'
-            v-bind:selectedCaseOption="selectedCaseOptions"
             v-bind:baseColor="baseColor"
+            :caseOptions="caseOptions"
           ></bar-chart>
         </b-col>
         <b-col>
@@ -25,19 +22,11 @@
         <b-col>
           3 of 3
           <GlobalOptions
-            :infectionData="infectionData"
-            v-bind:selectedBLID="selectedBL_ID"
-            v-bind:selectedLKID="selectedLK_ID"
-            v-bind:selectedCaseOption="selectedCaseOptions"
-            v-bind:caseOptions="caseOptions"
-            v-on:updateSelectedBL="updateSelectedBL"
-            v-on:updateSelectedLK="updateSelectedLK"
-            v-on:updateCaseOptions="updateCaseOptions">
+            v-bind:infectionData="infectionData"
+            :caseOptions="caseOptions">
           </GlobalOptions>
           <TableComponent 
-            :infectionData="infectionData"
-            v-bind:selectedBLID="selectedBL_ID"
-            v-bind:selectedLKID="selectedLK_ID"/>
+            :infectionData="infectionData"/>
         </b-col>
       </b-row>
     </b-container>
@@ -47,7 +36,7 @@
 <script>
 import NumberInput from './components/SelectBarsCount.vue'
 import TableComponent from './components/TableComponent.vue'
-import BarChart from "./components/BarchartTest.vue"
+import BarChart from "./components/Barchart.vue"
 import MapSVG from "./components/MapSVG.vue"
 import GlobalOptions from "./components/GlobalOptions.vue"
 import axios from "axios"
@@ -76,37 +65,37 @@ export default {
       infectionData: require("../../../Backend/example_response.json"),
       selectedBL_ID: 0,
       selectedLK_ID: 0,
-      graphsShown: 5,
-      selectedCaseOptions: "cases7_per_100k",
+      // graphsShown: 5,
+      // selectedCaseOptions: "cases7_per_100k",
       caseOptions: caseOptions,
       baseColor: baseColor
     };
   },
   methods: {
-    updateSelectedBL(event) {
+/*     updateSelectedBL(event) {
       this.selectedBL_ID = event;
       this.selectedLK_ID = 0;
       console.log(this.baseColor)
-    },
-    updateSelectedLK(event) {
+    }, */
+/*     updateSelectedLK(event) {
       this.selectedLK_ID = event
-    },
-    updateGraphsShown(event) {
+    }, */
+/*     updateGraphsShown(event) {
       this.graphsShown = event;
       // this.sendUserData();
-    },
-    updateCaseOptions(event) {
+    }, */
+/*     updateCaseOptions(event) {
       this.selectedCaseOptions = event
-    },
+    }, */
     sendUserData(){
       sendUserData(
         "sdoifn",
-        this.selectedBL_ID,
+/*         this.selectedBL_ID,
         this.selectedLK_ID,
-        this.selectedCaseOptions,
+        this.selectedCaseOptions, */
         "Mapresolution",
         "zoom",
-        this.graphsShown,
+        // this.graphsShown,
         "selectedTab",
         "viewDetails"
       )
@@ -119,7 +108,7 @@ export default {
       .then(response => (self.infectionData = response.data))
   },
   created() {
-        window.addEventListener('beforeunload', (event) => {
+       /**  window.addEventListener('beforeunload', (event) => {
         // Cancel the event as stated by the standard.
         event.preventDefault();
         // Chrome requires returnValue to be set.
@@ -128,7 +117,7 @@ export default {
         console.log("TRY TO CLOSE")
 
         //Hier gespeicherte Sachen versenden!
-      });
+      });*/
   }
   
 };

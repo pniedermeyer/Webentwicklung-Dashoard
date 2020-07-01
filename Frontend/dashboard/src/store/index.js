@@ -7,7 +7,12 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    graphsShown: 5
+    graphsShown: 5,
+    selectedBL_ID: 0,
+    selectedLK_ID: 0,
+    selectedCaseOptions: 'cases7_per_100k',
+    selectedItemsID: [[2, 6], [], [0, 20, 40]],
+    tab: 0
   },
   getters: {
     // Add the `getField` getter to the
