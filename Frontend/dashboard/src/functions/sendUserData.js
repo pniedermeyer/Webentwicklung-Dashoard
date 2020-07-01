@@ -20,17 +20,15 @@ export default function sendUserData(
   selectedTab,
   viewDetails
 ) {
-  console.log(
-    UserID +
-      selectedBL +
-      selectedLK +
-      selctedCaseOption +
-      // mapCenter,
-      resolution +
-      zoom +
-      graphsShown +
-      selectedTab +
-      viewDetails
-  )
-  //console.log(arguments)
+  console.log(UserID +
+    selectedBL +
+    selectedLK +
+    selctedCaseOption +
+    // mapCenter,
+    resolution +
+    zoom +
+    graphsShown +
+    selectedTab +
+    viewDetails)
+  console.log(arguments)
 }

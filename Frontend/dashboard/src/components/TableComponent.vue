@@ -10,9 +10,9 @@
 
       <b-tab title="Deutschland" @click="changeTab(0)">
       </b-tab>
-      <b-tab title="Bundesland" @click="changeTab(1)" :disabled="selectedBLID?false:true">
+      <b-tab title="Bundesland" @click="changeTab(1)" :disabled="selectedBL_ID?false:true">
       </b-tab>
-      <b-tab title="Landkreis" @click="changeTab(2)" :disabled="selectedLKID?false:true">
+      <b-tab title="Landkreis" @click="changeTab(2)" :disabled="selectedLK_ID?false:true">
       </b-tab>
     </b-tabs>               
   </b-card>
@@ -20,24 +20,18 @@
 </template>
 
 <script>
-// :options="selected.length < 2 ? options: []">
+import { mapFields } from 'vuex-map-fields';
 
   export default {
     name: 'infectionTable',
     props: {
       infectionData: {
         type: Object
-      },
-      selectedBLID: {
-        type: Number
-      },
-      selectedLKID: {
-        type: Number
       }
     },
     data() {
       return {
-        tab:0,
+        // tab:0,
         tabitems: [
           { tab: 'One', content: 'Deutschland' },
           { tab: 'Two', content: 'Bundesland' },
@@ -45,7 +39,6 @@
         ],
         items:[],
         views: views,
-        selectedItemsID:[[2,6],[],[0, 20, 40]],
         selectedItems:[[],[],[]],
         infectionDataBL:{},
         infectionDataLK:{}
@@ -82,32 +75,39 @@
       }
     },
     watch: {
-      selectedBLID: function() {
+      selectedBL_ID: function() {
         if(this.tab === 2){
           this.changeTab(0)
         }
         startup(this)
       },
-      selectedLKID: function() {
+      selectedLK_ID: function() {
         startup(this)
+      },
+      infectionData: function() {
+        this.states = this.infectionData.states
       }
-    }
+    },
+    computed: {
+      ...mapFields([
+        'selectedBL_ID',
+        'selectedLK_ID',
+        'selectedCaseOptions',
+        'selectedItemsID',
+        'tab'
+      ]),
+    },
   }
 
-
-
-
-//id, name, wo angezeigt wird(1=Land, 2=Bundesland, 3=Landkreis)
-
 function startup(parent){
-  parent.infectionDataBL = parent.selectedBLID ? parent.infectionData.states.find(e => e.BL_ID === parent.selectedBLID) : {}
-  parent.infectionDataLK = parent.selectedLKID ? parent.infectionDataBL.counties.find(e => e.LK_ID === parent.selectedLKID) : {}
+  parent.infectionDataBL = parent.selectedBL_ID ? parent.infectionData.states.find(e => e.BL_ID === parent.selectedBL_ID) : {}
+  parent.infectionDataLK = parent.selectedLK_ID ? parent.infectionDataBL.counties.find(e => e.LK_ID === parent.selectedLK_ID) : {}
 
   fillItems(parent)
 }
  
   const views = [
-    {focus: 'Sacrum Romanum Imperium',
+    {focus: 'Deutschland',
       correspondingTo: 0,
       options:[
         {id: 0, name: 'Name des Landes', label: 'Land'},

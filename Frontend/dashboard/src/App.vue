@@ -5,14 +5,11 @@
       <b-row>
         <b-col>
           1 of 3:
-          <NumberInput v-bind:graphsShown="graphsShown" v-on:updateGraphsShown="updateGraphsShown"></NumberInput>
+          <NumberInput ></NumberInput>
           <bar-chart
             :infectionData="infectionData"
-            v-bind:BLID="selectedBL_ID"
-            v-bind:graphsShown="graphsShown"
-            v-on:updateSelectedLK="updateSelectedLK"
-            v-bind:caseOptions="caseOptions"
-            v-bind:selectedCaseOption="selectedCaseOption"
+            v-bind:baseColor="baseColor"
+            :caseOptions="caseOptions"
           ></bar-chart>
         </b-col>
         <b-col>
@@ -28,20 +25,11 @@
         <b-col>
           3 of 3
           <GlobalOptions
-            :infectionData="infectionData"
-            v-bind:selectedBLID="selectedBL_ID"
-            v-bind:selectedLKID="selectedLK_ID"
-            v-bind:selectedCaseOption="selectedCaseOption"
-            v-bind:caseOptions="caseOptions"
-            v-on:updateSelectedBL="updateSelectedBL"
-            v-on:updateSelectedLK="updateSelectedLK"
-            v-on:updateCaseOptions="updateCaseOptions"
-          ></GlobalOptions>
-          <TableComponent
-            :infectionData="infectionData"
-            v-bind:selectedBLID="selectedBL_ID"
-            v-bind:selectedLKID="selectedLK_ID"
-          />
+            v-bind:infectionData="infectionData"
+            :caseOptions="caseOptions">
+          </GlobalOptions>
+          <TableComponent 
+            :infectionData="infectionData"/>
         </b-col>
       </b-row>
     </b-container>
@@ -49,13 +37,13 @@
 </template>
 
 <script>
-import NumberInput from "./components/SelectBarsCount.vue";
-import TableComponent from "./components/TableComponent.vue";
-import BarChart from "./components/BarchartTest.vue";
-import MapSVG from "./components/MapSVG.vue";
-import GlobalOptions from "./components/GlobalOptions.vue";
-import axios from "axios";
-import sendUserData from "./functions/sendUserData.js";
+import NumberInput from './components/SelectBarsCount.vue'
+import TableComponent from './components/TableComponent.vue'
+import BarChart from "./components/Barchart.vue"
+import MapSVG from "./components/MapSVG.vue"
+import GlobalOptions from "./components/GlobalOptions.vue"
+import axios from "axios"
+import sendUserData from "./functions/sendUserData.js"
 
 //So gelöst, falls mal die Sprache gewechselt werden muss
 const caseOptions = [
@@ -65,6 +53,8 @@ const caseOptions = [
 ];
 
 const baseColor = 120;
+
+const baseColor = 120
 
 export default {
   name: "App",
@@ -80,36 +70,37 @@ export default {
       infectionData: require("../../../Backend/example_response.json"),
       selectedBL_ID: 0,
       selectedLK_ID: 0,
-      graphsShown: 5,
-      selectedCaseOption: "cases7_per_100k",
+      // graphsShown: 5,
+      // selectedCaseOptions: "cases7_per_100k",
       caseOptions: caseOptions,
       baseColor: baseColor
     };
   },
   methods: {
-    updateSelectedBL(event) {
+/*     updateSelectedBL(event) {
       this.selectedBL_ID = event;
       this.selectedLK_ID = 0;
-    },
-    updateSelectedLK(event) {
-      this.selectedLK_ID = event;
-    },
-    updateGraphsShown(event) {
+      console.log(this.baseColor)
+    }, */
+/*     updateSelectedLK(event) {
+      this.selectedLK_ID = event
+    }, */
+/*     updateGraphsShown(event) {
       this.graphsShown = event;
-      this.sendUserData();
-    },
-    updateCaseOptions(event) {
-      this.selectedCaseOption = event;
-    },
-    sendUserData() {
+      // this.sendUserData();
+    }, */
+/*     updateCaseOptions(event) {
+      this.selectedCaseOptions = event
+    }, */
+    sendUserData(){
       sendUserData(
         "sdoifn",
-        this.selectedBL_ID,
+/*         this.selectedBL_ID,
         this.selectedLK_ID,
-        this.selectedCaseOption,
+        this.selectedCaseOptions, */
         "Mapresolution",
         "zoom",
-        this.graphsShown,
+        // this.graphsShown,
         "selectedTab",
         "viewDetails"
       );
@@ -122,16 +113,16 @@ export default {
       .then(response => (self.infectionData = response.data));
   },
   created() {
-    window.addEventListener("shittyshit", event => {
-      // Cancel the event as stated by the standard.
-      event.preventDefault();
-      // Chrome requires returnValue to be set.
-      event.returnValue = "TEST";
+       /**  window.addEventListener('beforeunload', (event) => {
+        // Cancel the event as stated by the standard.
+        event.preventDefault();
+        // Chrome requires returnValue to be set.
+        event.returnValue = 'TEST';
 
       console.log("TRY TO CLOSE");
 
-      //Hier gespeicherte Sachen versenden!
-    });
+        //Hier gespeicherte Sachen versenden!
+      });*/
   }
 };
 </script>
@@ -147,7 +138,6 @@ export default {
 }
 
 .svg_element_primary_color_scheme {
-  fill: teal;
   stroke: black;
   stroke-width: 0.05pt;
 }
