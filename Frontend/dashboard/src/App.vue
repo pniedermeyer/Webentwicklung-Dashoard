@@ -19,8 +19,7 @@
             v-on:zoomLevelChanged="updateMapZoomLevel"
             v-on:qualityLevelChanged="updateMapQualityLevel"
             v-bind:infectionData="infectionData"
-            v-bind:selectedCaseOption="selectedCaseOption"
-            v-bind:baseColor="baseColor"></MapSVG>
+            v-bind:selectedCaseOption="selectedCaseOption"></MapSVG>
         </b-col>
         <b-col>
           3 of 3
@@ -55,6 +54,7 @@ import MapSVG from './components/MapSVG.vue'
 import GlobalOptions from './components/GlobalOptions.vue'
 import axios from 'axios'
 import sendUserData from './functions/sendUserData.js'
+import { mapFields } from 'vuex-map-fields';
 
 //So gelöst, falls mal die Sprache gewechselt werden muss
 const caseOptions = [
@@ -74,12 +74,32 @@ export default {
     TableComponent,
     GlobalOptions,
   },
+  computed: {
+    ...mapFields([
+      'graphsShown',
+      'selectedBL_ID',
+      'selectedLK_ID',
+      'selectedCaseOptions',
+      'selectedItemsID',
+      'tab'
+    ])
+  },
+  watch: {
+    selectedBL_ID: function() {
+      updateUserUrl(this)
+    },
+    graphsShown: function(){
+      updateUserUrl(this)
+    },
+    selectedCaseOptions: function(){
+      updateUserUrl(this)
+    },
+  },
   data() {
     return {
       infectionData: require('../../../Backend/example_response.json'),
       selectedBL_ID: 0,
       selectedLK_ID: 0,
-      // graphsShown: 5,
       selectedCaseOption: 'cases7_per_100k',
       caseOptions: caseOptions,
       baseColor: baseColor,
@@ -130,17 +150,25 @@ export default {
      * Updates the URL in the browser, so that it contains the current configuration of the webapp
      * This will also update the history-object, so that the user can undo a change by clicking on the back button
      * The configuration will be stored in the "hash" part of the URL, so that it is shareable
+     * @param dataChangeSet A key-value object that contains fields which should be updated
      */
-    updateUserUrl() {
-      let userData = {
-        selectedBL_ID: this.selectedBL_ID,
-        selectedLK_ID: this.selectedLK_ID,
-        selectedCaseOptions: this.selectedCaseOptions,
-        mapresolution: this.map_resolution,
-        mapzoom: this.map_zoom,
-        graphsShown: this.graphsShown,
-        selectedTab: this.label_select_tab,
-        viewDetails: this.label_select_options
+    updateUserUrl(dataChangeSet) {
+      let userData = this.parseUrlState(window.location)
+      if (!(userData)) {
+        //TODO: Access this from store/index.js instead of copying it here!
+        userData = {
+          graphsShown: 5,
+          selectedBL_ID: 0,
+          selectedLK_ID: 0,
+          selectedCaseOptions: 'cases7_per_100k',
+          selectedItemsID: [[2, 6], [], [0, 20, 40]],
+          tab: 0
+        };
+      }
+
+      for (let changedFieldName of Object.keys(dataChangeSet)) {
+        console.log(changedFieldName + " is now " + dataChangeSet[changedFieldName])
+        userData[changedFieldName] = dataChangeSet[changedFieldName];
       }
 
       window.history.pushState(userData, "_THIS_IS_NOT_USED_CURRENTLY_", "#"+JSON.stringify(userData))
@@ -163,7 +191,8 @@ export default {
     axios.get('http://localhost:3001/data/').then((response) => (self.infectionData = response.data))
   },
   created() {
-    /** let that = this
+    let that = this
+    /**
 
       window.addEventListener('beforeunload', (event) => {
         // Cancel the event as stated by the standard.
@@ -176,12 +205,19 @@ export default {
         //Hier gespeicherte Sachen versenden!
       });*/
 
+    /**
+     * Adds an event listener for the "popstate" event, indicating the use of the navigation buttons
+     * in the browser or
+     */
     window.addEventListener('popstate', function(event) {
-      var url = event.currentTarget.location.hash.substring(1);
-      url = decodeURIComponent(url)
-      var settings = JSON.parse(url);
-      that.urlToSettingsChange(settings)
+      that.urlToSettingsChange(
+              this.parseUrlState(event.currentTarget.location)
+      )
     });
+  },
+  parseUrlState(url) {
+    var userState = decodeURIComponent(url.hash.substring(1))
+    return JSON.parse(userState)
   }
   
 };
