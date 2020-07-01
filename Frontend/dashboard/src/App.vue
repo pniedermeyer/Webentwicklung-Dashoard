@@ -11,35 +11,17 @@
         <b-col>
           2 of 3
           <MapSVG
-            v-bind:selectedBL_ID="selectedBL_ID"
-            v-bind:selectedLK_ID="selectedLK_ID"
-            v-bind:baseColor="baseColor"
-            v-bind:resolution="map_resolution"
-            v-bind:zoom="map_zoom"
-            v-on:zoomLevelChanged="updateMapZoomLevel"
-            v-on:qualityLevelChanged="updateMapQualityLevel"
-            v-bind:infectionData="infectionData"
-            v-bind:selectedCaseOption="selectedCaseOption"></MapSVG>
+                  v-bind:selectedBL_ID="selectedBL_ID"
+                  v-bind:selectedLK_ID="selectedLK_ID"
+                  v-bind:infectionData="infectionData"
+                  v-bind:selectedCaseOption="selectedCaseOption"
+                  v-bind:baseColor="baseColor"
+          ></MapSVG>
         </b-col>
         <b-col>
           3 of 3
-          <GlobalOptions
-            v-bind:infectionData="infectionData"
-            v-bind:selectedBLID="selectedBL_ID"
-            v-bind:selectedLKID="selectedLK_ID"
-            v-bind:selectedCaseOption="selectedCaseOptions"
-            v-bind:caseOptions="caseOptions"
-            v-on:updateSelectedBL="updateSelectedBL"
-            v-on:updateSelectedLK="updateSelectedLK"
-            v-on:updateCaseOptions="updateCaseOptions">
-          </GlobalOptions>
-          <TableComponent
-            :infectionData="infectionData"
-            v-bind:selectedBLID="selectedBL_ID"
-            v-bind:selectedLKID="selectedLK_ID"
-            v-on:addOption="labelSelectOptionModify"
-            v-on:removeOption="labelSelectOptionModify"
-            v-on:changeTab="labelSelectChangeTab"/>
+          <GlobalOptions v-bind:infectionData="infectionData" :caseOptions="caseOptions"> </GlobalOptions>
+          <TableComponent :infectionData="infectionData" />
         </b-col>
       </b-row>
     </b-container>
@@ -55,6 +37,7 @@ import GlobalOptions from './components/GlobalOptions.vue'
 import axios from 'axios'
 import sendUserData from './functions/sendUserData.js'
 import { mapFields } from 'vuex-map-fields';
+import vuexStore from './store/index.js';
 
 //So gelöst, falls mal die Sprache gewechselt werden muss
 const caseOptions = [
@@ -85,21 +68,28 @@ export default {
     ])
   },
   watch: {
+    graphsShown: function() {
+      updateUserUrl({graphsShown: this.graphsShown})
+    },
     selectedBL_ID: function() {
-      updateUserUrl(this)
+      updateUserUrl({selectedBL_ID: this.selectedBL_ID})
     },
-    graphsShown: function(){
-      updateUserUrl(this)
+    selectedLK_ID: function() {
+      updateUserUrl({selectedLK_ID: this.selectedLK_ID})
     },
-    selectedCaseOptions: function(){
-      updateUserUrl(this)
+    selectedCaseOptions: function() {
+      updateUserUrl({selectedCaseOptions: this.selectedCaseOptions})
+    },
+    selectedItemsID: function() {
+      updateUserUrl({selectedItemsID: this.selectedItemsID})
+    },
+    tab: function() {
+      updateUserUrl({tab: this.tab})
     },
   },
   data() {
     return {
       infectionData: require('../../../Backend/example_response.json'),
-      selectedBL_ID: 0,
-      selectedLK_ID: 0,
       selectedCaseOption: 'cases7_per_100k',
       caseOptions: caseOptions,
       baseColor: baseColor,
@@ -145,45 +135,6 @@ export default {
         'selectedTab',
         'viewDetails'
       )
-    },
-    /**
-     * Updates the URL in the browser, so that it contains the current configuration of the webapp
-     * This will also update the history-object, so that the user can undo a change by clicking on the back button
-     * The configuration will be stored in the "hash" part of the URL, so that it is shareable
-     * @param dataChangeSet A key-value object that contains fields which should be updated
-     */
-    updateUserUrl(dataChangeSet) {
-      let userData = this.parseUrlState(window.location)
-      if (!(userData)) {
-        //TODO: Access this from store/index.js instead of copying it here!
-        userData = {
-          graphsShown: 5,
-          selectedBL_ID: 0,
-          selectedLK_ID: 0,
-          selectedCaseOptions: 'cases7_per_100k',
-          selectedItemsID: [[2, 6], [], [0, 20, 40]],
-          tab: 0
-        };
-      }
-
-      for (let changedFieldName of Object.keys(dataChangeSet)) {
-        console.log(changedFieldName + " is now " + dataChangeSet[changedFieldName])
-        userData[changedFieldName] = dataChangeSet[changedFieldName];
-      }
-
-      window.history.pushState(userData, "_THIS_IS_NOT_USED_CURRENTLY_", "#"+JSON.stringify(userData))
-    },
-    /**
-     * Updates the URL in the browser, so that it contains the current configuration of the webapp
-     */
-    urlToSettingsChange(settings) {
-      console.log(settings)
-      this.selectedBL_ID = settings.selectedBL_ID
-      this.selectedLK_ID = settings.selectedLK_ID
-      this.selectedCaseOptions = settings.selectedCaseOptions
-      this.map_resolution = settings.map_resolution
-      this.map_zoom = settings.map_zoom
-      this.graphsShown = settings.graphsShown
     }
   },
   mounted() {
@@ -191,7 +142,6 @@ export default {
     axios.get('http://localhost:3001/data/').then((response) => (self.infectionData = response.data))
   },
   created() {
-    let that = this
     /**
 
       window.addEventListener('beforeunload', (event) => {
@@ -210,17 +160,59 @@ export default {
      * in the browser or
      */
     window.addEventListener('popstate', function(event) {
-      that.urlToSettingsChange(
-              this.parseUrlState(event.currentTarget.location)
+      urlToSettingsChange(
+              parseUrlState(event.currentTarget.location)
       )
     });
-  },
-  parseUrlState(url) {
-    var userState = decodeURIComponent(url.hash.substring(1))
-    return JSON.parse(userState)
   }
   
 };
+
+/**
+ * Updates the URL in the browser, so that it contains the current configuration of the webapp
+ * This will also update the history-object, so that the user can undo a change by clicking on the back button
+ * The configuration will be stored in the "hash" part of the URL, so that it is shareable
+ * @param dataChangeSet A key-value object that contains fields which should be updated
+ */
+function updateUserUrl(dataChangeSet) {
+  let userData = parseUrlState(window.location)
+  if (!(userData)) {
+    //TODO: Access this from store/index.js instead of copying it here!
+    userData = {
+      graphsShown: 5,
+      selectedBL_ID: 0,
+      selectedLK_ID: 0,
+      selectedCaseOptions: 'cases7_per_100k',
+      selectedItemsID: [[2, 6], [], [0, 20, 40]],
+      tab: 0
+    };
+  }
+
+  for (let changedFieldName of Object.keys(dataChangeSet)) {
+    console.log(changedFieldName + " is now " + dataChangeSet[changedFieldName])
+    userData[changedFieldName] = dataChangeSet[changedFieldName];
+  }
+
+  window.history.pushState(userData, "_THIS_IS_NOT_USED_CURRENTLY_", "#"+JSON.stringify(userData))
+}
+
+/**
+ * Updates the URL in the browser, so that it contains the current configuration of the webapp
+ */
+function urlToSettingsChange(settings) {
+  console.log("Deserializing settings from URL to vuex state: "+JSON.stringify(settings))
+  vuexStore.commit('updateField', settings)
+}
+
+function parseUrlState(url) {
+  try {
+    var userState = decodeURIComponent(url.hash.substring(1))
+    return JSON.parse(userState)
+  } catch (e) {
+    console.warn("Could not parse JSon from URL: ", e)
+    return null
+  }
+}
 </script>
 
 <style>
