@@ -1,4 +1,9 @@
 import leaflet from 'leaflet'
+/* Leaflet functionality outsourced in extra js file, because
+* it is necessary to store references to map and layer. If these
+* references get stored in the vue-data function, there begins an
+* endless loading an the browser starts begging for RAM.
+*/
 export default class leafletManager {
   #mapId = null
   #map = null

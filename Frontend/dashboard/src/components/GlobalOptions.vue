@@ -53,7 +53,11 @@ export default {
     selectCountiesToState(stateId) {
       if (stateId) {
         let state = this.states.find((state) => state.BL_ID === stateId)
-        this.counties = state.counties
+        let tempCounties = state.counties
+        tempCounties.sort(function(a, b){
+          return a.LK < b.LK ? -1 : 1
+        })
+        this.counties = tempCounties
       } else {
         this.counties = ['']
       }
@@ -66,7 +70,11 @@ export default {
   },
   watch: {
     infectionData: function() {
-      this.states = this.infectionData.states
+      let tempStates = this.infectionData.states
+      tempStates.sort(function(a, b){
+        return a.name < b.name ? -1 : 1
+      })
+      this.states = tempStates
     },
   },
   mounted() {
