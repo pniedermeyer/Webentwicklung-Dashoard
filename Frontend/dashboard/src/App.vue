@@ -9,7 +9,6 @@
           <bar-chart
             :infectionData="infectionData"
             v-bind:BLID="selectedBL_ID"
-            v-bind:graphsShown="graphsShown"
             v-on:updateSelectedLK="updateSelectedLK"
             v-bind:caseOptions='caseOptions'
             v-bind:selectedCaseOption="selectedCaseOptions"
@@ -94,7 +93,7 @@ export default {
     },
     updateGraphsShown(event) {
       this.graphsShown = event;
-      this.sendUserData();
+      // this.sendUserData();
     },
     updateCaseOptions(event) {
       this.selectedCaseOptions = event
