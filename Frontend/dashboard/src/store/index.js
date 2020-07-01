@@ -22,6 +22,17 @@ export default new Vuex.Store({
   mutations: {
     // Add the `updateField` mutation to the
     // `mutations` of your Vuex store instance.
-    updateField
+    updateField,
+    setFields (state, payload) {
+      for (let changedFieldName of Object.keys(payload)) {
+        if (changedFieldName in state) {
+          if (state[changedFieldName] !== payload[changedFieldName]) {
+            state[changedFieldName] = payload[changedFieldName]
+          }
+        } else {
+          console.warn("Tried to update a non-existing property in the vuex state: "+changedFieldName)
+        }
+      }
+    }
   }
 })

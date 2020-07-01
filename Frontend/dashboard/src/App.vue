@@ -139,6 +139,7 @@ export default {
   },
   mounted() {
     let self = this
+    urlToSettingsChange(parseUrlState(window.location))
     axios.get('http://localhost:3001/data/').then((response) => (self.infectionData = response.data))
   },
   created() {
@@ -200,8 +201,12 @@ function updateUserUrl(dataChangeSet) {
  * Updates the URL in the browser, so that it contains the current configuration of the webapp
  */
 function urlToSettingsChange(settings) {
+  if (!(settings)) {
+    return
+  }
+
   console.log("Deserializing settings from URL to vuex state: "+JSON.stringify(settings))
-  vuexStore.commit('updateField', settings)
+  vuexStore.commit('setFields', settings)
 }
 
 function parseUrlState(url) {
