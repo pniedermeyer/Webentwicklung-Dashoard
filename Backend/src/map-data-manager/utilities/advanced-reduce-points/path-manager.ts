@@ -26,8 +26,8 @@ export default class PathManager {
 
     //Spezialfälle wenn der Subpath nur einen Punkt besitzt
     if (subPath.points.length < 2) {
-      //   let index = PathManager.getPointPosition(path, subPath.points[0])
-      //   path.points.splice(index, 1, subPath.points[0], subPathRef, subPath.points[0])
+      let index = PathManager.getPointPosition(path, subPath.points[0])
+      path.points.splice(index, 1, subPath.points[0], subPathRef, subPath.points[0])
       //   console.log('SUBPATH LENGTH 1')
       return
     }

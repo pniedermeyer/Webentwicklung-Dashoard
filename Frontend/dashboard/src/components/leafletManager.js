@@ -5,17 +5,17 @@ export default class leafletManager {
   #geoJsonLayer = null
 
   constructor(mapId) {
-    console.log('leafletManager constructor. Passed Map-ID: ', mapId)
+    //console.log('leafletManager constructor. Passed Map-ID: ', mapId)
     this.#mapId = mapId
   }
 
   initializeMap() {
-    console.log('leafletManager Map init. Map-ID: ', this.#mapId)
+    //console.log('leafletManager Map init. Map-ID: ', this.#mapId)
     this.#map = leaflet.map(this.#mapId).setView([51.5, 10.8], 5)
   }
 
   addMapLayer(geoData) {
-    console.log('leafletManager add Map layer')
+    //console.log('leafletManager add Map layer')
     this.#geoJsonLayer = leaflet.geoJSON(geoData).addTo(this.#map)
   }
 

@@ -2,15 +2,22 @@
   <div>
     <div>
       <h1>🗺️Bundesland</h1>
-      <v-select v-model= "selectedBL_ID" label="name" :options="states" :reduce="item => item.BL_ID" @input="setSelState" :clearable="false"></v-select>
+      <v-select
+        v-model="selectedBL_ID"
+        label="name"
+        :options="states"
+        :reduce="(item) => item.BL_ID"
+        @input="setSelState"
+        :clearable="false"
+      ></v-select>
     </div>
     <div>
       <h1>🗾Landkreis</h1>
-      <v-select v-model= 'selectedLK_ID' label="LK" :options="counties" :reduce="item => item.LK_ID" :clearable="false"></v-select>
+      <v-select v-model="selectedLK_ID" label="LK" :options="counties" :reduce="(item) => item.LK_ID" :clearable="false"></v-select>
     </div>
     <div>
       <h1>💯Fallzahlen</h1>
-      <v-select v-model= 'selectedCaseOptions' :options="caseOptions" :reduce="option => option.code" :clearable="false"></v-select>
+      <v-select v-model="selectedCaseOptions" :options="caseOptions" :reduce="(option) => option.code" :clearable="false"></v-select>
     </div>
     <div>
       <button v-on:click="saveUserSettings()">💾Einstellungen speichern</button>
@@ -18,70 +25,62 @@
   </div>
 </template>
 
-
 <script>
-import { mapFields } from 'vuex-map-fields';
+import { mapFields } from 'vuex-map-fields'
 //import Vue from 'vue'
 //import vSelect from 'vue-select'
 
 export default {
-    data: () => ({
-      states: [""],
-      selectedState: null,
-      counties: [""],
-      selectedCounty: null
-    }),
-    props: {
-      infectionData: {
-        type: Object
-      },
-      caseOptions: {
-        type: Array
-      },
+  data: () => ({
+    states: [''],
+    selectedState: null,
+    counties: [''],
+    selectedCounty: null,
+  }),
+  props: {
+    infectionData: {
+      type: Object,
     },
-    methods: {
-      setSelState(value) {
-        this.selectedLK_ID=null
-        // this.selectedState = value
-        this.selectCountiesToState(value)
-        console.log('BL-ID: ' + value) 
-      },
-
-      selectCountiesToState(stateId){
-        if(stateId){
-          let state = this.states.find(state => state.BL_ID === stateId)
-          this.counties = state.counties
-        }else{
-          this.counties = [""]
-        }
-        this.selectedCounty = null
-      },
-      saveUserSettings() {
-        //Hier Settings speichern!
-        console.log("Jetzt könnten wir speichern!")
+    caseOptions: {
+      type: Array,
+    },
+  },
+  methods: {
+    setSelState(value) {
+      this.selectedLK_ID = null
+      // this.selectedState = value
+      this.selectCountiesToState(value)
+      console.log('BL-ID: ' + value)
+    },
+    selectCountiesToState(stateId) {
+      if (stateId) {
+        let state = this.states.find((state) => state.BL_ID === stateId)
+        this.counties = state.counties
+      } else {
+        this.counties = ['']
       }
-      this.selectedCounty = null;
+      this.selectedCounty = null
     },
-    watch: { 
-      infectionData: function() {
-        this.states = this.infectionData.states
-      }
+    saveUserSettings() {
+      //Hier Settings speichern!
+      console.log('Jetzt könnten wir speichern!')
     },
-    mounted(){
+  },
+  watch: {
+    infectionData: function() {
       this.states = this.infectionData.states
     },
-    computed: {
-      ...mapFields([
-        'selectedBL_ID',
-        'selectedLK_ID',
-        'selectedCaseOptions',
-      ]),
-    },
+  },
+  mounted() {
+    this.states = this.infectionData.states
+  },
+  computed: {
+    ...mapFields(['selectedBL_ID', 'selectedLK_ID', 'selectedCaseOptions']),
+  },
 }
-
 </script>
 
-<style >
+<style>
 button {
   padding: 10px 20px;
   border: 1px solid #ddd;
@@ -89,14 +88,13 @@ button {
   background-color: rgba(255, 255, 255, 0.5);
   border-radius: 4px;
   font-size: 14px;
-  font-family: "微软雅黑", arail;
+  font-family: '微软雅黑', arail;
   cursor: pointer;
 }
 v-select {
   cursor: pointer;
 }
 </style>
-
 
 <!-- 
 GET /settings

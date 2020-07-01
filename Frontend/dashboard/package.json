@@ -23,7 +23,6 @@
     "vue-select": "^3.10.3",
     "vuex": "^2.0.0",
     "vuex-map-fields": "^1.4.0"
-    "vue2-leaflet": "^2.5.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",

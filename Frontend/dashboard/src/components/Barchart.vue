@@ -69,7 +69,7 @@ export default {
 
 
 function drawChart (parent){
-  console.log(parent.selectedBL_ID)
+  //console.log(parent.selectedBL_ID)
       const chartOptions = {
             scales: {
               xAxes: [{
@@ -168,7 +168,7 @@ function selectCounty(states, infectionData, caseOption) {
   let selectetCounty = []
 
     if (states === 0) {
-      console.log(infectionData.states)
+      //console.log(infectionData.states)
       infectionData.states.forEach (state => {
           state.counties.forEach (county => {
             selectetCounty.push(county)
@@ -204,27 +204,6 @@ function selectCounty(states, infectionData, caseOption) {
       sortedSelectetCounty.sort(function(a, b) {
         return a.cases_per_100k_LK - b.cases_per_100k_LK
       })
-    }
-      let sortedSelectetCounty = []
-      switch(caseOption) {
-        case 'cases':
-          sortedSelectetCounty = selectetCounty.slice(0)
-          sortedSelectetCounty.sort(function(a,b) {
-            return a.cases_LK - b.cases_LK
-          });
-          break
-        case 'cases7_per_100k':
-          sortedSelectetCounty = selectetCounty.slice(0)
-          sortedSelectetCounty.sort(function(a,b) {
-            return a.cases7_per_100k_LK - b.cases7_per_100k_LK
-          });
-          break
-      default:
-        sortedSelectetCounty = selectetCounty.slice(0)
-        sortedSelectetCounty.sort(function(a,b) {
-          return a.cases_per_100k_LK - b.cases_per_100k_LK
-        })
-      
     }
     return sortedSelectetCounty.reverse()
   }
