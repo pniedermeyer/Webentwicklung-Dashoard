@@ -11,9 +11,13 @@ class GeoDataController {
       // GeoDataController.write('medium')
       // GeoDataController.write('low')
 
+      let resolution: any = req.query.res
+      if (resolution === undefined) {
+        resolution = 1
+      }
       let geoData: GeoDataObject[] = await getConnection()
         .getRepository(GeoDataObject)
-        .find({ where: { res: req.query.res } })
+        .find({ where: { res: resolution } })
 
       res.send(geoData[0].geojson)
     } catch (error) {

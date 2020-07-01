@@ -27,8 +27,6 @@
 
 <script>
 import { mapFields } from 'vuex-map-fields'
-//import Vue from 'vue'
-//import vSelect from 'vue-select'
 
 export default {
   data: () => ({

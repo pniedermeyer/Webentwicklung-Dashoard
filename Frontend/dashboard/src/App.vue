@@ -10,13 +10,7 @@
         </b-col>
         <b-col>
           2 of 3
-          <MapSVG
-                  v-bind:selectedBL_ID="selectedBL_ID"
-                  v-bind:selectedLK_ID="selectedLK_ID"
-                  v-bind:infectionData="infectionData"
-                  v-bind:selectedCaseOption="selectedCaseOption"
-                  v-bind:baseColor="baseColor"
-          ></MapSVG>
+          <MapSVG v-bind:infectionData="infectionData" v-bind:baseColor="baseColor"></MapSVG>
         </b-col>
         <b-col>
           3 of 3
@@ -46,7 +40,7 @@ const caseOptions = [
   { label: 'Fälle / 100k letzte 7 Tage', code: 'cases7_per_100k' },
 ]
 
-const baseColor = 120
+const baseColor = 0
 
 export default {
   name: 'App',
@@ -135,7 +129,7 @@ export default {
         'selectedTab',
         'viewDetails'
       )
-    }
+    },
   },
   mounted() {
     let self = this
@@ -166,7 +160,7 @@ export default {
       )
     });
   }
-  
+
 };
 
 /**
