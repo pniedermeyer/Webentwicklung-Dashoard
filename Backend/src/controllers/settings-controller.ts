@@ -121,3 +121,20 @@ export = {
     authorize,
   },
 };
+
+/**
+ table SQL
+ 
+ DROP TABLE settings;
+
+ CREATE TABLE settings (
+	guid INT PRIMARY KEY,
+	zoom INT,
+	graphs_shown INT,
+	lk_id INT,
+	bl_id INT,
+	metric VARCHAR(25),
+	"table" VARCHAR(512)
+)
+
+ */
