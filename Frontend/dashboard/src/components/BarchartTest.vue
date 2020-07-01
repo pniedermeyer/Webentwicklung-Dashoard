@@ -2,13 +2,25 @@
 import {HorizontalBar} from 'vue-chartjs'
 import {calcFillcolor} from '../functions/calcFillcolor'
 
+import { mapFields } from 'vuex-map-fields';
+
+
 export default {
   extends: HorizontalBar,
   name: 'barchart',
+  data: () => ({
+    arrID: [],
+    selectedData: [],
+    maxCases: {
+      maxCasesLk: -1,
+      maxCasesPer100kLk: -1,
+      max7CasesPer100kLk: -1
+    }
+  }),
   props: {
-    graphsShown: {
-      type: Number
-    },
+    // graphsShown: {
+    //   type: Number
+    // },
     BLID: {
       type: Number
     },
@@ -37,15 +49,11 @@ export default {
       event[0]? this.$emit('updateSelectedLK', this.arrID[event[0]._index]):""
     }
   },
-  data: () => ({
-      arrID: [],
-      selectedData: [],
-      maxCases: {
-        maxCasesLk: -1,
-        maxCasesPer100kLk: -1,
-        max7CasesPer100kLk: -1
-      } 
-    }),
+  computed: {
+    ...mapFields([
+      'graphsShown',
+    ])
+  },
   watch: { 
     BLID: function() {
       drawChart(this)
@@ -66,7 +74,8 @@ export default {
 }
 //END EXPORT
 
-function drawChart(parent){
+
+function drawChart (parent){
   //console.log(parent.graphsShown)
       const chartOptions = {
             scales: {
@@ -148,7 +157,6 @@ function drawChart(parent){
  function selectTopCounty (topXCountys, states, infectionData, caseOption) {
     //let topXCountys = 5
     let arrTopCountys = []
-    console.log(caseOption)
     const countys = selectCounty(states, infectionData, caseOption)
 
     if(topXCountys > countys.length) topXCountys = countys.length
@@ -165,6 +173,7 @@ function drawChart(parent){
 
 
     if (states === 0) {
+      console.log(infectionData.states)
       infectionData.states.forEach (state => {
           state.counties.forEach (county => {
             selectetCounty.push(county)
@@ -182,24 +191,22 @@ function drawChart(parent){
       let sortedSelectetCounty = []
       switch(caseOption) {
         case 'cases':
-          console.log("cases in switch")
           sortedSelectetCounty = selectetCounty.slice(0)
           sortedSelectetCounty.sort(function(a,b) {
-            return a.cases_LK - b.cases_LK;
+            return a.cases_LK - b.cases_LK
           });
-          break;
+          break
         case 'cases7_per_100k':
-          console.log("cases7 in switch")
           sortedSelectetCounty = selectetCounty.slice(0)
           sortedSelectetCounty.sort(function(a,b) {
-            return a.cases7_per_100k_LK - b.cases7_per_100k_LK;
+            return a.cases7_per_100k_LK - b.cases7_per_100k_LK
           });
-          break;
+          break
       default:
         sortedSelectetCounty = selectetCounty.slice(0)
         sortedSelectetCounty.sort(function(a,b) {
-          return a.cases_per_100k_LK - b.cases_per_100k_LK;
-        });
+          return a.cases_per_100k_LK - b.cases_per_100k_LK
+        })
       
     }
     return sortedSelectetCounty.reverse()
