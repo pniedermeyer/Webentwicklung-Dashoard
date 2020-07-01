@@ -7,9 +7,10 @@ import douglasPeucker from '../map-data-manager/utilities/douglas-peuker'
 import WebMercator from '../map-data-manager/utilities/web-mecrator'
 import axios from 'axios'
 import { GeoTest } from '../entity/GeoTest'
-import reducePointsT from '../map-data-manager/utilities/reduce-points'
+import recuceGeoJSONPoints from '../map-data-manager/utilities/advanced-reduce-points/advanced-reduce-points'
 import { FeatureCollection } from 'geojson'
 
+let written: boolean = false
 class GeoDataController {
   static async geoData(req: Request, res: Response) {
     let geoData: GeoTest[]
@@ -18,8 +19,19 @@ class GeoDataController {
         .getRepository(GeoTest)
         .find({ where: { id: 2 } })
 
-      reducePointsT(geoData[0].geojson)
-      res.send(geoData[0].geojson)
+      let test = null
+      if (!written) {
+        test = recuceGeoJSONPoints(geoData[0].geojson, 0.0001)
+        // test = recuceGeoJSONPoints(geoData[0].geojson, 0.00001)
+        // recuceGeoJSONPoints(geoData[0].geojson, 0)
+        written = true
+      }
+
+      if (test !== null) {
+        res.send(test)
+      } else {
+        res.send(geoData[0].geojson)
+      }
       // res.send(await GeoDataController.mapPoints(geoData))
       // let data: any = await GeoDataController.write()
       // res.send(data)
