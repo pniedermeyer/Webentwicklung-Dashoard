@@ -12,30 +12,30 @@ export default class leafletManager {
   #infectionData = null
   #minCases = 0
   #maxCases = 0
+  #fillColor = 'LightSlateGrey'
 
   constructor(mapId) {
     this.#mapId = mapId
   }
 
-  initializeMap() {
-    this.#map = leaflet.map(this.#mapId).setView([51.5, 10.8], 5)
+  initializeMap({ position, zoom }) {
+    this.#map = leaflet.map(this.#mapId).setView(position, zoom)
   }
 
-  addMapLayer() {
+  setGeoData(geoData) {
+    this.#geoData = geoData
+
+    // Update Map Layer
     if (this.#geoJsonLayer) {
       this.#map.removeLayer(this.#geoJsonLayer)
     }
     this.#geoJsonLayer = leaflet
       .geoJSON(this.#geoData, {
-        onEachFeature: function(f, l) {
+        onEachFeature: function (f, l) {
           l.bindPopup('<pre>' + f.properties.county + '</pre>')
         },
       })
       .addTo(this.#map)
-  }
-
-  setGeoData(geoData) {
-    this.#geoData = geoData
   }
 
   setInfectionData(infectionData) {
@@ -43,9 +43,12 @@ export default class leafletManager {
   }
 
   setMapStyle(selectedCase) {
+    if (!this.#infectionData || !this.#geoJsonLayer) {
+      return
+    }
     let that = this
     this.setMinMax(this.#infectionData, selectedCase + '_LK')
-    this.#geoJsonLayer.eachLayer(function(layer) {
+    this.#geoJsonLayer.eachLayer(function (layer) {
       layer.setStyle(that.featureStyling(layer.feature, selectedCase + '_LK'))
     })
   }
@@ -65,7 +68,7 @@ export default class leafletManager {
 
   featureStyling(feature, caseName) {
     return {
-      fillColor: 'red',
+      fillColor: this.#fillColor,
       weight: 1,
       opacity: 1,
       color: 'gray',
@@ -90,6 +93,10 @@ export default class leafletManager {
         }
       })
     })
+  }
+
+  fillColor(color) {
+    this.#fillColor = color
   }
 
   get zoom() {

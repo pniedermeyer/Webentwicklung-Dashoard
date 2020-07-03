@@ -7,30 +7,41 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    graphsShown: 5,
-    selectedBL_ID: 0,
-    selectedLK_ID: 0,
-    selectedCaseOptions: 'cases7_per_100k',
-    selectedItemsID: [[2, 6], [], [0, 20, 40]],
-    tab: 0
+    // Global items
+    BL_ID: 0,
+    LK_ID: 0,
+    casesOption: 'cases7_per_100k',
+    allCasesOptions: [
+      { label: 'Alle Fälle', code: 'cases' },
+      { label: 'Fälle / 100k', code: 'cases_per_100k' },
+      { label: 'Fälle / 100k letzte 7 Tage', code: 'cases7_per_100k' }
+    ],
+    // TODO: remove example data for production
+    infectionData: require('../../../../Backend/example_response.json'),
+    baseColor: 'Coral',
+    // Table items
+    tableSelectedItemsID: [[2, 6], [], [0, 20, 40]],
+    tableTab: 0,
+    // Barchart
+    barsShown: 5,
+    // Map items
+    mapZoom: 5,
+    mapPosition: [51.9, 10.26], // Middlepoint of Germany
+    mapResolution: 2 // lowest Resolution
   },
   getters: {
-    // Add the `getField` getter to the
-    // `getters` of your Vuex store instance.
     getField
   },
   mutations: {
-    // Add the `updateField` mutation to the
-    // `mutations` of your Vuex store instance.
     updateField,
     setFields (state, payload) {
-      for (let changedFieldName of Object.keys(payload)) {
+      for (const changedFieldName of Object.keys(payload)) {
         if (changedFieldName in state) {
           if (state[changedFieldName] !== payload[changedFieldName]) {
             state[changedFieldName] = payload[changedFieldName]
           }
         } else {
-          console.warn("Tried to update a non-existing property in the vuex state: "+changedFieldName)
+          console.warn('Tried to update a non-existing property in the vuex state: ' + changedFieldName)
         }
       }
     }
