@@ -1,4 +1,4 @@
-import vuexStore from '../store/index.js'
+import vuexStore from '../store/dataStore.js'
 
 vuexStore.subscribe(() => {
   // TODO: comment this in -> updateUserUrl()

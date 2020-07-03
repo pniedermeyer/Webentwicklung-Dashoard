@@ -14,7 +14,7 @@ import VueNumberInput from '@chenfengyuan/vue-number-input'
 // import SelectComponent from './components/SelectComponent.vue'
 
 import App from './App.vue'
-import store from './store/index.js'
+import store from './store/dataStore.js'
 
 Vue.use(BootstrapVue)
 Vue.config.productionTip = false

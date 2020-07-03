@@ -32,7 +32,6 @@ Alternativ können auch alle Komponenten mit folgendem Befehl neu erstellt werde
 ### "Ohne" docker (Alter weg)
 - Mittels folgenden Befehl eine Postgres-DB starten: ``docker run -it --rm --network bridge -d -e PGDATA=/postgres --name dashboard_db_postgres -p 5432:5432 -e POSTGRES_PASSWORD=admin docker.pkg.github.com/pniedermeyer/webentwicklung-dashoard/postgres_dashboard:1.3``
 - Die Services wie gewohnt starten (npm run / npm serve o.ä.)
-- In der Datei Frontend/dashboard/src/components/MapSVG.vue den port der URL von ``8888`` auf ``3001`` setzen
 - In der Datei Backend/ormconfig.json den Wert "host" von ``db`` auf ``localhost`` setzen
 
 ## 8.6. Aufgabe (Corona-Dashboard)

@@ -26,7 +26,7 @@
 import NumberInput from "./components/SelectBarsCount.vue";
 import TableComponent from "./components/TableComponent.vue";
 import BarChart from "./components/Barchart.vue";
-import Map from "./components/MapSVG.vue";
+import Map from "./components/Map.vue";
 import GlobalOptions from "./components/GlobalOptions.vue";
 import axios from "axios";
 import { mapFields } from "vuex-map-fields";
