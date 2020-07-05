@@ -8,7 +8,7 @@ Fallzahen
 Ausgewählter tab
 view details
 UserID **/
-export default function sendUserData(
+export default function sendUserData (
   UserID,
   selectedBL,
   selectedLK,

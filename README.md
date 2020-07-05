@@ -1,5 +1,5 @@
 # Dashboard-Prototyp
-## Aufbau einer lokalen Entwicklungsumgebung
+## Aufbau einer lokalen (Entwicklungs)-Umgebung
 ### Vorbereitung (Für beide vorgehen)
 In die github registry einloggen:
 - Einen "Github personal access token" erstellen: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line. Dieser muss mindestens die berechtigung ``read:packages`` haben
@@ -25,10 +25,13 @@ Falls es doch einmal nicht funktionieren soll, können folgende befehle zum neus
 Alternativ können auch alle Komponenten mit folgendem Befehl neu erstellt werden:
 ``docker-compose down && docker-compose up --build``
 
+**Hinweis 1:** Das Backend und frontend bracuhen einige Zeit zum starten. Es kann gut ein, dass die Umgebung erst nach 2 oder 3 Minuten bereit ist!
+
+**Hinweis 2:** Die Ordner bzw. Laufwerke in welchen sich das projekt befindet muss unter Windows noch mittels des Docker Dashbaords freigegeben werden! (Einstellungen -> Resources -> Filesharing)
+
 ### "Ohne" docker (Alter weg)
 - Mittels folgenden Befehl eine Postgres-DB starten: ``docker run -it --rm --network bridge -d -e PGDATA=/postgres --name dashboard_db_postgres -p 5432:5432 -e POSTGRES_PASSWORD=admin docker.pkg.github.com/pniedermeyer/webentwicklung-dashoard/postgres_dashboard:1.3``
 - Die Services wie gewohnt starten (npm run / npm serve o.ä.)
-- In der Datei Frontend/dashboard/src/components/MapSVG.vue den port der URL von ``8888`` auf ``3001`` setzen
 - In der Datei Backend/ormconfig.json den Wert "host" von ``db`` auf ``localhost`` setzen
 
 ## 8.6. Aufgabe (Corona-Dashboard)

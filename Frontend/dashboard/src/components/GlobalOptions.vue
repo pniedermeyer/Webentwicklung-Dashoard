@@ -3,7 +3,7 @@
     <div>
       <h1>🗺️Bundesland</h1>
       <v-select
-        v-model="selectedBL_ID"
+        v-model="BL_ID"
         label="name"
         :options="states"
         :reduce="(item) => item.BL_ID"
@@ -13,11 +13,11 @@
     </div>
     <div>
       <h1>🗾Landkreis</h1>
-      <v-select v-model="selectedLK_ID" label="LK" :options="counties" :reduce="(item) => item.LK_ID" :clearable="false"></v-select>
+      <v-select v-model="LK_ID" label="LK" :options="counties" :reduce="(item) => item.LK_ID" :clearable="false"></v-select>
     </div>
     <div>
       <h1>💯Fallzahlen</h1>
-      <v-select v-model="selectedCaseOptions" :options="caseOptions" :reduce="(option) => option.code" :clearable="false"></v-select>
+      <v-select v-model="casesOption" :options="allCasesOptions" :reduce="(option) => option.code" :clearable="false"></v-select>
     </div>
     <div>
       <button v-on:click="saveUserSettings()">💾Einstellungen speichern</button>
@@ -35,26 +35,21 @@ export default {
     counties: [''],
     selectedCounty: null,
   }),
-  props: {
-    infectionData: {
-      type: Object,
-    },
-    caseOptions: {
-      type: Array,
-    },
-  },
   methods: {
     setSelState(value) {
-      this.selectedLK_ID = null
-      // this.selectedState = value
+      this.LK_ID = null
       this.selectCountiesToState(value)
-      console.log('BL-ID: ' + value)
     },
     selectCountiesToState(stateId) {
       if (stateId) {
         let state = this.states.find((state) => state.BL_ID === stateId)
-        this.counties = state.counties
+        let tempCounties = state.counties
+        tempCounties.sort(function(a, b){
+          return a.LK < b.LK ? -1 : 1
+        })
+        this.counties = tempCounties
       } else {
+        // TODO: Hier alle counties einfügen 
         this.counties = ['']
       }
       this.selectedCounty = null
@@ -66,14 +61,25 @@ export default {
   },
   watch: {
     infectionData: function() {
-      this.states = this.infectionData.states
+      let tempStates = [ ...this.infectionData.states ]
+      tempStates.sort(function(a, b){
+        return a.name < b.name ? -1 : 1
+      })
+      tempStates.unshift({BL_ID: 0, name: 'Alle'})
+      this.states = tempStates
     },
   },
   mounted() {
     this.states = this.infectionData.states
   },
   computed: {
-    ...mapFields(['selectedBL_ID', 'selectedLK_ID', 'selectedCaseOptions']),
+    ...mapFields({
+      BL_ID : 'BL_ID',
+      LK_ID : 'LK_ID',
+      casesOption : 'casesOption',
+      allCasesOptions : 'allCasesOptions',
+      infectionData : 'infectionData',
+    })
   },
 }
 </script>
