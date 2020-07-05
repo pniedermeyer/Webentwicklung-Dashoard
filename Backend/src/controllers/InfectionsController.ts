@@ -1,8 +1,7 @@
 import { Request, Response } from 'express'
-import { getRepository } from 'typeorm'
 import { getConnection } from 'typeorm'
 import { Infections } from '../entity/Infections'
-import RkiDataAPI from '../map-data-manager/data-requests/rki-data-request'
+import RkiDataAPI from '../data-requests/rki-data-request'
 
 class InfectionsController {
   static async infectionData(req: Request, res: Response) {

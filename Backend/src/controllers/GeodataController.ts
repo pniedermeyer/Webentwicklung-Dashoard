@@ -1,16 +1,12 @@
 import { Request, Response, json } from 'express'
 import { getConnection } from 'typeorm'
-import GeoDataAPI from '../map-data-manager/data-requests/geo-data-request'
+import GeoDataAPI from '../data-requests/geo-data-request'
 import { GeoDataObject } from '../entity/GeoDataObject'
-import recuceGeoJSONPoints from '../map-data-manager/utilities/advanced-reduce-points/advanced-reduce-points'
+import recuceGeoJSONPoints from '../utilities/advanced-reduce-points/advanced-reduce-points'
 
 class GeoDataController {
   static async geoData(req: Request, res: Response) {
     try {
-      // GeoDataController.write('high')
-      // GeoDataController.write('medium')
-      // GeoDataController.write('low')
-
       let resolution: any = req.query.res
       if (resolution === undefined) {
         resolution = 1
@@ -26,8 +22,7 @@ class GeoDataController {
     }
   }
 
-  static async write(resolution: string) {
-    // let data: any = await GeoDataController.getGeoJSON()
+  static async writeGeoDataInResolution(resolution: string) {
     let rawData: any = await GeoDataAPI.get()
     const res = mapResolutionToInt(resolution)
     let epsilon = mapResolutionToEpsilon(resolution)

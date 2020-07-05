@@ -1,4 +1,4 @@
-import { Point, SubPath, SubPathRef } from './subclasses'
+import { Point, SubPathRef } from './subclasses'
 
 export type PathPoint = Point | SubPathRef
 
