@@ -5,7 +5,6 @@ import routes from './routes'
 import cors from 'cors'
 import InfectionsController from './controllers/InfectionsController'
 import Scheduler from './utilities/scheduler'
-import writeGeoDataInResolutions from './lib/db-imports'
 
 createConnection()
   .then((connection) => {

@@ -1,19 +1,16 @@
 <template>
-  <div>
-    <div>
-      <div>
-        <!-- resolution -->
-        <label for="resol">🗺️ Auflösung:</label>
-        <v-select
-          v-model="mapResolution"
-          label="text"
-          :options="resolutions"
-          :reduce="(item) => item.value"
-          :clearable="false"
-        ></v-select>
-      </div>
-    </div>
+  <div class="w-100" id="map-container">
+    <!-- resolution -->
+    <!-- <label for="resol">🗺️ Auflösung:</label>
+    <v-select
+      v-model="mapResolution"
+      label="text"
+      :options="resolutions"
+      :reduce="(item) => item.value"
+      :clearable="false"
+    ></v-select>-->
     <div id="map"></div>
+    <global-options />
   </div>
 </template>
 
@@ -21,9 +18,13 @@
 import axios from "axios";
 import leafletManager from "../functions/leafletManager";
 import { mapFields } from "vuex-map-fields";
+import GlobalOptions from "./GlobalOptions.vue";
 
 export default {
   name: "Map",
+  components: {
+    GlobalOptions
+  },
   data() {
     return {
       lfltMng: null,
@@ -127,6 +128,12 @@ export default {
 <style>
 @import "../../node_modules/leaflet/dist/leaflet.css";
 #map {
-  height: 400px;
+  height: 100%;
+  /* height: 100%; */
+}
+
+#map-container {
+  height: 600px;
+  position: relative;
 }
 </style>

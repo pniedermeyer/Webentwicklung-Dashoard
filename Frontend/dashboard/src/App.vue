@@ -1,43 +1,44 @@
 <template>
   <div selectedBL_ID="app">
     <v-app>
-      <!-- <h1>Corona Dashboard</h1> -->
-      <app-bar></app-bar>
-      <div class="d-flex flex-column w-100">
+      <app-bar />
+      <div class="d-flex w-100 h-100">
         <Map />
-        <!-- <GlobalOptions></GlobalOptions> -->
-        <global-options />
+        <!-- <global-options /> -->
       </div>
-      <div class="d-flex">
-        <div class="d-flex">
-          <TableComponent />
+      <div class="d-flex flex-row">
+        <div class="d-flex flex-column">
+          <Details :view="0" />
+          <Details :view="1" />
+          <Details :view="2" />
         </div>
         <div class="d-flex flex-column">
-          <div class="d-flex flex-grow-1 justify-end">
-            <number-input />
-            <bar-chart />
+          <bar-chart />
+          <div>
+            <span>Line Chart Filler</span>
           </div>
-          <div class="d-flex flex-grow-1">Line Chart Placeholder</div>
         </div>
       </div>
-      <!-- <b-container class="bv-example-row">
+      <b-container class="bv-example-row">
         <b-row>
           <b-col>
             1 of 3:
-            <NumberInput></NumberInput>
-            <bar-chart></bar-chart>
+            <number-input />
+            <!-- <bar-chart></bar-chart> -->
           </b-col>
           <b-col>
-            2 of 3
-            <Map></Map>
+            <!-- 2 of 3
+            <Map></Map>-->
           </b-col>
           <b-col>
-            3 of 3
-            <GlobalOptions></GlobalOptions>
-            <TableComponent />
+            <!-- 3 of 3 -->
+            <!-- <GlobalOptions></GlobalOptions> -->
+            <!-- <Details :view="0" />
+            <Details :view="1" />
+            <Details :view="2" />-->
           </b-col>
         </b-row>
-      </b-container>-->
+      </b-container>
     </v-app>
   </div>
 </template>
@@ -45,10 +46,11 @@
 <script>
 import AppBar from "./components/AppBar.vue";
 import NumberInput from "./components/SelectBarsCount.vue";
-import TableComponent from "./components/TableComponent.vue";
+// import TableComponent from "./components/TableComponent.vue";
+import Details from "./components/Details.vue";
 import BarChart from "./components/Barchart.vue";
 import Map from "./components/Map.vue";
-import GlobalOptions from "./components/GlobalOptions.vue";
+// import GlobalOptions from "./components/GlobalOptions.vue";
 import axios from "axios";
 import { mapFields } from "vuex-map-fields";
 
@@ -65,13 +67,14 @@ export default {
     BarChart,
     Map,
     NumberInput,
-    TableComponent,
-    GlobalOptions
+    // TableComponent,
+    Details
+    // GlobalOptions
   },
   computed: {
     // TODO: remove unused fields for production
     ...mapFields({
-      // BL_ID : 'BL_ID',
+      BL_ID: "BL_ID",
       // LK_ID : 'LK_ID',
       // casesOption : 'casesOption',
       // allCasesOptions : 'allCasesOptions',
