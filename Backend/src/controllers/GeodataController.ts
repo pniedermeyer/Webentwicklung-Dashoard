@@ -6,6 +6,14 @@ import recuceGeoJSONPoints from '../utilities/advanced-reduce-points/advanced-re
 import { mapResolutionToEpsilon, mapResolutionToInt } from '../utilities/resolutionMapper'
 
 class GeoDataController {
+  
+  /**
+   * Reads geodata from the database as Geojson in the requested resolution
+   * and sends it back via the response object
+   * 
+   * @param req Request object from express
+   * @param res Response object from express
+   */
   static async geoData(req: Request, res: Response) {
     try {
       let resolution: any = req.query.res
@@ -23,6 +31,13 @@ class GeoDataController {
     }
   }
 
+  /**
+   * Calls the API of the RKI and gets the geojson which will be persisted, in
+   * the given resolution after it is transformed into that resolution via RDP
+   * 
+   * @param resolution resolution corresponding to which the geojson will be
+   * persisted in the database
+   */
   static async writeGeoDataInResolution(resolution: string) {
     let rawData: any = await GeoDataAPI.get()
     const res = mapResolutionToInt(resolution)
