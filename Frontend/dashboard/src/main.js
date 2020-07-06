@@ -15,6 +15,7 @@ import VueNumberInput from '@chenfengyuan/vue-number-input'
 
 import App from './App.vue'
 import store from './store/dataStore.js'
+import vuetify from './plugins/vuetify';
 
 Vue.use(BootstrapVue)
 Vue.config.productionTip = false
@@ -26,6 +27,7 @@ Vue.component('v-number-input', VueNumberInput)
 Vue.component('v-multiselect', Multiselect)
 
 new Vue({
-  render: h => h(App),
+  render: (h) => h(App),
+  vuetify,
   store: store
 }).$mount('#app')

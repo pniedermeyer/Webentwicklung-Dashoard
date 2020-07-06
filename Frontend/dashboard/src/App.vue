@@ -1,28 +1,49 @@
 <template>
   <div selectedBL_ID="app">
-    <h1>Corona Dashboard</h1>
-    <b-container class="bv-example-row">
-      <b-row>
-        <b-col>
-          1 of 3:
-          <NumberInput></NumberInput>
-          <bar-chart></bar-chart>
-        </b-col>
-        <b-col>
-          2 of 3
-          <Map></Map>
-        </b-col>
-        <b-col>
-          3 of 3
-          <GlobalOptions></GlobalOptions>
+    <v-app>
+      <!-- <h1>Corona Dashboard</h1> -->
+      <app-bar></app-bar>
+      <div class="d-flex flex-column w-100">
+        <Map />
+        <!-- <GlobalOptions></GlobalOptions> -->
+        <global-options />
+      </div>
+      <div class="d-flex">
+        <div class="d-flex">
           <TableComponent />
-        </b-col>
-      </b-row>
-    </b-container>
+        </div>
+        <div class="d-flex flex-column">
+          <div class="d-flex flex-grow-1 justify-end">
+            <number-input />
+            <bar-chart />
+          </div>
+          <div class="d-flex flex-grow-1">Line Chart Placeholder</div>
+        </div>
+      </div>
+      <!-- <b-container class="bv-example-row">
+        <b-row>
+          <b-col>
+            1 of 3:
+            <NumberInput></NumberInput>
+            <bar-chart></bar-chart>
+          </b-col>
+          <b-col>
+            2 of 3
+            <Map></Map>
+          </b-col>
+          <b-col>
+            3 of 3
+            <GlobalOptions></GlobalOptions>
+            <TableComponent />
+          </b-col>
+        </b-row>
+      </b-container>-->
+    </v-app>
   </div>
 </template>
 
 <script>
+import AppBar from "./components/AppBar.vue";
 import NumberInput from "./components/SelectBarsCount.vue";
 import TableComponent from "./components/TableComponent.vue";
 import BarChart from "./components/Barchart.vue";
@@ -40,6 +61,7 @@ import {
 export default {
   name: "App",
   components: {
+    AppBar,
     BarChart,
     Map,
     NumberInput,
@@ -84,7 +106,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  /* margin-top: 60px; */
 }
 
 .svg_element_primary_color_scheme {
