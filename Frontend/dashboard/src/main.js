@@ -11,6 +11,9 @@ import Multiselect from 'vue-multiselect'
 
 import VueNumberInput from '@chenfengyuan/vue-number-input'
 
+import VueSlider from 'vue-slider-component'
+import 'vue-slider-component/theme/default.css'
+
 // import SelectComponent from './components/SelectComponent.vue'
 
 import App from './App.vue'
@@ -24,6 +27,8 @@ Vue.component('v-select', vSelect)
 Vue.component('v-number-input', VueNumberInput)
 
 Vue.component('v-multiselect', Multiselect)
+
+Vue.component('v-slider', VueSlider)
 
 new Vue({
   render: h => h(App),

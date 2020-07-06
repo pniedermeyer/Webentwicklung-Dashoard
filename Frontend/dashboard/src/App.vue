@@ -15,7 +15,9 @@
         <b-col>
           3 of 3
           <GlobalOptions></GlobalOptions>
-          <TableComponent />
+          <Details :view=0 />
+          <Details :view=1 />
+          <Details :view=2 />
         </b-col>
       </b-row>
     </b-container>
@@ -24,7 +26,8 @@
 
 <script>
 import NumberInput from "./components/SelectBarsCount.vue";
-import TableComponent from "./components/TableComponent.vue";
+// import TableComponent from "./components/TableComponent.vue";
+import Details from "./components/Details.vue";
 import BarChart from "./components/Barchart.vue";
 import Map from "./components/Map.vue";
 import GlobalOptions from "./components/GlobalOptions.vue";
@@ -43,13 +46,14 @@ export default {
     BarChart,
     Map,
     NumberInput,
-    TableComponent,
+    // TableComponent,
+    Details,
     GlobalOptions
   },
   computed: {
     // TODO: remove unused fields for production
     ...mapFields({
-      // BL_ID : 'BL_ID',
+      BL_ID : 'BL_ID',
       // LK_ID : 'LK_ID',
       // casesOption : 'casesOption',
       // allCasesOptions : 'allCasesOptions',

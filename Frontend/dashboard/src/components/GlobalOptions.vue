@@ -1,6 +1,11 @@
 <template>
   <div>
     <div>
+
+    <div id="zoomer">
+      <h1>Auflösung</h1>
+      <v-slider v-model= "zoomstufe" v-bind="zoomsliderOptions" :data="['basycs', 'etwas Wilder', 'Zu Wild', '10/10']" ></v-slider>
+    </div>
       <h1>🗺️Bundesland</h1>
       <v-select
         v-model="BL_ID"
@@ -13,7 +18,7 @@
     </div>
     <div>
       <h1>🗾Landkreis</h1>
-      <v-select v-model="LK_ID" label="LK" :options="counties" :reduce="(item) => item.LK_ID" :clearable="false"></v-select>
+      <v-select v-model="LK_ID" label="LK" :options="counties" :reduce="(item) => item.LK_ID" :clearable="false" @input="setSelCounty"></v-select>
     </div>
     <div>
       <h1>💯Fallzahlen</h1>
@@ -30,18 +35,32 @@ import { mapFields } from 'vuex-map-fields'
 
 export default {
   data: () => ({
-    states: [''],
+    states: [{BL_ID: 0, name: 'Alle'}],
     selectedState: null,
     counties: [''],
     selectedCounty: null,
+    zoomstufe: '',
+    zoomsliderOptions: {
+      min: 0,
+      interval: 1,
+      max: 3,
+      marks: true
+    }
   }),
   methods: {
     setSelState(value) {
       this.LK_ID = null
       this.selectCountiesToState(value)
     },
+    setSelCounty(value){
+      if(!this.BL_ID){
+        console.log(value)
+        this.BL_ID = this.counties.find(e => e.LK_ID == value).BL_ID;
+        this.selectCountiesToState(this.BL_ID)
+      }
+    },
     selectCountiesToState(stateId) {
-      if (stateId) {
+      if (stateId != 0) {
         let state = this.states.find((state) => state.BL_ID === stateId)
         let tempCounties = state.counties
         tempCounties.sort(function(a, b){
@@ -49,8 +68,16 @@ export default {
         })
         this.counties = tempCounties
       } else {
-        // TODO: Hier alle counties einfügen 
-        this.counties = ['']
+       let tempCounties = []
+       for (let i = 1; i < this.states.length; i++)
+        this.states[i].counties.forEach(county => {
+          county.BL_ID = this.states[i].BL_ID
+          tempCounties.push(county)
+        })
+        tempCounties.sort(function(a, b){
+          return a.LK < b.LK ? -1 : 1
+        })
+        this.counties = tempCounties
       }
       this.selectedCounty = null
     },
@@ -61,16 +88,14 @@ export default {
   },
   watch: {
     infectionData: function() {
-      let tempStates = [ ...this.infectionData.states ]
-      tempStates.sort(function(a, b){
-        return a.name < b.name ? -1 : 1
-      })
-      tempStates.unshift({BL_ID: 0, name: 'Alle'})
-      this.states = tempStates
+      initStates(this)
+      this.selectCountiesToState(this.BL_ID)
     },
   },
   mounted() {
-    this.states = this.infectionData.states
+    initStates(this)
+    this.selectCountiesToState(this.BL_ID)
+    // this.states = this.infectionData.states
   },
   computed: {
     ...mapFields({
@@ -81,10 +106,24 @@ export default {
       infectionData : 'infectionData',
     })
   },
-}
+};
+
+function initStates(parent){
+  let tempStates = [ ...parent.infectionData.states ]
+    tempStates.sort(function(a, b){
+      return a.name < b.name ? -1 : 1
+    })
+    tempStates.unshift({BL_ID: 0, name: 'Alle'})
+    parent.states = tempStates
+  }
+
 </script>
 
 <style>
+#zoomer {
+  padding-bottom: 50px;
+}
+
 button {
   padding: 10px 20px;
   border: 1px solid #ddd;
