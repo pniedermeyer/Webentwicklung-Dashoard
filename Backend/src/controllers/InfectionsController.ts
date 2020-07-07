@@ -1,37 +1,37 @@
 import { Request, Response } from 'express'
-import { getRepository } from 'typeorm'
 import { getConnection } from 'typeorm'
 import { Infections } from '../entity/Infections'
-import RkiDataAPI from '../map-data-manager/data-requests/rki-data-request'
+import RkiDataAPI from '../data-requests/rki-data-request'
+import DateUtil from '../utilities/DateUtil'
 
 class InfectionsController {
+  /**
+   * Loads the infection data from the database and sends it back via the respone object
+   * 
+   * @param req Request object from express
+   * @param res Response object from express
+   */
   static async infectionData(req: Request, res: Response) {
     let infections
     const query: any = {
       where: [
         {
-          date: getCurrentDate(),
+          date: DateUtil.getCurrentDate(),
         },
         {
-          date: getOneBeforeCurrentDate(),
+          date: DateUtil.getYesterdayDate(),
         },
       ],
     }
     try {
       infections = await getConnection().getRepository(Infections).find(query)
       const data = normalizeData(infections)
-      // Solange nicht aktiv, bis wir das korrekte Format für den Datenaustausch festgelegt haben
       res.send(data)
     } catch (error) {
       console.log(error)
-      res.status(401).send('FEHLER')
+      res.status(401).send('Error')
     }
-
-    //Nur vorrübergehende Lösung bis die Anbundung an die Datenbank fertig ist. So kann das Frontend mit aktuellen Daten arbeiten
-    //res.send(await RkiDataAPI.get())
   }
-
-  static async updateData() {}
 
   static async writeInfections() {
     const data: any = await RkiDataAPI.get()
@@ -43,7 +43,7 @@ class InfectionsController {
     let cases_per_100k
     let cases_7_per_100k
     let deaths
-    const date = getCurrentDate()
+    const date = DateUtil.getCurrentDate()
     data.states.forEach((state: any) => {
       bl_id = state.BL_ID
       bl_name = state.name
@@ -76,29 +76,8 @@ class InfectionsController {
   }
 }
 
-function getCurrentDate() {
-  const date: Date = new Date()
-  return formatDate(date)
-}
-
-function getOneBeforeCurrentDate() {
-  const today: Date = new Date()
-  const yesterday: Date = new Date(today.getTime())
-  yesterday.setDate(today.getDate() - 1)
-  return formatDate(yesterday)
-}
-
-function formatDate(date: Date) {
-  let dd: any = date.getDate()
-  let mm: any = date.getMonth() + 1
-  const yyyy = date.getFullYear()
-  dd = dd < 10 ? '0' + dd : dd
-  mm = mm < 10 ? '0' + mm : mm
-  return yyyy + '-' + mm + '-' + dd
-}
-
 function normalizeData(infections: any) {
-  let currentDate: string = getCurrentDate()
+  let currentDate: string = DateUtil.getCurrentDate()
   let newFormat: any = {
     name: 'Deutschland',
     cases_DE: 0,

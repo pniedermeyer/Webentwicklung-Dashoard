@@ -4,8 +4,7 @@ import * as bodyParser from 'body-parser'
 import routes from './routes'
 import cors from 'cors'
 import InfectionsController from './controllers/InfectionsController'
-import Scheduler from './map-data-manager/scheduler/scheduler'
-import writeGeoDataInResolutions from './lib/db-imports'
+import Scheduler from './utilities/scheduler'
 
 createConnection()
   .then((connection) => {
@@ -18,7 +17,7 @@ createConnection()
 
     // Set all routes from routes folder
     app.use('/', routes)
-    
+
     app.listen(3001, () => {
       console.log('Server started on port 3001!')
       let infectionDataScheduler: Scheduler = new Scheduler(InfectionsController.writeInfections, { schedule: '0 0 1 * * *' })

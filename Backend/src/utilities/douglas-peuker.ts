@@ -1,7 +1,4 @@
-interface Point {
-  x: number
-  y: number
-}
+import { Point } from './advanced-reduce-points/subclasses'
 
 class Line {
   private p1: Point

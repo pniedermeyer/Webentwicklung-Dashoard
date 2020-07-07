@@ -1,4 +1,3 @@
-
 /**
  * Anzahl grafen
 Auflösung
