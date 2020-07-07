@@ -18,11 +18,14 @@ export class Infections {
   @Column('integer', { name: 'cases' })
   cases!: number
 
-  @Column('double precision', { name: 'cases_per_100k', precision: 53 })
+  @Column('double precision', { name: 'cases_per_100k' })
   casesPer_100k!: number
 
-  @Column('double precision', { name: 'cases_7_per_100k', precision: 53 })
+  @Column('double precision', { name: 'cases_7_per_100k' })
   cases_7Per_100k!: number
+
+  @Column('double precision', { name: 'casesPer_100k_bl' })
+  casesPer_100k_bl!: number
 
   @Column('integer', { name: 'deaths' })
   deaths!: number

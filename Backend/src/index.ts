@@ -9,7 +9,8 @@ import writeGeoDataInResolutions from './lib/db-imports'
 
 createConnection()
   .then((connection) => {
-    InfectionsController.writeInfections()
+    // InfectionsController.writeInfections()
+    
     // create and setup express app
     const app = e()
     app.use(cors())
