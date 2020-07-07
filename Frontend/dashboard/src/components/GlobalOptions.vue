@@ -6,28 +6,30 @@
           <!-- <v-list-item-title class="headline">San Francisco</v-list-item-title>
           <v-list-item-subtitle>Mon, 12:30 PM, Mostly sunny</v-list-item-subtitle>-->
           <div class="d-flex">
-            <v-select
-              :v-model="this.BL_ID"
+            <v-autocomplete
+              v-model="BL_ID"
               :items="states"
+              :search-input.sync="searchBL"
+              @input="setSelState"
               item-text="name"
               item-value="BL_ID"
-              @input="setSelState"
               label="Bundesland"
-              :clearable="false"
               class="mx-3"
               style="width:2%"
-            ></v-select>
-            <v-select
-              :v-model="LK_ID"
+            ></v-autocomplete>
+            <v-autocomplete
+              v-model="LK_ID"
               :items="counties"
+              @input="setSelCounty"
+              hide-no-data
+              hide-selected
               item-text="LK"
               item-value="LK_ID"
               label="Landkreis"
-              @input="setSelCounty"
-              :clearable="false"
               class="mx-3"
               style="width:2%"
-            ></v-select>
+              return-object
+            ></v-autocomplete>
             <v-btn outlined color="primary" class="align-self-center mx-4">
               <span>Find on Map</span>
               <v-icon right>mdi-magnify</v-icon>
@@ -108,6 +110,7 @@ export default {
     counties: [""],
     selectedCounty: null,
     zoomstufe: "",
+    searchBL: "",
     zoomsliderOptions: {
       min: 0,
       interval: 1,
@@ -118,18 +121,18 @@ export default {
   methods: {
     setSelState(value) {
       this.LK_ID = null;
-      this.BL_ID = value;
+      // this.BL_ID = value;
       this.selectCountiesToState(value);
     },
     setSelCounty(value) {
-      this.LK_ID = value;
-      if (!this.BL_ID) {
-        this.BL_ID = this.counties.find(e => e.LK_ID === value).BL_ID;
+      this.LK_ID = value.LK_ID;
+      this.BL_ID = value.BL_ID;
+      // if (!this.BL_ID) {
+      //   this.BL_ID = this.counties.find(e => e.LK_ID === value).BL_ID;
         this.selectCountiesToState(this.BL_ID);
-      }
+      // }
     },
     selectCountiesToState(stateId) {
-      console.log(stateId);
       if (stateId != 0) {
         let state = this.states.find(state => state.BL_ID === stateId);
         let tempCounties = state.counties;
@@ -149,7 +152,6 @@ export default {
         });
         this.counties = tempCounties;
       }
-      console.log(this.counties);
       this.selectedCounty = null;
     },
     saveUserSettings() {
