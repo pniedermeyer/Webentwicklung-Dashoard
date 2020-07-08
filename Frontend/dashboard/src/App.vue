@@ -2,10 +2,14 @@
   <div selectedBL_ID="app">
     <v-app>
       <app-bar />
+
       <div class="d-flex w-100 h-100">
         <Map />
         <!-- <global-options /> -->
       </div>
+
+      <LineChartPopUp/>
+
       <div class="d-flex flex-row">
         <div class="d-flex flex-column">
           <Details :view="0" />
@@ -14,9 +18,6 @@
         </div>
         <div class="d-flex flex-column">
           <bar-chart />
-          <div>
-            <span>Line Chart Filler</span>
-          </div>
         </div>
       </div>
       <b-container class="bv-example-row">
@@ -40,6 +41,7 @@
         </b-row>
       </b-container>
     </v-app>
+
   </div>
 </template>
 
@@ -50,6 +52,7 @@ import NumberInput from "./components/SelectBarsCount.vue";
 import Details from "./components/Details.vue";
 import BarChart from "./components/Barchart.vue";
 import Map from "./components/Map.vue";
+import LineChartPopUp from "./components/LineChartPopUp.vue"
 // import GlobalOptions from "./components/GlobalOptions.vue";
 import axios from "axios";
 import { mapFields } from "vuex-map-fields";
@@ -67,6 +70,7 @@ export default {
     BarChart,
     Map,
     NumberInput,
+    LineChartPopUp,
     // TableComponent,
     Details
     // GlobalOptions

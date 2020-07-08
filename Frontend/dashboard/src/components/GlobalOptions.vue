@@ -163,12 +163,15 @@ export default {
     infectionData: function() {
       initStates(this);
       this.selectCountiesToState(this.BL_ID);
+    },
+    BL_ID: function() {
+      initStates(this);
+      this.selectCountiesToState(this.BL_ID);
     }
   },
   mounted() {
     initStates(this);
     this.selectCountiesToState(this.BL_ID);
-    // this.states = this.infectionData.states
   },
   computed: {
     ...mapFields({
@@ -182,12 +185,22 @@ export default {
 };
 
 function initStates(parent) {
-  let tempStates = [...parent.infectionData.states];
-  tempStates.sort(function(a, b) {
-    return a.name < b.name ? -1 : 1;
-  });
-  tempStates.unshift({ BL_ID: 0, name: "Alle" });
-  parent.states = tempStates;
+  try{
+    let tempStates = [...parent.infectionData.states];
+    tempStates.sort(function(a, b) {
+      return a.name < b.name ? -1 : 1;
+    });
+    tempStates.unshift({ BL_ID: 0, name: "Alle" });
+    parent.states = tempStates;
+  }catch(e){
+    if(e instanceof TypeError){
+      //Is trown when the async loaded data is not yet finished loading. No real Error
+
+      // console.log(e)
+    }else{
+      console.error(e)
+    }
+  }
 }
 </script>
 

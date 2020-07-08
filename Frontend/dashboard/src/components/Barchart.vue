@@ -26,7 +26,14 @@ export default {
      * Handles Click on a Bar -> Emits Event with index of clicked bar to notify other components
      */
     handle(point, event) {
-      event[0] && this.BL_ID != 0 ? (this.LK_ID = this.arrID[event[0]._index]) : ''
+      console.log(this.arrID)
+      if(event[0]){
+        this.LK_ID = this.arrID[event[0]._index][0];
+        if(this.BL_ID == 0){
+          this.BL_ID = this.arrID[event[0]._index][1]
+        }
+      }
+      // event[0] && this.BL_ID != 0 ? (this.LK_ID = this.arrID[event[0]._index][0]) : ''
     },
   },
   computed: {
@@ -68,75 +75,83 @@ export default {
  * Main Function that calculates all the Bar Chart Lenghts and calls helper functions
  */
 function drawChart(parent) {
-  const chartOptions = {
-    scales: {
-      xAxes: [
-        {
-          ticks: {
-            beginAtZero: true,
+  try{
+    const chartOptions = {
+      scales: {
+        xAxes: [
+          {
+            ticks: {
+              beginAtZero: true,
+            },
           },
-        },
-      ],
-    },
-    responsive: true,
-    maintainAspectRatio: false,
-    onClick: parent.handle,
+        ],
+      },
+      responsive: true,
+      maintainAspectRatio: false,
+      onClick: parent.handle,
+    }
+
+    const data = parent.infectionData
+    let arrCounties = []
+    let arrCases = []
+    let arrTopCounty = []
+    let backgroundColor = []
+    let label = ''
+    const hundred = 100
+
+    parent.arrID = []
+
+    //Get the Top Countys
+    arrTopCounty = selectTopCounty(parent.barsShown, parent.BL_ID, data, parent.casesOption)
+
+    //Create an Array of Graphs to show
+    arrTopCounty.forEach((county) => {
+      arrCounties.push(county.LK)
+      parent.arrID.push([county.LK_ID, county.BL_ID])
+      let infectionVal = -1
+      switch (parent.casesOption) {
+        case 'cases':
+          infectionVal = county.cases_LK
+          break
+        case 'cases7_per_100k':
+          infectionVal = Math.round(county.cases7_per_100k_LK * hundred) / hundred
+          break
+        default:
+          infectionVal = Math.round(county.cases_per_100k_LK * hundred) / hundred
+      }
+      arrCases.push(infectionVal)
+      //TODO: Make fillcolor nice and only assign once
+      backgroundColor.push(parent.baseColor)
+    })
+
+    //Label all shown Graphs correctly
+    parent.allCasesOptions.forEach((option) => {
+      if (option.code === parent.casesOption) {
+        label = option.label
+      }
+    })
+
+    //Finally renders all the shown Graphes based on user settings
+    parent.renderChart(
+      {
+        labels: arrCounties,
+        datasets: [
+          {
+            label: label,
+            backgroundColor: backgroundColor,
+            data: arrCases,
+          },
+        ],
+      },
+      chartOptions
+    )
+  }catch(e){
+    if(e instanceof TypeError && !Object.keys(parent.infectionData).length){
+      //The infectionData is not yeat loaded yet - no problem
+    }else{
+      console.error(e)
+    }
   }
-
-  const data = parent.infectionData
-  let arrCounties = []
-  let arrCases = []
-  let arrTopCounty = []
-  let backgroundColor = []
-  let label = ''
-  const hundred = 100
-
-  parent.arrID = []
-
-  //Get the Top Countys
-  arrTopCounty = selectTopCounty(parent.barsShown, parent.BL_ID, data, parent.casesOption)
-
-   //Create an Array of Graphs to show
-  arrTopCounty.forEach((county) => {
-    arrCounties.push(county.LK)
-    parent.arrID.push(county.LK_ID)
-    let infectionVal = -1
-    switch (parent.casesOption) {
-      case 'cases':
-        infectionVal = county.cases_LK
-        break
-      case 'cases7_per_100k':
-        infectionVal = Math.round(county.cases7_per_100k_LK * hundred) / hundred
-        break
-      default:
-        infectionVal = Math.round(county.cases_per_100k_LK * hundred) / hundred
-    }
-    arrCases.push(infectionVal)
-    //TODO: Make fillcolor nice and only assign once
-    backgroundColor.push(parent.baseColor)
-  })
-
-  //Label all shown Graphs correctly
-  parent.allCasesOptions.forEach((option) => {
-    if (option.code === parent.casesOption) {
-      label = option.label
-    }
-  })
-
-  //Finally renders all the shown Graphes based on user settings
-  parent.renderChart(
-    {
-      labels: arrCounties,
-      datasets: [
-        {
-          label: label,
-          backgroundColor: backgroundColor,
-          data: arrCases,
-        },
-      ],
-    },
-    chartOptions
-  )
 }
 
 </script>

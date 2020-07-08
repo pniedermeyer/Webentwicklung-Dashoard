@@ -135,5 +135,6 @@ export default {
 #map-container {
   height: 600px;
   position: relative;
+  z-index: 0
 }
 </style>
