@@ -3,6 +3,10 @@ import DataAPI from './data-request'
 let data: any = null
 
 class RkiDataAPI {
+
+  /** 
+   * Axios request object for infections data from RKI endpoint
+   */
   private static request = {
     method: 'get',
     url:
@@ -10,15 +14,28 @@ class RkiDataAPI {
   }
 
   static ON_NEW_DATA = 'onNewData'
+  
+  /**
+   * Method that requests the infections data from RKI endpoint and transforms
+   * and returns it.
+   */
   static get() {
     if (data !== null) {
-      console.log('from cash')
+      console.log('from cache')
       return new Promise((resolve, reject) => {
         resolve(data)
       })
     }
     return DataAPI.get(this.request, normaliseData)
 
+    /**
+     * We transform the original data into our own format consisting of different
+     * aggregations. Top level we aggregate the infections in germany. Inside this
+     * we aggregate data for the 16 states. In the states we then save each of the
+     * counties data.
+     * 
+     * @param originalData data that we received from the RKI infections endpoint
+     */
     function normaliseData(originalData: any) {
       let lk_id = 0
       const germanyData: any = {
@@ -35,6 +52,7 @@ class RkiDataAPI {
       germanyData.states = originalData.features.reduce((acc: any, county: any) => {
         const index = county.attributes.BL_ID - 1
         lk_id += 1
+        // Not the same state as before? --> new state object
         if (!acc[index]) {
           acc[index] = {
             BL_ID: index + 1,
@@ -57,6 +75,7 @@ class RkiDataAPI {
           recovered = 0
         }
 
+        // County information is the granularity delivered from RKI
         const newCounty = {
           LK_ID: lk_id,
           LK: county.attributes.county,
@@ -71,6 +90,7 @@ class RkiDataAPI {
         }
         state.counties.push(newCounty)
 
+        // Aggregate state data
         state.cases_BL += newCounty.cases_LK
         state.deaths_BL += newCounty.deaths_LK
         state.cases_per_100k_BL += newCounty.cases_per_100k_LK
@@ -79,6 +99,7 @@ class RkiDataAPI {
         state.change_BL += newCounty.change_LK
         state.new_cases_BL += newCounty.new_cases_LK
 
+        // Aggregate data for all of germany
         germanyData.cases_DE += newCounty.cases_LK
         germanyData.deaths_DE += newCounty.deaths_LK
         germanyData.cases_per_100k_DE += newCounty.cases_per_100k_LK
