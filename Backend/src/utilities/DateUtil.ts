@@ -22,6 +22,7 @@ class DateUtil {
    * Formats the given date into the format (YYYY-MM-DD)
    * 
    * @param date the date to be parsed into the format
+   * @returns the given date in Format (YYYY-MM-DD)
    */
   static formatDate (date: Date) {
     let dd_num: number = date.getDate()
