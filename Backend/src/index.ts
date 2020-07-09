@@ -8,6 +8,7 @@ import Scheduler from './utilities/scheduler'
 
 createConnection()
   .then((connection) => {
+    // todo
     // InfectionsController.writeInfections()
     
     // create and setup express app
@@ -20,7 +21,7 @@ createConnection()
 
     app.listen(3001, () => {
       console.log('Server started on port 3001!')
-      let infectionDataScheduler: Scheduler = new Scheduler(InfectionsController.writeInfections, { schedule: '0 0 1 * * *' })
+      const infectionDataScheduler = new Scheduler(InfectionsController.writeInfections, { schedule: '0 0 1 * * *' })
       infectionDataScheduler.start()
       console.log('Scheduler started')
     })

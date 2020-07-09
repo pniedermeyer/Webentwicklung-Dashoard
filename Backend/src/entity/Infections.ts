@@ -1,5 +1,9 @@
 import { Column, Entity, Index } from 'typeorm'
 
+/**
+ * Entity class for infections data.
+ * When querying the database we get an array of instances of this class.
+ */
 @Index('infections_pkey', ['blId', 'date', 'lkId'], { unique: true })
 @Entity('infections', { schema: 'public' })
 export class Infections {

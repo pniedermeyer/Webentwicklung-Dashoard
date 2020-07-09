@@ -6,16 +6,19 @@
           <b-container class="bv-example-row">
             <b-row>
               <b-col>
-                Fälle
+                <p>Fälle</p>
                 {{this.data.cases}}
               </b-col>
               <b-col>
-                Fälle per 100k
+                <p>Fälle per 100k</p>
                 {{this.data.cases100k}}
               </b-col>
               <b-col>
-                Fälle per 100k letze 7 Tage
+                <p>Fälle per 100k letze 7 Tage</p>
                 {{this.data.cases100k7}}
+              </b-col>
+              <b-col>
+                <LineChart :data="this.data.casesArr" :label="'Fälle gesamt'" v-on:lineclick="doSomething"></LineChart>
               </b-col>
             </b-row>
             <b-row>
@@ -26,8 +29,13 @@
         <b-tab title="Vergleich">
           <b-container class="bv-example-row">
             <b-row>
-              Neuinfektionen
-              {{this.data.newInfections}}
+              <b-col>
+                <p>Neuinfektionen</p>
+                {{this.data.newInfections}}
+              </b-col>
+              <b-col>
+                <LineChart :data="this.data.newInfectionsArr" :label="'Tägiche Neuinfektionen'"></LineChart>
+              </b-col>
             </b-row>
             <b-row>
               {{this.data.name}}
@@ -46,14 +54,23 @@
         </b-tab>
       </b-tabs>
     </b-card>
+
+    
+
+
+
   </div>
 </template>
 
 <script>
 import { mapFields } from "vuex-map-fields";
+import LineChart from "./LineChart.vue"
 
 export default {
   name: "Details",
+  components: {
+    LineChart
+  },
   data() {
     return {
       data:{
@@ -62,8 +79,11 @@ export default {
         cases100k : "",
         cases100k7 : "",
         newInfections : "",
-        deaths : ""
-      }
+        deaths : "",
+        casesArr : [],
+        newInfectionsArr : []
+      },
+      dialog: this.lineChartDialogConfig //Change on click event
     }
   },
   props: {
@@ -81,34 +101,49 @@ export default {
     },
     infectionData: function() {
       fillData(this)
-    }
+    },
+    // lineChartDialogConfig: function() {
+    //   console.log("oainf")
+    //   this.dialog = true
+    // },
   },
   computed: {
     ...mapFields({
       BL_ID: "BL_ID",
       LK_ID: "LK_ID",
-      infectionData: "infectionData"
+      infectionData: "infectionData",
+      lineChartDialogConfig: 'lineChartDialogConfig'  
     })
+  },
+  methods: {
+    doSomething: function() {
+      console.log("ofn");
+      this.lineChartDialogConfig = 'Chabos wissen wer der Babo ist'
+      this.dialog = true
+      // return ""
+    }
   }
+
 };
 
 function fillData(parent){
   if(parent.infectionData){
     switch(parent.view) {
       case 0:
-      console.log("0")
-      console.log(parent.infectionData)
-
+      //Deutschand view
       parent.data = {
         name : parent.infectionData.name,
         cases : parent.infectionData.cases_DE,
         cases100k : Math.round(parent.infectionData.cases_per_100k_DE * 100) / 100,
         cases100k7 : Math.round(parent.infectionData.cases7_per_100k_DE * 100) / 100,
         newInfections : parent.infectionData.new_cases_DE,
-        deaths : parent.infectionData.deaths_DE
+        deaths : parent.infectionData.deaths_DE,
+        casesArr : parent.infectionData.cases_Arr ? parent.infectionData.cases_Arr : [1,1,2,3,5,8],
+        newInfectionsArr : parent.infectionData.newInfections_Arr ? parent.infectionData.newInfections_Arr : [4,5,9,7,1,3]
       }
       break;
       case 1:
+      //BL view
         if(parent.BL_ID){
           let BLdata = parent.infectionData.states.find(e => e.BL_ID === parent.BL_ID)
 
@@ -118,13 +153,16 @@ function fillData(parent){
             cases100k : Math.round(BLdata.cases_per_100k_BL * 100) / 100,
             cases100k7 : Math.round(BLdata.cases7_per_100k_BL * 100) / 100,
             newInfections : BLdata.new_cases_BL,
-            deaths : BLdata.deaths_BL
+            deaths : BLdata.deaths_BL,
+            casesArr : BLdata.cases_Arr ? BLdata.cases_Arr : [4,7,9,1,3,5],
+            newInfectionsArr : BLdata.newInfections_Arr ? BLdata.newInfections_Arr : [1,2,6,4,7,9]
           }
         }else{
           empty(parent);
         }
       break;
       case 2:
+      //LK view
       if(parent.BL_ID && parent.LK_ID){
         let LKdata = parent.infectionData.states.find(e => e.BL_ID === parent.BL_ID).counties.find(ee => ee.LK_ID === parent.LK_ID)
 
@@ -134,9 +172,10 @@ function fillData(parent){
           cases100k : Math.round(LKdata.cases_per_100k_LK * 100) / 100,
           cases100k7 : Math.round(LKdata.cases7_per_100k_LK * 100) / 100,
           newInfections : LKdata.new_cases_LK,
-          deaths : LKdata.deaths_LK
+          deaths : LKdata.deaths_LK,
+          casesArr : LKdata.cases_Arr ? LKdata.cases_Arr : [1,1,1,2,2,8],
+          newInfectionsArr : LKdata.newInfections_Arr ? LKdata.newInfections_Arr : [1,2,3,4,5,6]
         }
-        console.log(parent.infectionData)
       }else{
         empty(parent)
       }
