@@ -1,12 +1,16 @@
-import { Router, Request, Response } from "express";
-import geodata from "./geodata"
-import infections from "./infections"
-import settings from "./settings"
+import { Router } from 'express'
+import geodata from './geodata'
+import infections from './infections'
+import settings from './settings'
 
-const router = Router();
+/**
+ * Base router to be used in the express app.
+ * Contains all of the routers for different url paths.
+ */
+const router = Router()
 
-router.use("/geodata", geodata)
-router.use("/settings", settings)
-router.use("/data", infections)
+router.use('/geodata', geodata)
+router.use('/settings', settings)
+router.use('/data', infections)
 
-export default router;
+export default router

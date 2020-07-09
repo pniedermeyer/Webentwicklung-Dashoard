@@ -1,5 +1,9 @@
-import { CronJob, CronTime, CronCommand } from 'cron'
+import { CronJob, CronCommand } from 'cron'
 
+/**
+ * Simple scheduler class that can be instantiated with a function and a schedule.
+ * The given function will then be executed in the given schedule.
+ */
 class Scheduler {
   private job: CronJob | null
   private schedule: string = ''
@@ -19,7 +23,6 @@ class Scheduler {
     if (this.job === null) {
       this.job = this.createJob(this.schedule)
     }
-    // this.job = this.job ?? this.createJob(this.schedule)
     if (!this.job.running) {
       this.job.start()
     }

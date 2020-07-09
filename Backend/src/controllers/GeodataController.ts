@@ -8,7 +8,7 @@ import { mapResolutionToEpsilon, mapResolutionToInt } from '../utilities/resolut
 class GeoDataController {
   
   /**
-   * Reads geodata from the database as Geojson in the requested resolution
+   * Reads geodata from the database as geojson in the requested resolution
    * and sends it back via the response object
    * 
    * @param req Request object from express
