@@ -21,7 +21,7 @@ export default {
   methods: {
     handle: function() {
       // this.lineChartDialogConfig = 'GEÄNDERT'
-      this.$emit('lineclick')
+      this.$emit('lineclick', this)
     }
 
   },

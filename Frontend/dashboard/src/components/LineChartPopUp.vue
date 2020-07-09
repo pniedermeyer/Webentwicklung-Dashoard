@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-      v-model="lineChartDialogConfig"
+      v-model="lineChartDialogConfig.shown"
       width="500"
     >
       <v-card>
@@ -8,11 +8,11 @@
           class="headline grey lighten-2"
           primary-title
         >
-          Hier kommen die erweiterten Infos und großer Graph hin
+          {{lineChartDialogConfig.label}}
         </v-card-title>
 
         <v-card-text>
-          BLA BLA BLA
+          <LineChart :data="lineChartDialogConfig.data" :label="lineChartDialogConfig.label" :labelShown="true"></LineChart>
         </v-card-text>
 
         <v-divider></v-divider>
@@ -22,7 +22,7 @@
           <v-btn
             color="primary"
             text
-            @click="lineChartDialogConfig=null"
+            @click="closePopup"
           >
             Mach zu den Scheiß
           </v-btn>
@@ -33,6 +33,7 @@
 
 <script>
 import { mapFields } from "vuex-map-fields";
+import LineChart from "./LineChart.vue"
 
 
 export default {
@@ -42,7 +43,14 @@ export default {
       lineChartDialogConfig: 'lineChartDialogConfig'  
     })
   },
-
+  components: {
+    LineChart
+  },
+  methods: {
+    closePopup(){
+      this.lineChartDialogConfig = {data: [], label:'', shown: false}
+    }
+  }
 }
 </script>
 

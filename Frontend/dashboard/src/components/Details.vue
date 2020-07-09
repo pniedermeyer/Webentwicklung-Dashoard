@@ -34,7 +34,7 @@
                 {{this.data.newInfections}}
               </b-col>
               <b-col>
-                <LineChart :data="this.data.newInfectionsArr" :label="'Tägiche Neuinfektionen'"></LineChart>
+                <LineChart :data="this.data.newInfectionsArr" :label="'Tägiche Neuinfektionen'" v-on:lineclick="doSomething"></LineChart>
               </b-col>
             </b-row>
             <b-row>
@@ -116,9 +116,12 @@ export default {
     })
   },
   methods: {
-    doSomething: function() {
-      console.log("ofn");
-      this.lineChartDialogConfig = 'Chabos wissen wer der Babo ist'
+    doSomething: function(value) {
+      //console.log(value);
+      this.lineChartDialogConfig = {
+        label: value.label + " - " + this.data.name,
+        data: value.data,
+        shown: true}
       this.dialog = true
       // return ""
     }

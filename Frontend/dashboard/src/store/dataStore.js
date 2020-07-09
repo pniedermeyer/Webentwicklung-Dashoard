@@ -28,7 +28,7 @@ export default new Vuex.Store({
     mapPosition: [51.9, 10.26], // Middlepoint of Germany
     mapResolution: 2, // lowest Resolution
     // Linechart Dialog
-    lineChartDialogConfig: null // Config for Chart Dialog
+    lineChartDialogConfig: { data: [], label: '', shown: false} // Config for Chart Dialog
   },
   getters: {
     getField
