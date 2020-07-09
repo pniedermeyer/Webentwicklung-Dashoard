@@ -1,11 +1,11 @@
 <template>
   <div id="global-options-container">
-    <v-card class="w-75">
+    <v-card id="d-large" class="w-75 d-none d-md-flex">
       <v-list-item two-line>
         <v-list-item-content>
           <!-- <v-list-item-title class="headline">San Francisco</v-list-item-title>
           <v-list-item-subtitle>Mon, 12:30 PM, Mostly sunny</v-list-item-subtitle>-->
-          <div class="d-flex">
+          <div class="d-flex flex-column flex-md-row">
             <v-autocomplete
               v-model="BL_ID"
               :items="states"
@@ -14,8 +14,8 @@
               item-text="name"
               item-value="BL_ID"
               label="Bundesland"
-              class="mx-3"
-              style="width:2%"
+              class="px-3"
+              style="width:100%; margin:0px !important; padding"
             ></v-autocomplete>
             <v-autocomplete
               v-model="LK_ID"
@@ -26,17 +26,44 @@
               item-text="LK"
               item-value="LK_ID"
               label="Landkreis"
-              class="mx-3"
-              style="width:2%"
+              class="px-3"
+              style="width:100%; margin:0px !important"
               return-object
             ></v-autocomplete>
             <v-btn outlined color="primary" class="align-self-center mx-4">
-              <span>Find on Map</span>
-              <v-icon right>mdi-magnify</v-icon>
+              <span class="d-none d-sm-flex">Find on Map</span>
+              <v-icon right class="d-none d-sm-flex">mdi-magnify</v-icon>
+              <v-icon class="d-flex d-sm-none">mdi-magnify</v-icon>
             </v-btn>
           </div>
-          <div>
-            <v-slider :max="3" :tick-labels="mapResolutions" class="mx-5" ticks></v-slider>
+          <div class="d-flex">
+            <v-slider
+              :max="2"
+              :tick-labels="allCasesOptions.map(item => item.label)"
+              class="mx-5"
+              ticks
+              @input="setCaseOption"
+            ></v-slider>
+            <v-slider
+              v-model="resolutionSliderPos"
+              :min="-3"
+              :max="0"
+              @input="setMapResolution"
+              :tick-labels="this.mapResolutions"
+              class="mx-5 d-none d-md-flex"
+              ticks
+            ></v-slider>
+            <div class="d-flex flex-column d-md-none w-50">
+              <v-slider
+                v-model="resolutionSliderPos"
+                :min="-3"
+                :max="0"
+                @input="setMapResolution"
+                class="mx-2"
+                ticks
+              ></v-slider>
+              <span class="d-flex">Text</span>
+            </div>
           </div>
         </v-list-item-content>
       </v-list-item>
@@ -54,6 +81,7 @@
         </v-row>
       </v-card-text>-->
     </v-card>
+    <v-card id="d-small" class="w-100 d-flex d-md-none">Test</v-card>
     <!-- <div>
       <div id="zoomer">
         <h1>Auflösung</h1>
@@ -104,8 +132,10 @@ import { mapFields } from "vuex-map-fields";
 
 export default {
   data: () => ({
+    resolutionSliderPos: -3,
     states: [{ BL_ID: 0, name: "Alle" }],
     mapResolutions: ["Low", "Medium", "High", "Original"],
+    casesOptions: ["Alle", "100K", "100K / 7 Tage"],
     selectedState: null,
     counties: [""],
     selectedCounty: null,
@@ -120,6 +150,7 @@ export default {
   }),
   methods: {
     setSelState(value) {
+      console.log(this.casesOptions);
       this.LK_ID = null;
       // this.BL_ID = value;
       this.selectCountiesToState(value);
@@ -129,8 +160,18 @@ export default {
       this.BL_ID = value.BL_ID;
       // if (!this.BL_ID) {
       //   this.BL_ID = this.counties.find(e => e.LK_ID === value).BL_ID;
-        this.selectCountiesToState(this.BL_ID);
+      this.selectCountiesToState(this.BL_ID);
       // }
+    },
+    setMapResolution(value) {
+      value++;
+      if (value > 0) {
+        value = 0;
+      }
+      this.mapResolution = Math.abs(value);
+    },
+    setCaseOption(caseOption) {
+      this.casesOption = this.allCasesOptions[caseOption].code;
     },
     selectCountiesToState(stateId) {
       if (stateId != 0) {
@@ -176,7 +217,8 @@ export default {
       LK_ID: "LK_ID",
       casesOption: "casesOption",
       allCasesOptions: "allCasesOptions",
-      infectionData: "infectionData"
+      infectionData: "infectionData",
+      mapResolution: "mapResolution"
     })
   }
 };
@@ -210,12 +252,19 @@ v-select {
   cursor: pointer;
 }
 
-#global-options-container {
+#d-large {
   position: absolute;
   bottom: 2%;
-  left: 25%;
+  left: 12.5%;
   z-index: 1001;
   width: 75%;
+}
+
+#d-small {
+  position: absolute;
+  bottom: 2%;
+  z-index: 1001;
+  width: 100%;
 }
 </style>
 

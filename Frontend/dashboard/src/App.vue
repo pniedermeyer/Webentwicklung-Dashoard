@@ -1,51 +1,52 @@
 <template>
-  <div selectedBL_ID="app">
-    <v-app>
-      <app-bar />
-      <div class="d-flex w-100 h-100">
-        <Map />
-        <!-- <global-options /> -->
+  <!-- <div selectedBL_ID="app"> -->
+  <v-app>
+    <app-bar />
+    <div class="d-flex w-100 h-100">
+      <Map />
+      <!-- <global-options /> -->
+    </div>
+    <div class="d-flex flex-row">
+      <div class="d-flex flex-column w-50">
+        <Details :view="0" />
+        <Details :view="1" />
+        <Details :view="2" />
       </div>
-      <div class="d-flex flex-row">
-        <div class="d-flex flex-column">
-          <Details :view="0" />
-          <Details :view="1" />
-          <Details :view="2" />
-        </div>
-        <div class="d-flex flex-column">
-          <bar-chart />
-          <div>
-            <span>Line Chart Filler</span>
-          </div>
+      <div class="d-flex flex-column">
+        <bar-chart />
+        <div>
+          <span>Line Chart Filler</span>
+          <!-- <number-input /> -->
         </div>
       </div>
-      <b-container class="bv-example-row">
+    </div>
+    <!-- <b-container class="bv-example-row">
         <b-row>
           <b-col>
             1 of 3:
             <number-input />
-            <!-- <bar-chart></bar-chart> -->
+            <bar-chart></bar-chart>
           </b-col>
           <b-col>
-            <!-- 2 of 3
-            <Map></Map>-->
+            2 of 3
+            <Map></Map>
           </b-col>
           <b-col>
-            <!-- 3 of 3 -->
-            <!-- <GlobalOptions></GlobalOptions> -->
-            <!-- <Details :view="0" />
+            3 of 3
+            <GlobalOptions></GlobalOptions>
+            <Details :view="0" />
             <Details :view="1" />
-            <Details :view="2" />-->
+            <Details :view="2" />
           </b-col>
         </b-row>
-      </b-container>
-    </v-app>
-  </div>
+    </b-container>-->
+  </v-app>
+  <!-- </div> -->
 </template>
 
 <script>
 import AppBar from "./components/AppBar.vue";
-import NumberInput from "./components/SelectBarsCount.vue";
+//import NumberInput from "./components/SelectBarsCount.vue";
 // import TableComponent from "./components/TableComponent.vue";
 import Details from "./components/Details.vue";
 import BarChart from "./components/Barchart.vue";
@@ -66,7 +67,7 @@ export default {
     AppBar,
     BarChart,
     Map,
-    NumberInput,
+    // NumberInput,
     // TableComponent,
     Details
     // GlobalOptions

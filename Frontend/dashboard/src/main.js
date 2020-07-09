@@ -1,8 +1,8 @@
 import Vue from 'vue'
 
-import BootstrapVue from 'bootstrap-vue'
+// import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
+// import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css'
@@ -20,7 +20,7 @@ import App from './App.vue'
 import store from './store/dataStore.js'
 import vuetify from './plugins/vuetify'
 
-Vue.use(BootstrapVue)
+// Vue.use(BootstrapVue)
 Vue.config.productionTip = false
 
 Vue.component('v-select', vSelect)

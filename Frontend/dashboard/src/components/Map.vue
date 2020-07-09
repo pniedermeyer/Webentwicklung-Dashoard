@@ -129,11 +129,15 @@ export default {
 @import "../../node_modules/leaflet/dist/leaflet.css";
 #map {
   height: 100%;
+  /* background: rgb(127, 127, 243); */
   /* height: 100%; */
 }
 
 #map-container {
   height: 600px;
   position: relative;
+}
+.leaflet-container {
+  background-color: rgba(183, 183, 246, 0.308);
 }
 </style>

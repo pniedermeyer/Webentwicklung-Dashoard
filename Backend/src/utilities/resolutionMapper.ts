@@ -2,26 +2,26 @@ function mapResolutionToEpsilon(resolution: String) {
   switch (resolution) {
     case 'low':
       return 0.0001
-      break
     case 'medium':
       return 0.00001
-    default:
+    case 'high':
       return 0.000001
-      break
+    default:
+      return 0
   }
 }
 
 function mapResolutionToInt(resolution: String) {
   switch (resolution) {
     case 'low':
-      return 2
-      break
+      return 3
     case 'medium':
+      return 2
+    case 'high':
       return 1
     default:
       return 0
-      break
   }
 }
 
-export {mapResolutionToEpsilon, mapResolutionToInt}
+export { mapResolutionToEpsilon, mapResolutionToInt }

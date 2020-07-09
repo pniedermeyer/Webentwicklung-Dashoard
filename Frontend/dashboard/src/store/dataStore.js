@@ -12,9 +12,9 @@ export default new Vuex.Store({
     LK_ID: 0,
     casesOption: 'cases7_per_100k',
     allCasesOptions: [
-      { label: 'Alle Fälle', code: 'cases' },
-      { label: 'Fälle / 100k', code: 'cases_per_100k' },
-      { label: 'Fälle / 100k letzte 7 Tage', code: 'cases7_per_100k' }
+      { label: 'Alle', code: 'cases' },
+      { label: '100k', code: 'cases_per_100k' },
+      { label: '100k / 7 Tage', code: 'cases7_per_100k' },
     ],
     // TODO: remove example data for production
     infectionData: require('../../../../Backend/example_response.json'),
@@ -27,14 +27,14 @@ export default new Vuex.Store({
     // Map items
     mapZoom: 5,
     mapPosition: [51.9, 10.26], // Middlepoint of Germany
-    mapResolution: 2 // lowest Resolution
+    mapResolution: 2, // lowest Resolution
   },
   getters: {
-    getField
+    getField,
   },
   mutations: {
     updateField,
-    setFields (state, payload) {
+    setFields(state, payload) {
       for (const changedFieldName of Object.keys(payload)) {
         if (changedFieldName in state) {
           if (state[changedFieldName] !== payload[changedFieldName]) {
@@ -44,6 +44,6 @@ export default new Vuex.Store({
           console.warn('Tried to update a non-existing property in the vuex state: ' + changedFieldName)
         }
       }
-    }
-  }
+    },
+  },
 })
