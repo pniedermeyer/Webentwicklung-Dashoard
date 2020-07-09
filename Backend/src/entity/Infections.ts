@@ -24,7 +24,8 @@ export class Infections {
   @Column('double precision', { name: 'cases_7_per_100k' })
   cases_7Per_100k!: number
 
-  @Column('double precision', { name: 'casesPer_100k_bl' })
+  // todo:lraubuch remove default value when possible
+  @Column('double precision', { name: 'casesPer_100k_bl', default: 0 })
   casesPer_100k_bl!: number
 
   @Column('integer', { name: 'deaths' })

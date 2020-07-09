@@ -20,7 +20,6 @@
         "ts-node": "3.3.0"
     },
     "dependencies": {
-        "@types/cors": "^2.8.6",
         "@types/geojson": "^7946.0.7",
         "axios": "^0.19.2",
         "cors": "^2.8.5",

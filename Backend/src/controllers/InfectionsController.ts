@@ -42,6 +42,7 @@ class InfectionsController {
     let cases
     let cases_per_100k
     let cases_7_per_100k
+    let casesPer_100k_bl
     let deaths
     const date = DateUtil.getCurrentDate()
     data.states.forEach((state: any) => {
@@ -53,6 +54,8 @@ class InfectionsController {
         cases = county.cases_LK
         cases_per_100k = county.cases_per_100k_LK
         cases_7_per_100k = county.cases7_per_100k_LK
+        casesPer_100k_bl = 0 // todo:lraubuch
+
         deaths = county.deaths_LK
 
         getConnection()
@@ -67,6 +70,7 @@ class InfectionsController {
             cases: cases,
             casesPer_100k: cases_per_100k,
             cases_7Per_100k: cases_7_per_100k,
+            casesPer_100k_bl,
             deaths: deaths,
             date: date,
           })

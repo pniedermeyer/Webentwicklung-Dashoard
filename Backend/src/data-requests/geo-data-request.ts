@@ -1,5 +1,4 @@
 import DataAPI from './data-request'
-import { FeatureCollection } from 'geojson'
 
 let geoData: any = null
 
