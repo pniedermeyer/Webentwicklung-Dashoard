@@ -8,8 +8,9 @@ import Scheduler from './utilities/scheduler'
 
 createConnection()
   .then((connection) => {
-    // After starting the backend we first try to get the current data
-    InfectionsController.writeInfections()
+    // todo
+    // InfectionsController.writeInfections()
+    
     // create and setup express app
     const app = e()
     app.use(cors())
