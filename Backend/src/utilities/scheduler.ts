@@ -39,7 +39,7 @@ class Scheduler {
   }
 
   executeOutOfSchedule() {
-    this.jobFunction
+    this.jobFunction;
   }
 }
 

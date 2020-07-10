@@ -1,0 +1,44 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "zoom": {
+            "type": "number"
+        },
+        "graphsShown": {
+            "type": "number"
+        },
+        "lkId": {
+            "type": "number"
+        },
+        "blId": {
+            "type": "number"
+        },
+        "metric": {
+            "enum": [
+                "cases",
+                "cases_per_100_k",
+                "cases7_per_100_K",
+                "cases7_per_100_K_BL"
+            ]
+        },
+        "table": {
+            "type": "array",
+            "additionalItems": false,
+            "items": {
+                "type": "array",
+                "additionalItems": false,
+                "items": {
+                    "type": "number"
+                }
+            }
+        }
+    },
+    "definitions": {
+        "queryProperty": {
+            "type": "boolean",
+            "default": "true"
+        }
+    }
+}

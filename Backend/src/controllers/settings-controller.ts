@@ -5,22 +5,31 @@ import _ from 'lodash'
 const GUID_HEADER = 'x-guid';
 
 async function getHandler(req: express.Request, res: express.Response) {
+    console.log(req.body)
   try {
     const result = await getConnection().query(
-      `SELECT 
+      `
+        UPDATE "settings" 
+        SET 
+            last_accessed = NOW() 
+        WHERE "guid" = $1
+        RETURNING
             "zoom",
             "graphs_shown" AS graphsShown,
             "lk_id" AS lkId,
             "bl_id" AS blId,
             "metric",
-            "table"
-       FROM "settings" 
-       WHERE "guid" = $1;`,
+            "table";
+      `,
       [req.header(GUID_HEADER)]
     );
 
+        console.log(result[0][0])
+
     if (result.length > 0) {
-        const response = _.pickBy(result[0], (value, key) => !!req.body[key.toLowerCase()]);
+        // postgres returns all names in lowercase, the following line will convert all keys in the body to lowercase
+        req.body = _.mapKeys(req.body, (value, key) => key.toLowerCase())
+        const response = _.pickBy(result[0][0], (value, key) => !!req.body[key]);
         if (response.table) {
             response.table = JSON.parse(response.table)
         }
@@ -55,9 +64,19 @@ async function putHandler(
   try {
     await getConnection().query(
       `
-            INSERT INTO "settings" ("guid", "zoom", "graphs_shown", "lk_id", "bl_id", "metric", "table") 
+            INSERT INTO "settings" (
+                "guid", 
+                "last_accessed", 
+                "zoom", 
+                "graphs_shown", 
+                "lk_id", 
+                "bl_id", 
+                "metric", 
+                "table"
+            ) 
             VALUES (
                 $1,
+                NOW(),
                 COALESCE($2, 1),
                 COALESCE($3, 1),
                 COALESCE($4, 0),
@@ -68,6 +87,7 @@ async function putHandler(
             ON CONFLICT("guid")
             DO
                 UPDATE SET
+                    "last_accessed" = NOW(),
                     "zoom" = COALESCE($2, settings.zoom),
                     "graphs_shown" = COALESCE($3, settings.graphs_shown),
                     "lk_id" = COALESCE($4, settings.lk_id),
@@ -121,20 +141,3 @@ export = {
     authorize,
   },
 };
-
-/**
- table SQL
- 
- DROP TABLE settings;
-
- CREATE TABLE settings (
-	guid INT PRIMARY KEY,
-	zoom INT,
-	graphs_shown INT,
-	lk_id INT,
-	bl_id INT,
-	metric VARCHAR(25),
-	"table" VARCHAR(512)
-)
-
- */

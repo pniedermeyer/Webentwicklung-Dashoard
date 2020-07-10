@@ -1,0 +1,31 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "zoom": {
+            "type": "boolean",
+            "default": true
+        },
+        "graphsShown": {
+            "type": "boolean",
+            "default": true
+        },
+        "lkId": {
+            "type": "boolean",
+            "default": true
+        },
+        "blId": {
+            "type": "boolean",
+            "default": true
+        },
+        "metric": {
+            "type": "boolean",
+            "default": true
+        },
+        "table": {
+            "type": "boolean",
+            "default": true
+        }
+    }
+}
