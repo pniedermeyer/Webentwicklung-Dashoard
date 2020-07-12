@@ -20,8 +20,12 @@ import App from './App.vue'
 import store from './store/dataStore.js'
 import vuetify from './plugins/vuetify'
 
+import { Line } from 'vue-chartjs'
+
 // Vue.use(BootstrapVue)
 Vue.config.productionTip = false
+
+Vue.component('v-line', Line)
 
 Vue.component('v-select', vSelect)
 

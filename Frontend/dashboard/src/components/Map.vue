@@ -136,6 +136,7 @@ export default {
 #map-container {
   height: 600px;
   position: relative;
+  z-index: 0
 }
 .leaflet-container {
   background-color: rgba(183, 183, 246, 0.308);

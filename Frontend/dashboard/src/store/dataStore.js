@@ -16,8 +16,7 @@ export default new Vuex.Store({
       { label: '100k', code: 'cases_per_100k' },
       { label: '100k / 7 Tage', code: 'cases7_per_100k' },
     ],
-    // TODO: remove example data for production
-    infectionData: require('../../../../Backend/example_response.json'),
+    infectionData: {},
     baseColor: 'Coral',
     // Table items
     tableSelectedItemsID: [[2, 6], [], [0, 20, 40]],
@@ -28,6 +27,8 @@ export default new Vuex.Store({
     mapZoom: 5,
     mapPosition: [51.9, 10.26], // Middlepoint of Germany
     mapResolution: 2, // lowest Resolution
+    // Linechart Dialog
+    lineChartDialogConfig: { data: [], label: '', shown: false }, // Config for Chart Dialog
   },
   getters: {
     getField,

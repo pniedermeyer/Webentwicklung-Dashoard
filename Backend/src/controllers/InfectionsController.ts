@@ -1,30 +1,65 @@
 import { Request, Response } from 'express'
-import { getConnection } from 'typeorm'
+import { getConnection, MoreThanOrEqual } from 'typeorm'
 import { Infections } from '../entity/Infections'
+import { InfectionsDE } from '../entity/InfectionsDE'
 import RkiDataAPI from '../data-requests/rki-data-request'
 import DateUtil from '../utilities/DateUtil'
+import { InfectionsBL } from '../entity/InfectionsBL'
+import { InfectionsLK } from '../entity/InfectionsLK'
+import { Inflate } from 'zlib'
 
 class InfectionsController {
   /**
    * Loads the infection data from the database and sends it back via the respone object
-   * 
+   *
    * @param req Request object from express
    * @param res Response object from express
    */
   static async infectionData(req: Request, res: Response) {
     let infections
-    const query: any = {
-      where: [
-        {
-          date: DateUtil.getCurrentDate(),
-        },
-        {
-          date: DateUtil.getYesterdayDate(),
-        },
-      ],
-    }
+    let date: Date = new Date(DateUtil.getCurrentDate())
+    let numberOfPreviousDays: number = <number>(<unknown>req.query.numberOfPreviousDays) ?? 0
+    date.setDate(date.getDate() - numberOfPreviousDays)
+    // const query: any = {
+    //   where: [
+    //     {
+    //       date: DateUtil.getCurrentDate(),
+    //     },
+    //     {
+    //       date: DateUtil.getYesterdayDate(),
+    //     },
+    //   ],
+    // }
     try {
-      infections = await getConnection().getRepository(Infections).find(query)
+      //   const loadedPosts = await connection.getRepository(Post).find({
+      //     likes: MoreThanOrEqual(10)
+      // });
+
+      infections = await getConnection()
+        .getRepository(InfectionsDE)
+        .find({
+          date: MoreThanOrEqual(date.toDateString()),
+        })
+
+      infections = infections.concat(
+        await getConnection()
+          .getRepository(InfectionsBL)
+          .find({
+            date: MoreThanOrEqual(date.toDateString()),
+          })
+      )
+
+      infections = infections.concat(
+        await getConnection()
+          .getRepository(InfectionsLK)
+          .find({
+            date: MoreThanOrEqual(date.toDateString()),
+          })
+      )
+
+      // console.log(infections)
+
+      // infections = await getConnection().getRepository(Infections).find(query)
       const data = normalizeData(infections)
       res.send(data)
     } catch (error) {
@@ -35,48 +70,179 @@ class InfectionsController {
 
   static async writeInfections() {
     const data: any = await RkiDataAPI.get()
-    let bl_id: any
-    let bl_name: any
-    let lk_id
-    let lk_name
-    let cases
-    let cases_per_100k
-    let cases_7_per_100k
-    let deaths
-    const date = DateUtil.getCurrentDate()
-    data.states.forEach((state: any) => {
-      bl_id = state.BL_ID
-      bl_name = state.name
-      state.counties.forEach((county: any) => {
-        lk_id = county.LK_ID
-        lk_name = county.LK
-        cases = county.cases_LK
-        cases_per_100k = county.cases_per_100k_LK
-        cases_7_per_100k = county.cases7_per_100k_LK
-        deaths = county.deaths_LK
+    let count = await getConnection()
+      .getRepository(InfectionsDE)
+      .count({ where: { date: data.date } })
 
+    if (count > 0) {
+      console.log('Already inserted: Retry in one hour')
+      setTimeout(() => {
+        this.writeInfections()
+      }, 3600000)
+      return
+    }
+
+    getConnection()
+      .createQueryBuilder()
+      .insert()
+      .into(InfectionsDE)
+      .values({
+        date: data.date,
+        cases: data.cases_DE,
+        casesPer_100k: data.cases_per_100k_DE,
+        cases_7Per_100k: data.cases7_per_100k_DE,
+        newCases: data.new_cases_DE,
+        deaths: data.deaths_DE,
+        recovered: data.recovered_DE,
+      })
+      .execute()
+
+    data.states.forEach((state: any) => {
+      getConnection()
+        .createQueryBuilder()
+        .insert()
+        .into(InfectionsBL)
+        .values({
+          id: state.blId,
+          name: state.name,
+          date: data.date,
+          cases: state.cases_BL,
+          casesPer_100k: state.cases_per_100k_BL,
+          cases_7Per_100k: state.cases7_per_100k_BL,
+          newCases: state.new_cases_BL,
+          deaths: state.deaths_BL,
+          recovered: state.recovered_BL,
+        })
+        .execute()
+
+      state.counties.forEach((county: any) => {
         getConnection()
           .createQueryBuilder()
           .insert()
-          .into(Infections)
+          .into(InfectionsLK)
           .values({
-            blId: bl_id,
-            lkId: lk_id,
-            blName: bl_name,
-            lkName: lk_name,
-            cases: cases,
-            casesPer_100k: cases_per_100k,
-            cases_7Per_100k: cases_7_per_100k,
-            deaths: deaths,
-            date: date,
+            lkId: county.lkId,
+            blId: state.blId,
+            date: data.date,
+            fullName: county.fullName,
+            givenName: county.givenName,
+            cases: county.cases_LK,
+            casesPer_100k: county.cases_per_100k_LK,
+            cases_7Per_100k: county.cases7_per_100k_LK,
+            newCases: county.new_cases_LK,
+            deaths: county.deaths_LK,
+            recovered: county.recovered_LK,
           })
           .execute()
       })
     })
   }
+
+  // static async writeInfections2() {
+  //   const data: any = await RkiDataAPI.get()
+  //   return
+  //   let bl_id: any
+  //   let bl_name: any
+  //   let lk_id
+  //   let lk_name
+  //   let cases
+  //   let cases_per_100k
+  //   let cases_7_per_100k
+  //   let casesPer_100k_bl
+  //   let deaths
+  //   const date = DateUtil.getCurrentDate()
+  //   data.states.forEach((state: any) => {
+  //     bl_id = state.BL_ID
+  //     bl_name = state.name
+  //     state.counties.forEach((county: any) => {
+  //       lk_id = county.LK_ID
+  //       lk_name = county.LK
+  //       cases = county.cases_LK
+  //       cases_per_100k = county.cases_per_100k_LK
+  //       cases_7_per_100k = county.cases7_per_100k_LK
+  //       casesPer_100k_bl = 0 // todo:lraubuch
+
+  //       deaths = county.deaths_LK
+
+  //       getConnection()
+  //         .createQueryBuilder()
+  //         .insert()
+  //         .into(Infections)
+  //         .values({
+  //           blId: bl_id,
+  //           lkId: lk_id,
+  //           blName: bl_name,
+  //           lkName: lk_name,
+  //           cases: cases,
+  //           casesPer_100k: cases_per_100k,
+  //           cases_7Per_100k: cases_7_per_100k,
+  //           casesPer_100k_bl,
+  //           deaths: deaths,
+  //           date: date,
+  //         })
+  //         .execute()
+  //     })
+  //   })
+  // }
 }
 
-function normalizeData(infections: any) {
+function normalizeData(infections: (InfectionsDE | InfectionsBL | InfectionsLK)[]) {
+  let data: any = []
+
+  infections.forEach((infection: InfectionsDE | InfectionsBL | InfectionsLK) => {
+    if (infection instanceof InfectionsDE) {
+      data.push({
+        name: 'Deutschland',
+        date: infection.date,
+        cases_DE: infection.cases,
+        deaths_DE: infection.deaths,
+        cases_per_100k_DE: infection.casesPer_100k,
+        cases7_per_100k_DE: infection.cases_7Per_100k,
+        recovered_DE: infection.recovered,
+        new_cases_DE: infection.newCases,
+        states: [],
+      })
+    }
+
+    if (infection instanceof InfectionsBL) {
+      data
+        .find((data: any) => data.date === infection.date)
+        .states.push({
+          BL_ID: infection.id,
+          date: infection.date,
+          name: infection.name,
+          cases_BL: infection.cases,
+          deaths_BL: infection.deaths,
+          cases_per_100k_BL: infection.casesPer_100k,
+          cases7_per_100k_BL: infection.cases_7Per_100k,
+          recovered_BL: infection.recovered,
+          new_cases_BL: infection.newCases,
+          counties: [],
+        })
+    }
+
+    if (infection instanceof InfectionsLK) {
+      data
+        .find((ger: any) => ger.date === infection.date)
+        .states.find((bl: any) => bl.BL_ID === infection.blId)
+        .counties.push({
+          LK_ID: infection.lkId,
+          BL_ID: infection.blId,
+          full_name: infection.fullName,
+          given_name: infection.givenName,
+          cases_LK: infection.cases,
+          deaths_LK: infection.deaths,
+          cases_per_100k_LK: infection.casesPer_100k,
+          cases7_per_100k_LK: infection.cases_7Per_100k,
+          recovered_LK: infection.recovered,
+          new_cases_LK: infection.newCases,
+        })
+    }
+  })
+  return data
+}
+
+function normalizeData2(infections: any) {
   let currentDate: string = DateUtil.getCurrentDate()
   let newFormat: any = {
     name: 'Deutschland',

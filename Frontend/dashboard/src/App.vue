@@ -6,6 +6,7 @@
       <Map />
       <!-- <global-options /> -->
     </div>
+    <LineChartPopUp />
     <div class="d-flex flex-row">
       <div class="d-flex flex-column w-50">
         <Details :view="0" />
@@ -51,6 +52,7 @@ import AppBar from "./components/AppBar.vue";
 import Details from "./components/Details.vue";
 import BarChart from "./components/Barchart.vue";
 import Map from "./components/Map.vue";
+import LineChartPopUp from "./components/LineChartPopUp.vue";
 // import GlobalOptions from "./components/GlobalOptions.vue";
 import axios from "axios";
 import { mapFields } from "vuex-map-fields";
@@ -68,6 +70,7 @@ export default {
     BarChart,
     Map,
     // NumberInput,
+    LineChartPopUp,
     // TableComponent,
     Details
     // GlobalOptions
@@ -94,8 +97,11 @@ export default {
     let self = this;
     urlToSettingsChange(parseUrlState(window.location));
     axios
-      .get("http://localhost:3001/data/")
-      .then(response => (self.infectionData = response.data));
+      .get("http://localhost:3001/data?numberOfPreviousDays=14")
+      .then(response => {
+        self.infectionData = response.data;
+        console.log(self.infectionData);
+      });
   },
   created() {
     registerURLEventListener();
