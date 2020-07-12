@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import geodata from './geodata'
 import infections from './infections'
-import settings from './settings'
+import settings from './settings/settings'
 
 /**
  * Base router to be used in the express app.

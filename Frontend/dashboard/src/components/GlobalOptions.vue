@@ -293,10 +293,10 @@ Request-Body:
 {
     zoom: boolean,
     graphs: boolean,
-    selected_county: boolean,
-    selected_district: boolean,
-    selected_metric: boolean,
-    selected_table: boolean
+    selectedCounty: boolean,
+    selectedDistrict: boolean,
+    selectedMetric: boolean,
+    selectedTable: boolean
 }
 
 Response-Body:

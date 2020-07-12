@@ -39,7 +39,11 @@ class Scheduler {
   }
 
   executeOutOfSchedule() {
+<<<<<<< HEAD
     this.jobFunction()
+=======
+    this.jobFunction;
+>>>>>>> 823876cd39390a98676368b1393df88f7753f3fc
   }
 }
 
