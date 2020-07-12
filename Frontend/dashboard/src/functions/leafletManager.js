@@ -1,9 +1,9 @@
 import leaflet from 'leaflet'
 /* Leaflet functionality outsourced in extra js file, because
-* it is necessary to store references to map and layer. If these
-* references get stored in the vue-data function, there begins an
-* endless loading an the browser starts begging for RAM.
-*/
+ * it is necessary to store references to map and layer. If these
+ * references get stored in the vue-data function, there begins an
+ * endless loading an the browser starts begging for RAM.
+ */
 export default class leafletManager {
   #mapId = null
   #map = null
@@ -31,7 +31,7 @@ export default class leafletManager {
     }
     this.#geoJsonLayer = leaflet
       .geoJSON(this.#geoData, {
-        onEachFeature: function (f, l) {
+        onEachFeature: function(f, l) {
           l.bindPopup('<pre>' + f.properties.county + '</pre>')
         },
       })
@@ -48,7 +48,7 @@ export default class leafletManager {
     }
     let that = this
     this.setMinMax(this.#infectionData, selectedCase + '_LK')
-    this.#geoJsonLayer.eachLayer(function (layer) {
+    this.#geoJsonLayer.eachLayer(function(layer) {
       layer.setStyle(that.featureStyling(layer.feature, selectedCase + '_LK'))
     })
   }
@@ -62,7 +62,9 @@ export default class leafletManager {
       formel: y1 + ((y2 - y1) / (x2 - x1)) * (x - x1)
       */
 
-    const county = this.#infectionData.states.filter((state) => state.name === stateName)[0].counties.find((county) => county.LK === countyName)
+    const county = this.#infectionData.states
+      .filter((state) => state.name === stateName)[0]
+      .counties.find((county) => county.full_name === countyName)
     return 0.1 + ((0.9 - 0.1) / (this.#maxCases - this.#minCases)) * (county[caseName] - this.#minCases)
   }
 

@@ -28,8 +28,8 @@ createConnection()
       console.log('Server started on port 3001!')
       const infectionDataScheduler = new Scheduler(InfectionsController.writeInfections, { schedule: '0 0 1 * * *' })
       infectionDataScheduler.start()
-      new Scheduler(cleanupInfections, {schedule: '0 0 2 * * *'}).start();
-      new Scheduler(cleanupSettings, {schedule: '0 0 2 * * *'}).start();
+      new Scheduler(cleanupInfections, { schedule: '0 0 4 * * *' }).start()
+      new Scheduler(cleanupSettings, { schedule: '0 0 4 * * *' }).start()
 
       console.log('Scheduler started')
     })

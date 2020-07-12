@@ -23,7 +23,7 @@
               @input="setSelCounty"
               hide-no-data
               hide-selected
-              item-text="LK"
+              item-text="full_name"
               item-value="LK_ID"
               label="Landkreis"
               class="px-3"

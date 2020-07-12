@@ -16,9 +16,10 @@ class InfectionsController {
    * @param res Response object from express
    */
   static async infectionData(req: Request, res: Response) {
-    let infections
+    let infections: (InfectionsDE | InfectionsBL | InfectionsLK)[]
     let date: Date = new Date(DateUtil.getCurrentDate())
     let numberOfPreviousDays: number = <number>(<unknown>req.query.numberOfPreviousDays) ?? 0
+    numberOfPreviousDays = Number.isInteger(Math.round(numberOfPreviousDays)) && numberOfPreviousDays >= 0 ? numberOfPreviousDays : 0
     date.setDate(date.getDate() - numberOfPreviousDays)
     // const query: any = {
     //   where: [
@@ -40,6 +41,11 @@ class InfectionsController {
         .find({
           date: MoreThanOrEqual(date.toDateString()),
         })
+
+      //sort by date
+      infections.sort((a: any, b: any) => {
+        return <number>(<unknown>new Date(b.date)) - <number>(<unknown>new Date(a.date))
+      })
 
       infections = infections.concat(
         await getConnection()
@@ -74,6 +80,9 @@ class InfectionsController {
       .getRepository(InfectionsDE)
       .count({ where: { date: data.date } })
 
+    let prevDayDate: Date = new Date(data.date)
+    prevDayDate.setDate(prevDayDate.getDate() - 1)
+
     if (count > 0) {
       console.log('Already inserted: Retry in one hour')
       setTimeout(() => {
@@ -81,6 +90,25 @@ class InfectionsController {
       }, 3600000)
       return
     }
+
+    let prevDayDataDE: InfectionsDE[] = await getConnection()
+      .getRepository(InfectionsDE)
+      .find({ where: { date: prevDayDate.toDateString() } })
+
+    let prevDayDataBL: InfectionsBL[] = await getConnection()
+      .getRepository(InfectionsBL)
+      .find({ where: { date: prevDayDate.toDateString() } })
+
+    let prevDayDataLK: any = await getConnection()
+      .getRepository(InfectionsLK)
+      .find({ where: { date: prevDayDate.toDateString() } })
+
+    // console.log(prevDayDataDE[0], prevDayDataDE[0].cases, data.cases)
+    // let changeDE = prevDayDataDE[0].cases ?? data.cases_DE
+    // changeDE = data.cases_DE - changeDE
+
+    let changeDE = prevDayDataDE[0] !== undefined ? prevDayDataDE[0].cases : data.cases_DE
+    changeDE = data.cases_DE - changeDE
 
     getConnection()
       .createQueryBuilder()
@@ -91,13 +119,17 @@ class InfectionsController {
         cases: data.cases_DE,
         casesPer_100k: data.cases_per_100k_DE,
         cases_7Per_100k: data.cases7_per_100k_DE,
-        newCases: data.new_cases_DE,
+        change: changeDE,
         deaths: data.deaths_DE,
         recovered: data.recovered_DE,
       })
       .execute()
 
     data.states.forEach((state: any) => {
+      let pastStateData = prevDayDataBL.find((bl: InfectionsBL) => bl.id === state.blId)
+      let changeBL = pastStateData !== undefined ? pastStateData.cases : state.cases_BL
+      changeBL = state.cases_BL - changeBL
+
       getConnection()
         .createQueryBuilder()
         .insert()
@@ -109,13 +141,17 @@ class InfectionsController {
           cases: state.cases_BL,
           casesPer_100k: state.cases_per_100k_BL,
           cases_7Per_100k: state.cases7_per_100k_BL,
-          newCases: state.new_cases_BL,
+          change: changeBL,
           deaths: state.deaths_BL,
           recovered: state.recovered_BL,
         })
         .execute()
 
       state.counties.forEach((county: any) => {
+        let pastCountyData = prevDayDataLK.find((lk: InfectionsLK) => lk.lkId === county.lkId)
+        let changeLK = pastCountyData !== undefined ? pastCountyData.cases : county.cases_LK
+        changeLK = county.cases_LK - changeLK
+
         getConnection()
           .createQueryBuilder()
           .insert()
@@ -129,7 +165,7 @@ class InfectionsController {
             cases: county.cases_LK,
             casesPer_100k: county.cases_per_100k_LK,
             cases_7Per_100k: county.cases7_per_100k_LK,
-            newCases: county.new_cases_LK,
+            change: changeLK,
             deaths: county.deaths_LK,
             recovered: county.recovered_LK,
           })
@@ -199,7 +235,7 @@ function normalizeData(infections: (InfectionsDE | InfectionsBL | InfectionsLK)[
         cases_per_100k_DE: infection.casesPer_100k,
         cases7_per_100k_DE: infection.cases_7Per_100k,
         recovered_DE: infection.recovered,
-        new_cases_DE: infection.newCases,
+        change_DE: infection.change,
         states: [],
       })
     }
@@ -216,7 +252,7 @@ function normalizeData(infections: (InfectionsDE | InfectionsBL | InfectionsLK)[
           cases_per_100k_BL: infection.casesPer_100k,
           cases7_per_100k_BL: infection.cases_7Per_100k,
           recovered_BL: infection.recovered,
-          new_cases_BL: infection.newCases,
+          change_BL: infection.change,
           counties: [],
         })
     }
@@ -235,7 +271,7 @@ function normalizeData(infections: (InfectionsDE | InfectionsBL | InfectionsLK)[
           cases_per_100k_LK: infection.casesPer_100k,
           cases7_per_100k_LK: infection.cases_7Per_100k,
           recovered_LK: infection.recovered,
-          new_cases_LK: infection.newCases,
+          change_LK: infection.change,
         })
     }
   })

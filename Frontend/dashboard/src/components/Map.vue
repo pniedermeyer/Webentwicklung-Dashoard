@@ -54,6 +54,7 @@ export default {
     BL_ID: function() {},
     LK_ID: function() {},
     infectionData: function() {
+      console.log(this.infectionData);
       this.lfltMng.setInfectionData(this.infectionData);
       // Ensures the style gets initialized
       this.lfltMng.setMapStyle(this.casesOption);
@@ -99,6 +100,14 @@ export default {
     },
     zoomLevelChanged() {},
     resolutionChanged() {
+      console.log("resolutionChanged");
+      console.log(this.infectionData);
+      if (this.infectionData.states === undefined) {
+        setTimeout(() => {
+          this.resolutionChanged();
+        }, 1000);
+        return;
+      }
       const geoData = this.geoDatas[this.mapResolution];
       const that = this;
       if (!geoData) {
@@ -136,7 +145,7 @@ export default {
 #map-container {
   height: 600px;
   position: relative;
-  z-index: 0
+  z-index: 0;
 }
 .leaflet-container {
   background-color: rgba(183, 183, 246, 0.308);

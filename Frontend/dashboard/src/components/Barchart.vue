@@ -114,7 +114,7 @@ function drawChart(parent) {
 
     //Create an Array of Graphs to show
     arrTopCounty.forEach(county => {
-      arrCounties.push(county.LK);
+      arrCounties.push(county.full_name);
       parent.arrID.push([county.LK_ID, county.BL_ID]);
       let infectionVal = -1;
       switch (parent.casesOption) {

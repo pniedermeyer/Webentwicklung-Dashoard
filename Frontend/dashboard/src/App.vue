@@ -82,7 +82,8 @@ export default {
       // LK_ID : 'LK_ID',
       // casesOption : 'casesOption',
       // allCasesOptions : 'allCasesOptions',
-      infectionData: "infectionData"
+      infectionData: "infectionData",
+      pastInfectionData: "pastInfectionData"
       // baseColor : 'baseColor',
       // tableSelectedItemsID : 'tableSelectedItemsID',
       // tableTab : 'tableTab',
@@ -99,7 +100,8 @@ export default {
     axios
       .get("http://localhost:3001/data?numberOfPreviousDays=14")
       .then(response => {
-        self.infectionData = response.data;
+        self.infectionData = response.data[0];
+        self.pastInfectionData = response.data.slice(1);
         console.log(self.infectionData);
       });
   },

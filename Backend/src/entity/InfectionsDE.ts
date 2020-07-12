@@ -19,8 +19,8 @@ export class InfectionsDE {
   @Column('double precision', { name: 'cases_7_per_100k' })
   cases_7Per_100k!: number
 
-  @Column('integer', { name: 'new_cases' })
-  newCases!: number
+  @Column('integer', { name: 'change', default: 0 })
+  change!: number
 
   @Column('integer', { name: 'deaths' })
   deaths!: number

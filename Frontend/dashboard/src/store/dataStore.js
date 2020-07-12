@@ -17,6 +17,7 @@ export default new Vuex.Store({
       { label: '100k / 7 Tage', code: 'cases7_per_100k' },
     ],
     infectionData: {},
+    pastInfectionData: [],
     baseColor: 'Coral',
     // Table items
     tableSelectedItemsID: [[2, 6], [], [0, 20, 40]],
