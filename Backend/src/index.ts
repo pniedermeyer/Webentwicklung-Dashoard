@@ -5,12 +5,9 @@ import routes from './routes'
 import cors from 'cors'
 import InfectionsController from './controllers/InfectionsController'
 import Scheduler from './utilities/scheduler'
-<<<<<<< HEAD
 import GeoDataController from './controllers/GeodataController'
-=======
 import cleanupInfections from './utilities/infections-cleanup'
 import cleanupSettings from './utilities/settings-cleanup'
->>>>>>> 823876cd39390a98676368b1393df88f7753f3fc
 
 createConnection()
   .then((connection) => {
