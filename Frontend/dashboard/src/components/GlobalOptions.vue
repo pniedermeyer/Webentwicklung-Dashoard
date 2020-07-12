@@ -1,137 +1,74 @@
 <template>
   <div id="global-options-container">
-    <v-card id="d-large" class="w-75 d-none d-md-flex">
-      <v-list-item two-line>
-        <v-list-item-content>
-          <!-- <v-list-item-title class="headline">San Francisco</v-list-item-title>
-          <v-list-item-subtitle>Mon, 12:30 PM, Mostly sunny</v-list-item-subtitle>-->
-          <div class="d-flex flex-column flex-md-row">
-            <v-autocomplete
-              v-model="BL_ID"
-              :items="states"
-              :search-input.sync="searchBL"
-              @input="setSelState"
-              item-text="name"
-              item-value="BL_ID"
-              label="Bundesland"
-              class="px-3"
-              style="width:100%; margin:0px !important; padding"
-            ></v-autocomplete>
-            <v-autocomplete
-              v-model="LK_ID"
-              :items="counties"
-              @input="setSelCounty"
-              hide-no-data
-              hide-selected
-              item-text="full_name"
-              item-value="LK_ID"
-              label="Landkreis"
-              class="px-3"
-              style="width:100%; margin:0px !important"
-              return-object
-            ></v-autocomplete>
-            <v-btn outlined color="primary" class="align-self-center mx-4">
-              <span class="d-none d-sm-flex">Find on Map</span>
-              <v-icon right class="d-none d-sm-flex">mdi-magnify</v-icon>
-              <v-icon class="d-flex d-sm-none">mdi-magnify</v-icon>
-            </v-btn>
-          </div>
-          <div class="d-flex">
-            <v-slider
-              :max="2"
-              :tick-labels="allCasesOptions.map(item => item.label)"
-              class="mx-5"
-              ticks
-              @input="setCaseOption"
-            ></v-slider>
-            <v-slider
-              v-model="resolutionSliderPos"
-              :min="-3"
-              :max="0"
-              @input="setMapResolution"
-              :tick-labels="this.mapResolutions"
-              class="mx-5 d-none d-md-flex"
-              ticks
-            ></v-slider>
-            <div class="d-flex flex-column d-md-none w-50">
-              <v-slider
-                v-model="resolutionSliderPos"
-                :min="-3"
-                :max="0"
-                @input="setMapResolution"
-                class="mx-2"
-                ticks
-              ></v-slider>
-              <span class="d-flex">Text</span>
-            </div>
-          </div>
-        </v-list-item-content>
-      </v-list-item>
-
-      <!-- <v-card-text>
-        <v-row align="center">
-          <v-col class="display-3" cols="6">23&deg;C</v-col>
-          <v-col cols="6">
-            <v-img
-              src="https://cdn.vuetifyjs.com/images/cards/sun.png"
-              alt="Sunny image"
-              width="92"
-            ></v-img>
-          </v-col>
-        </v-row>
-      </v-card-text>-->
+    <v-card id="options" class="w-75">
+      <v-icon id="changeOptionsSize" v-on:click="minimizeOrMaximizeOptions">mdi-chevron-down</v-icon>
+      <v-expand-transition>
+        <div v-show="showOptions">
+          <v-list-item two-line>
+            <v-list-item-content>
+              <div class="d-flex flex-column flex-md-row">
+                <v-autocomplete
+                  v-model="BL_ID"
+                  :items="states"
+                  :search-input.sync="searchBL"
+                  @input="setSelState"
+                  item-text="name"
+                  item-value="BL_ID"
+                  label="Bundesland"
+                  class="px-3"
+                  style="width:100%; margin:0px !important; padding"
+                ></v-autocomplete>
+                <v-autocomplete
+                  v-model="LK_ID"
+                  :items="counties"
+                  @input="setSelCounty"
+                  hide-no-data
+                  hide-selected
+                  item-text="full_name"
+                  item-value="LK_ID"
+                  label="Landkreis"
+                  class="px-3"
+                  style="width:100%; margin:0px !important"
+                  return-object
+                ></v-autocomplete>
+                <v-btn outlined color="primary" class="align-self-center mx-4">
+                  <span class>Find on Map</span>
+                  <v-icon right>mdi-magnify</v-icon>
+                </v-btn>
+              </div>
+              <div id="sliderContainer" class="d-flex">
+                <v-slider
+                  :max="2"
+                  :tick-labels="allCasesOptions.map(item => item.label)"
+                  class="mx-5"
+                  ticks
+                  @input="setCaseOption"
+                ></v-slider>
+                <v-slider
+                  v-model="resolutionSliderPos"
+                  :min="-3"
+                  :max="0"
+                  @input="setMapResolution"
+                  :tick-labels="this.mapResolutions"
+                  class="mx-5"
+                  ticks
+                ></v-slider>
+              </div>
+            </v-list-item-content>
+          </v-list-item>
+        </div>
+      </v-expand-transition>
     </v-card>
-    <v-card id="d-small" class="w-100 d-flex d-md-none">Test</v-card>
-    <!-- <div>
-      <div id="zoomer">
-        <h1>Auflösung</h1>
-        <v-slider
-          v-model="zoomstufe"
-          v-bind="zoomsliderOptions"
-          :data="['basycs', 'etwas Wilder', 'Zu Wild', '10/10']"
-        ></v-slider>
-      </div>
-      <h1>🗺️Bundesland</h1>
-      <v-select
-        v-model="BL_ID"
-        label="name"
-        :options="states"
-        :reduce="(item) => item.BL_ID"
-        @input="setSelState"
-        :clearable="false"
-      ></v-select>
-    </div>
-    <div>
-      <h1>🗾Landkreis</h1>
-      <v-select
-        v-model="LK_ID"
-        label="LK"
-        :options="counties"
-        :reduce="(item) => item.LK_ID"
-        :clearable="false"
-        @input="setSelCounty"
-      ></v-select>
-    </div>
-    <div>
-      <h1>💯Fallzahlen</h1>
-      <v-select
-        v-model="casesOption"
-        :options="allCasesOptions"
-        :reduce="(option) => option.code"
-        :clearable="false"
-      ></v-select>
-    </div>
-    <div>
-      <button v-on:click="saveUserSettings()">💾Einstellungen speichern</button>
-    </div>-->
   </div>
 </template>
 
 <script>
 import { mapFields } from "vuex-map-fields";
 
+//vuetify changes the css styl when an icon has the @click attribute therfore the event is added manually
 export default {
   data: () => ({
+    showOptions: true,
     resolutionSliderPos: -3,
     states: [{ BL_ID: 0, name: "Alle" }],
     mapResolutions: ["Low", "Medium", "High", "Original"],
@@ -154,6 +91,9 @@ export default {
       this.LK_ID = null;
       // this.BL_ID = value;
       this.selectCountiesToState(value);
+    },
+    minimizeOrMaximizeOptions() {
+      this.showOptions = !this.showOptions;
     },
     setSelCounty(value) {
       this.LK_ID = value.LK_ID;
@@ -263,6 +203,40 @@ v-select {
   cursor: pointer;
 }
 
+#options {
+  position: absolute;
+  bottom: 2%;
+  z-index: 1001;
+  width: 75%;
+  min-height: 1.5rem;
+}
+
+@media screen and (max-width: 959px) {
+  #options {
+    left: 0%;
+    width: 100% !important;
+  }
+}
+
+@media screen and (min-width: 960px) {
+  #options {
+    left: 12.5%;
+    width: 75% !important;
+  }
+}
+
+@media screen and (max-width: 649px) {
+  #sliderContainer {
+    flex-direction: column;
+  }
+}
+
+@media screen and (min-width: 650px) {
+  #sliderContainer {
+    flex-direction: row;
+  }
+}
+
 #d-large {
   position: absolute;
   bottom: 2%;
@@ -276,6 +250,14 @@ v-select {
   bottom: 2%;
   z-index: 1001;
   width: 100%;
+}
+
+#changeOptionsSize {
+  right: 1%;
+  position: absolute;
+  z-index: 1010;
+  padding: 0 !important;
+  border: 0;
 }
 </style>
 
