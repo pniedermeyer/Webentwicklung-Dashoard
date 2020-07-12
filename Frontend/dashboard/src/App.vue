@@ -41,6 +41,24 @@
           </b-col>
         </b-row>
     </b-container>-->
+    <v-footer>
+      <div class="my-2">
+        <v-btn text small href="https://www.htwsaar.de/htw/impressum" target="_blank">Impressum</v-btn>
+      </div>
+      <div class="my-2">
+        <v-btn
+          text
+          small
+          href="https://npgeo-corona-npgeo-de.hub.arcgis.com/datasets/917fc37a709542548cc3be077a786c17_0"
+          target="_blank"
+        >Datenquelle</v-btn>
+      </div>
+      <div class="my-2">
+        <v-btn text small href="https://www.govdata.de/dl-de/by-2-0" target="_blank">Datenlizenz</v-btn>
+      </div>
+      <v-spacer></v-spacer>
+      <div>&copy; {{ new Date().getFullYear() }}</div>
+    </v-footer>
   </v-app>
   <!-- </div> -->
 </template>
