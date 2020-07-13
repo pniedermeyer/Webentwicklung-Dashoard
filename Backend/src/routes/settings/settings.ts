@@ -1,6 +1,6 @@
-import { Router } from "express";
-import SettingsController from "../../controllers/settings-controller";
-import paramValidator from '../../middleware/param-validator';
+import { Router } from 'express'
+import SettingsController from '../../controllers/settings-controller'
+import paramValidator from '../../middleware/param-validator'
 import getBodySchema from './get-body.schema.json'
 import putBodySchema from './put-body.schema.json'
 
@@ -9,14 +9,14 @@ import putBodySchema from './put-body.schema.json'
  */
 const router = Router()
 
-router.get("/", 
-    SettingsController.get.authorize, 
-    paramValidator(getBodySchema, 'body'), 
-    SettingsController.get.handler);
+router.get('/',
+  SettingsController.get.authorize,
+  paramValidator(getBodySchema, 'body'),
+  SettingsController.get.handler)
 
-router.put("/", 
-    SettingsController.put.authorize, 
-    paramValidator(putBodySchema, 'body'), 
-    SettingsController.put.handler);
+router.put('/',
+  SettingsController.put.authorize,
+  paramValidator(putBodySchema, 'body'),
+  SettingsController.put.handler)
 
-export default router;
+export default router
