@@ -56,11 +56,13 @@ import LineChartPopUp from "./components/LineChartPopUp.vue";
 // import GlobalOptions from "./components/GlobalOptions.vue";
 import axios from "axios";
 import { mapFields } from "vuex-map-fields";
+import store from './store/dataStore.js'
 
 import {
   registerURLEventListener,
   parseUrlState,
-  urlToSettingsChange
+  urlToSettingsChange,
+  storeListener
 } from "./functions/UrlSettings.js";
 
 export default {
@@ -104,6 +106,8 @@ export default {
         self.pastInfectionData = response.data.slice(1);
         console.log(self.infectionData);
       });
+
+    store.subscribe(storeListener)
   },
   created() {
     registerURLEventListener();
