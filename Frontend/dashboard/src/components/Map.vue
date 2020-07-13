@@ -40,7 +40,6 @@ export default {
     BL_ID: function() {},
     LK_ID: function() {},
     infectionData: function() {
-      console.log(this.infectionData);
       this.lfltMng.setInfectionData(this.infectionData);
       // Ensures the style gets initialized
       this.lfltMng.setMapStyle(this.casesOption);
@@ -87,7 +86,6 @@ export default {
     },
     zoomLevelChanged() {},
     resolutionChanged() {
-      console.log("resolutionChanged");
       if (this.infectionData.states === undefined) {
         setTimeout(() => {
           this.resolutionChanged();
@@ -109,12 +107,30 @@ export default {
     }
   },
   mounted() {
-    this.lfltMng = new leafletManager("map");
-    this.lfltMng.initializeMap({
+    const that = this
+    this.lfltMng = new leafletManager({
+      mapId: "map",
       position: this.mapPosition,
       zoom: this.mapZoom
     });
+
     this.lfltMng.fillColor(this.baseColor);
+    this.lfltMng.setPositionChangeCallback(function(e){
+      that.mapPosition = [e.lat, e.lng]
+    })
+    this.lfltMng.setZoomChangeCallback(function(e){
+      that.mapZoom = e
+    })
+    this.lfltMng.setFeatureSelectChangeCallback(function(e){
+      // that.BL_ID = e.properties.BL_ID // Currently not working bc of different IDs in geo- and infection-data
+      const state = that.infectionData.states.find(state => state.name === e.properties.BL)
+      that.BL_ID = state.BL_ID
+      
+      const county = state.counties.find(county => county.full_name === e.properties.county)
+      that.LK_ID = county.LK_ID
+    })
+
+    //manually trigger first geodata request
     this.resolutionChanged();
   }
 };

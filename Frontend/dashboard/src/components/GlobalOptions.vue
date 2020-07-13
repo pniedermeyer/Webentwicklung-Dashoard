@@ -86,11 +86,11 @@ export default {
     }
   }),
   methods: {
-    setSelState(value) {
-      console.log(this.casesOptions);
+    setSelState(stateId) {
+      // console.log('GO setSelState: ', stateId);
       this.LK_ID = null;
       // this.BL_ID = value;
-      this.selectCountiesToState(value);
+      this.selectCountiesToState(stateId);
     },
     minimizeOrMaximizeOptions() {
       this.showOptions = !this.showOptions;

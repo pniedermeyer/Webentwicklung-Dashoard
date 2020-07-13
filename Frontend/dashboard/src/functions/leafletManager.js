@@ -13,17 +13,31 @@ export default class leafletManager {
   #minCases = 0
   #maxCases = 0
   #fillColor = 'LightSlateGrey'
+  #positionChangeCallback = this.defaultCallback
+  #zoomChangeCallback = this.defaultCallback
+  #featureSelectChangeCallback = this.defaultCallback
 
-  constructor(mapId) {
+  constructor({mapId, position, zoom }) {
+    const that = this
     this.#mapId = mapId
+    this.#map = leaflet.map(this.#mapId).setView(position, zoom)
+
+    this.#map.on('zoomend', function(){
+      that.zoomChanged(that)
+    })
+
+    this.#map.on('moveend', function() {
+      that.positionChanged(that)
+    })
   }
 
-  initializeMap({ position, zoom }) {
-    this.#map = leaflet.map(this.#mapId).setView(position, zoom)
+  updateMap(){
+
   }
 
   setGeoData(geoData) {
     this.#geoData = geoData
+    const that = this
 
     // Update Map Layer
     if (this.#geoJsonLayer) {
@@ -32,14 +46,18 @@ export default class leafletManager {
     this.#geoJsonLayer = leaflet
       .geoJSON(this.#geoData, {
         onEachFeature: function(f, l) {
-          l.bindPopup('<pre>' + f.properties.county + '</pre>')
+          l.bindPopup('<p>' + f.properties.county + ' <br/>(' + f.properties.BL + ')</p>')
+          l.on('click', () => {that.featureSelected(f)})
         },
       })
       .addTo(this.#map)
+
+    this.updateMap()
   }
 
   setInfectionData(infectionData) {
     this.#infectionData = infectionData
+    this.updateMap()
   }
 
   setMapStyle(selectedCase) {
@@ -54,14 +72,6 @@ export default class leafletManager {
   }
 
   getOpacity(countyName, stateName, caseName) {
-    /*
-      opacity: y1 = 0.1 (min)
-                y2 = 0.9 (max)
-      cases: x1 = min
-              x2 = max
-      formel: y1 + ((y2 - y1) / (x2 - x1)) * (x - x1)
-      */
-
     const county = this.#infectionData.states
       .filter((state) => state.name === stateName)[0]
       .counties.find((county) => county.full_name === countyName)
@@ -101,11 +111,46 @@ export default class leafletManager {
     this.#fillColor = color
   }
 
+  setView({ position, zoom }) {
+    this.#map.setView(position, zoom)
+  }
+
   get zoom() {
-    return ''
+    return this.#map.getZoom()
   }
 
   get viewPosition() {
-    return ''
+    return this.#map.getCenter()
   }
+
+  zoomChanged(instance){
+    instance.#zoomChangeCallback(instance.#map.getZoom())
+    setTimeout(function(){}, 2000)   //TODO: Remove or move
+  }
+
+  positionChanged(instance){
+    instance.#positionChangeCallback(instance.#map.getCenter())
+    setTimeout(function(){}, 2000) //TODO: Remove
+  }
+
+  featureSelected(feature){
+    this.#featureSelectChangeCallback(feature)
+  }
+
+  setPositionChangeCallback(func){
+    this.#positionChangeCallback = func
+  }
+
+  setZoomChangeCallback(func){
+    this.#zoomChangeCallback = func
+  }
+
+  setFeatureSelectChangeCallback(func){
+    this.#featureSelectChangeCallback = func
+  }
+
+  defaultCallback(param){
+    console.log('Callback. Value: ', param)
+  }
+
 }
