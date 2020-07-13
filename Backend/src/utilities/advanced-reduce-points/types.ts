@@ -26,7 +26,6 @@ export type intermediateStruct = {
   featureIndex: number
   coordinateIndex: number
   ringIndex: number
-  //   points: Point[]
   bbox: BBox
   mainPath: Path
 }
