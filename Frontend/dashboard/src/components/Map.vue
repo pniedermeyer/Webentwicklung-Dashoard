@@ -1,14 +1,5 @@
 <template>
   <div class="w-100" id="map-container">
-    <!-- resolution -->
-    <!-- <label for="resol">🗺️ Auflösung:</label>
-    <v-select
-      v-model="mapResolution"
-      label="text"
-      :options="resolutions"
-      :reduce="(item) => item.value"
-      :clearable="false"
-    ></v-select>-->
     <div id="map"></div>
     <global-options />
   </div>
@@ -29,11 +20,6 @@ export default {
     return {
       lfltMng: null,
       geoDatas: [],
-      resolutions: [
-        { text: "Niedrig", value: 2 },
-        { text: "Mittel", value: 1 },
-        { text: "Hoch", value: 0 }
-      ],
       minCases: 0,
       maxCases: 0
     };
@@ -87,6 +73,7 @@ export default {
   methods: {
     fetchGeoData(res = 0) {
       let that = this;
+      //TODO: Change Request URL for production
       let url = `http://localhost:3001/geodata?` + "res=" + res;
       return axios
         .get(url)
@@ -101,7 +88,6 @@ export default {
     zoomLevelChanged() {},
     resolutionChanged() {
       console.log("resolutionChanged");
-      console.log(this.infectionData);
       if (this.infectionData.states === undefined) {
         setTimeout(() => {
           this.resolutionChanged();
