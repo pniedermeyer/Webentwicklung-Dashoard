@@ -1,3 +1,7 @@
+/**
+ * Function that returns a mathematical epsilon we can use for RDP.
+ * @param resolution String representation of the resolution
+ */
 function mapResolutionToEpsilon(resolution: String) {
   switch (resolution) {
     case 'low':
@@ -11,6 +15,10 @@ function mapResolutionToEpsilon(resolution: String) {
   }
 }
 
+/**
+ * Function that returns an identifying int to persist in the database.
+ * @param resolution String representation of the resolution
+ */
 function mapResolutionToInt(resolution: String) {
   switch (resolution) {
     case 'low':
