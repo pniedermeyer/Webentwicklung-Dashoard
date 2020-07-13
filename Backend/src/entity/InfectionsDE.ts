@@ -1,7 +1,7 @@
 import { Column, Entity, Index } from 'typeorm'
 
 /**
- * Entity class for infections data.
+ * Entity class for infections data in germany granularity.
  * When querying the database we get an array of instances of this class.
  */
 @Index('infections_de_pkey', ['date'], { unique: true })
