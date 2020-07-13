@@ -1,3 +1,7 @@
+/**
+ * Implementation of a hash code function to be used as id for counties
+ * @param s 
+ */
 function hashCode(s: string): number {
   var hash: number = 0
   if (s.length == 0) return hash
