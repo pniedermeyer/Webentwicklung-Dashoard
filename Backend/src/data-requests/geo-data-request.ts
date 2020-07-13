@@ -5,7 +5,7 @@ let geoData: any = null
 class GeoDataAPI {
   
   /** 
-   * Axios request object for geojson from RKI endpoint
+   * Axios request object for GeoJSON from RKI endpoint
    */
   private static request = {
     method: 'get',
@@ -14,7 +14,7 @@ class GeoDataAPI {
   }
 
   /**
-   * Method that requests the geojson from RKI endpoint and returns it
+   * Method that requests the GeoJSON from RKI endpoint and returns it
    */
   static get() {
     if (geoData !== null) {
