@@ -1,12 +1,10 @@
 import { Request, Response } from 'express'
 import { getConnection, MoreThanOrEqual } from 'typeorm'
-import { Infections } from '../entity/Infections'
 import { InfectionsDE } from '../entity/InfectionsDE'
 import RkiDataAPI from '../data-requests/rki-data-request'
 import DateUtil from '../utilities/DateUtil'
 import { InfectionsBL } from '../entity/InfectionsBL'
 import { InfectionsLK } from '../entity/InfectionsLK'
-import { Inflate } from 'zlib'
 
 class InfectionsController {
   /**
@@ -21,21 +19,8 @@ class InfectionsController {
     let numberOfPreviousDays: number = <number>(<unknown>req.query.numberOfPreviousDays) ?? 0
     numberOfPreviousDays = Number.isInteger(Math.round(numberOfPreviousDays)) && numberOfPreviousDays >= 0 ? numberOfPreviousDays : 0
     date.setDate(date.getDate() - numberOfPreviousDays)
-    // const query: any = {
-    //   where: [
-    //     {
-    //       date: DateUtil.getCurrentDate(),
-    //     },
-    //     {
-    //       date: DateUtil.getYesterdayDate(),
-    //     },
-    //   ],
-    // }
     try {
-      //   const loadedPosts = await connection.getRepository(Post).find({
-      //     likes: MoreThanOrEqual(10)
-      // });
-
+      // load infections data for germany
       infections = await getConnection()
         .getRepository(InfectionsDE)
         .find({
@@ -46,7 +31,7 @@ class InfectionsController {
       infections.sort((a: any, b: any) => {
         return <number>(<unknown>new Date(b.date)) - <number>(<unknown>new Date(a.date))
       })
-
+      // load infections data for the states
       infections = infections.concat(
         await getConnection()
           .getRepository(InfectionsBL)
@@ -54,7 +39,7 @@ class InfectionsController {
             date: MoreThanOrEqual(date.toDateString()),
           })
       )
-
+      // load infections data for the counties
       infections = infections.concat(
         await getConnection()
           .getRepository(InfectionsLK)
@@ -63,9 +48,6 @@ class InfectionsController {
           })
       )
 
-      // console.log(infections)
-
-      // infections = await getConnection().getRepository(Infections).find(query)
       const data = normalizeData(infections)
       res.send(data)
     } catch (error) {
@@ -74,6 +56,9 @@ class InfectionsController {
     }
   }
 
+  /**
+   * Request infections data from RKI and persists it to the database.
+   */
   static async writeInfections() {
     const data: any = await RkiDataAPI.get()
     let count = await getConnection()
@@ -103,13 +88,10 @@ class InfectionsController {
       .getRepository(InfectionsLK)
       .find({ where: { date: prevDayDate.toDateString() } })
 
-    // console.log(prevDayDataDE[0], prevDayDataDE[0].cases, data.cases)
-    // let changeDE = prevDayDataDE[0].cases ?? data.cases_DE
-    // changeDE = data.cases_DE - changeDE
-
     let changeDE = prevDayDataDE[0] !== undefined ? prevDayDataDE[0].cases : data.cases_DE
     changeDE = data.cases_DE - changeDE
 
+    // Save infections for germany overall
     getConnection()
       .createQueryBuilder()
       .insert()
@@ -125,11 +107,11 @@ class InfectionsController {
       })
       .execute()
 
+    // Save infections for each state
     data.states.forEach((state: any) => {
       let pastStateData = prevDayDataBL.find((bl: InfectionsBL) => bl.id === state.blId)
       let changeBL = pastStateData !== undefined ? pastStateData.cases : state.cases_BL
       changeBL = state.cases_BL - changeBL
-
       getConnection()
         .createQueryBuilder()
         .insert()
@@ -146,12 +128,11 @@ class InfectionsController {
           recovered: state.recovered_BL,
         })
         .execute()
-
+      // Save infections for each county
       state.counties.forEach((county: any) => {
         let pastCountyData = prevDayDataLK.find((lk: InfectionsLK) => lk.lkId === county.lkId)
         let changeLK = pastCountyData !== undefined ? pastCountyData.cases : county.cases_LK
         changeLK = county.cases_LK - changeLK
-
         getConnection()
           .createQueryBuilder()
           .insert()
@@ -173,55 +154,12 @@ class InfectionsController {
       })
     })
   }
-
-  // static async writeInfections2() {
-  //   const data: any = await RkiDataAPI.get()
-  //   return
-  //   let bl_id: any
-  //   let bl_name: any
-  //   let lk_id
-  //   let lk_name
-  //   let cases
-  //   let cases_per_100k
-  //   let cases_7_per_100k
-  //   let casesPer_100k_bl
-  //   let deaths
-  //   const date = DateUtil.getCurrentDate()
-  //   data.states.forEach((state: any) => {
-  //     bl_id = state.BL_ID
-  //     bl_name = state.name
-  //     state.counties.forEach((county: any) => {
-  //       lk_id = county.LK_ID
-  //       lk_name = county.LK
-  //       cases = county.cases_LK
-  //       cases_per_100k = county.cases_per_100k_LK
-  //       cases_7_per_100k = county.cases7_per_100k_LK
-  //       casesPer_100k_bl = 0 // todo:lraubuch
-
-  //       deaths = county.deaths_LK
-
-  //       getConnection()
-  //         .createQueryBuilder()
-  //         .insert()
-  //         .into(Infections)
-  //         .values({
-  //           blId: bl_id,
-  //           lkId: lk_id,
-  //           blName: bl_name,
-  //           lkName: lk_name,
-  //           cases: cases,
-  //           casesPer_100k: cases_per_100k,
-  //           cases_7Per_100k: cases_7_per_100k,
-  //           casesPer_100k_bl,
-  //           deaths: deaths,
-  //           date: date,
-  //         })
-  //         .execute()
-  //     })
-  //   })
-  // }
 }
 
+/**
+ * Transform data from the database into the format that was specified from frontend.
+ * @param infections Array of rows from the database tables
+ */
 function normalizeData(infections: (InfectionsDE | InfectionsBL | InfectionsLK)[]) {
   let data: any = []
 
@@ -276,87 +214,6 @@ function normalizeData(infections: (InfectionsDE | InfectionsBL | InfectionsLK)[
     }
   })
   return data
-}
-
-function normalizeData2(infections: any) {
-  let currentDate: string = DateUtil.getCurrentDate()
-  let newFormat: any = {
-    name: 'Deutschland',
-    cases_DE: 0,
-    deaths_DE: 0,
-    cases_per_100k_DE: 0,
-    cases7_per_100k_DE: 0,
-    recovered_DE: 0,
-    change_DE: 0,
-    new_cases_DE: 0,
-    states: new Array(16),
-  }
-
-  newFormat.states = infections
-    .filter((county: any) => county.date === currentDate)
-    .reduce((acc: any, county: Infections) => {
-      const index: number = county.blId - 1
-      if (!acc[index]) {
-        acc[index] = {
-          BL_ID: county.blId,
-          name: county.blName,
-          cases_BL: 0,
-          deaths_BL: 0,
-          cases_per_100k_BL: 0,
-          cases7_per_100k_BL: 0,
-          recovered_BL: 0,
-          change_BL: 0,
-          new_cases_BL: 0,
-          counties: [],
-        }
-      }
-      const state = acc[index]
-      const prevDay = getPrevDay(county.blId, county.lkId, infections, currentDate)
-      let change_LK = county.cases
-      if (prevDay !== undefined && prevDay !== null) {
-        change_LK = county.cases - prevDay.cases
-      }
-      const newCounty = {
-        LK_ID: county.lkId,
-        LK: county.lkName,
-        GEN: county.lkName,
-        cases_LK: county.cases,
-        deaths_LK: county.deaths,
-        cases_per_100k_LK: county.casesPer_100k,
-        cases7_per_100k_LK: county.cases_7Per_100k,
-        recovered_LK: 0,
-        change_LK: change_LK,
-        new_cases_LK: 0,
-      }
-      state.counties[county.lkId - 1] = newCounty
-
-      state.cases_BL += newCounty.cases_LK
-      state.deaths_BL += newCounty.deaths_LK
-      state.cases_per_100k_BL += newCounty.cases_per_100k_LK
-      state.cases7_per_100k_BL += newCounty.cases7_per_100k_LK
-      state.recovered_BL += newCounty.recovered_LK
-      state.change_BL += newCounty.change_LK
-      state.new_cases_BL += newCounty.new_cases_LK
-
-      newFormat.cases_DE += newCounty.cases_LK
-      newFormat.deaths_DE += newCounty.deaths_LK
-      newFormat.cases_per_100k_DE += newCounty.cases_per_100k_LK
-      newFormat.cases7_per_100k_DE += newCounty.cases7_per_100k_LK
-      newFormat.recovered_DE += newCounty.recovered_LK
-      newFormat.change_DE += newCounty.change_LK
-      newFormat.new_cases_DE += newCounty.new_cases_LK
-
-      return acc
-    }, newFormat.states)
-  return newFormat
-}
-
-function getPrevDay(blId: number, lkId: number, data: any, currentDate: string): any {
-  for (const infection of data) {
-    if (blId === infection.blId && lkId === infection.lkId && currentDate !== infection.date) {
-      return infection
-    }
-  }
 }
 
 export default InfectionsController
