@@ -1,6 +1,5 @@
 import DataAPI from './data-request'
 import hashCode from '../utilities/hash-function'
-import { count } from 'console'
 
 let data: any = null
 
@@ -15,7 +14,6 @@ class RkiDataAPI {
   }
 
   static ON_NEW_DATA = 'onNewData'
-  private static blData: Map<string, any>
 
   /**
    * Method that requests the infections data from RKI endpoint and transforms
@@ -28,20 +26,7 @@ class RkiDataAPI {
         resolve(data)
       })
     }
-    // await DataAPI.get(this.requestBL, setBlData)
     return DataAPI.get(this.requestLK, normaliseData)
-
-    function setBlData(blData: any) {
-      RkiDataAPI.blData = new Map()
-
-      blData.features.forEach((feature: any) => {
-        RkiDataAPI.blData.set(feature.attributes.LAN_ew_GEN, {
-          population: feature.attributes.LAN_ew_EWZ,
-          cases_100k_BL: feature.attributes.faelle_100000_EW,
-          deaths: feature.attributes.Death,
-        })
-      })
-    }
 
     /**
      * We transform the original data into our own format consisting of different
@@ -52,7 +37,6 @@ class RkiDataAPI {
      * @param originalData data that we received from the RKI infections endpoint
      */
     function normaliseData(originalData: any) {
-      // let lk_id = 0
       let dateMatches = originalData.features[0].attributes.last_update.match(/([0-9]{0,2})\.([0-9]{0,2})\.([0-9]{4})/)
       let date = new Date(dateMatches[3], dateMatches[2] - 1, dateMatches[1])
       const germanyData: any = {
@@ -111,17 +95,13 @@ class RkiDataAPI {
         // Aggregate state data
         state.cases_BL += newCounty.cases_LK
         state.deaths_BL += newCounty.deaths_LK
-        // state.cases7_per_100k_BL += newCounty.cases7_per_100k_LK
         state.recovered_BL += newCounty.recovered_LK
-        // state.change_BL += newCounty.new_cases_LK
         state.population_BL += county.attributes.EWZ
 
         // Aggregate data for all of germany
         germanyData.cases_DE += newCounty.cases_LK
         germanyData.deaths_DE += newCounty.deaths_LK
-        // germanyData.cases7_per_100k_DE += newCounty.cases7_per_100k_LK
         germanyData.recovered_DE += newCounty.recovered_LK
-        // germanyData.change_DE += newCounty.new_cases_LK
         germanyData.population_DE += county.attributes.EWZ
 
         return acc
@@ -144,7 +124,6 @@ class RkiDataAPI {
       if (data === null) {
         data = germanyData
       }
-      // console.log('NEW  DATA TRANSFORMED!!!!')
       return germanyData
     }
   }
