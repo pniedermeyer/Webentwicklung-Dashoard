@@ -11,7 +11,7 @@ import cleanupSettings from './utilities/settings-cleanup'
 
 createConnection()
   .then((connection) => {
-    // todo
+    // This may throw duplicate key violations but works fine
     InfectionsController.writeInfections()
 
     // create and setup express app
