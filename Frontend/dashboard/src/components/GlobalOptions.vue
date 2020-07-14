@@ -31,7 +31,7 @@
                   style="width:100%; margin:0px !important"
                   return-object
                 ></v-autocomplete>
-                <v-btn outlined color="primary" class="align-self-center mx-4">
+                <v-btn outlined @click="findOnMap()" color="primary" class="align-self-center mx-4">
                   <span class>Find on Map</span>
                   <v-icon right>mdi-magnify</v-icon>
                 </v-btn>
@@ -137,6 +137,9 @@ export default {
     saveUserSettings() {
       //Hier Settings speichern!
       console.log("Jetzt könnten wir speichern!");
+    },
+    findOnMap(){
+      this.$emit('focus-map')
     }
   },
   watch: {

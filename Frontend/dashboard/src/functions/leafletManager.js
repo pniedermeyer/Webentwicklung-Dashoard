@@ -107,6 +107,35 @@ export default class leafletManager {
     })
   }
 
+  focusMap({state, county}){
+
+    if(state){ //Focus to state if set
+      let states = []
+      this.#geoData.features.forEach(feature => {
+        if(feature.properties.BL === state){
+          states.push(feature)
+        }
+      })
+      let fGroup = leaflet.geoJSON(states) //.addTo(this.#map)
+      this.#map.fitBounds(fGroup.getBounds())
+
+      if(county){ //Focus to county if set
+        let counties = []
+        states.forEach(state => {
+          if(state.properties.county === county){
+            counties.push(state)
+          }
+        })
+        fGroup = leaflet.geoJSON(counties)
+        this.#map.fitBounds(fGroup.getBounds())
+      }
+    }else{
+      // Focus complete map
+      this.#map.fitBounds(this.#geoJsonLayer.getBounds())
+    }
+
+  }
+
   fillColor(color) {
     this.#fillColor = color
   }

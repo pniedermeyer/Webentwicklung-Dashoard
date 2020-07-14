@@ -1,7 +1,7 @@
 <template>
   <div class="w-100" id="map-container">
     <div id="map"></div>
-    <global-options />
+    <global-options @focus-map="focusMap()" />
   </div>
 </template>
 
@@ -104,6 +104,22 @@ export default {
         this.lfltMng.setGeoData(geoData);
         this.lfltMng.setMapStyle(this.casesOption);
       }
+    },
+    focusMap(){
+      // Find state to ID
+      let state = this.infectionData.states.find(state => state.BL_ID === this.BL_ID)
+      let county = null
+      // Find county to ID
+      if(state){
+        county = state.counties.find(county => county.LK_ID === this.LK_ID)
+
+        state = state.name
+        county = county ? county.full_name : null
+      }
+
+      
+      
+      this.lfltMng.focusMap({state: state, county: county})
     }
   },
   mounted() {
