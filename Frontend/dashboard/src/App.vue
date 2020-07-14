@@ -94,6 +94,7 @@ export default {
       // LK_ID : 'LK_ID',
       // casesOption : 'casesOption',
       // allCasesOptions : 'allCasesOptions',
+      mapPosition: "mapPosition",
       infectionData: "infectionData",
       visibleComponents: "visibleComponents",
       pastInfectionData: "pastInfectionData",
@@ -111,7 +112,22 @@ export default {
       // mapResolution : 'mapResolution'
     })
   },
-
+  methods: {
+    getLocation() {
+      if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(
+            position => {
+              console.log('Geolocation from Browser: ', position.coords.latitude, position.coords.longitude)
+              this.mapPosition = [position.coords.latitude, position.coords.longitude];
+            },
+            error => {
+              console.log(error.message);
+            },
+        )
+      }
+    }
+  },
+  
   mounted() {
     let self = this;
     //urlToSettingsChange(parseUrlState(window.location));
@@ -123,6 +139,10 @@ export default {
       });
 
     store.subscribe(storeListener)
+
+    setTimeout(function(){
+      self.getLocation();
+    }, 5000)
   },
   created() {
     registerURLEventListener();
