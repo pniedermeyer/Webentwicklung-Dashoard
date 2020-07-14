@@ -8,9 +8,10 @@ import Scheduler from './utilities/scheduler'
 import GeoDataController from './controllers/GeodataController'
 import cleanupInfections from './utilities/infections-cleanup'
 import cleanupSettings from './utilities/settings-cleanup'
+import { Request, Response, json } from 'express'
 
 createConnection()
-  .then((connection) => {
+  .then(async (connection) => {
     // This may throw duplicate key violations but works fine
     InfectionsController.writeInfections()
 
@@ -19,10 +20,16 @@ createConnection()
     app.use(cors())
     app.use(bodyParser.json())
 
+    //setup to deliver dashboard website
+    app.use('/', e.static(__dirname + '/website'))
+    app.get('/', (req: Request, res: Response) => {
+      res.sendFile(__dirname + '/website/test.html')
+    })
     // Set all routes from routes folder
+
     app.use('/', routes)
 
-    GeoDataController.initDB()
+    await GeoDataController.initDB()
 
     app.listen(3001, () => {
       console.log('Server started on port 3001!')

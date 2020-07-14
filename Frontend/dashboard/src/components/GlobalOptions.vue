@@ -45,7 +45,33 @@
                   <v-icon right>mdi-magnify</v-icon>
                 </v-btn>
               </div>
-              <div id="sliderContainer" class="d-flex">
+              <v-container fluid class="pb-0">
+                <v-row>
+                  <v-col cols="12" md="6" class="pb-0">
+                    <v-subheader class="sliderLabelCases">Fallzahlen</v-subheader>
+                    <v-slider
+                      :max="2"
+                      :tick-labels="allCasesOptions.map(item => item.label)"
+                      class="pl-0"
+                      ticks
+                      @input="setCaseOption"
+                    ></v-slider>
+                  </v-col>
+                  <v-col cols="12" md="6" class="pb-0">
+                    <v-subheader class="sliderLabelResolution">Auflösung der Map</v-subheader>
+                    <v-slider
+                      v-model="resolutionSliderPos"
+                      :min="-3"
+                      :max="0"
+                      @input="setMapResolution"
+                      :tick-labels="this.mapResolutions"
+                      class="pl-0"
+                      ticks
+                    ></v-slider>
+                  </v-col>
+                </v-row>
+              </v-container>
+              <!-- <div id="sliderContainer" class="d-flex">
                 <v-col>
                   <v-subheader class="pl-0">Fallzahlen</v-subheader>
                   <v-slider
@@ -68,7 +94,7 @@
                     ticks
                   ></v-slider>
                 </v-col>
-              </div>
+              </div>-->
             </v-list-item-content>
           </v-list-item>
         </div>
@@ -203,6 +229,18 @@ function initStates(parent) {
 </script>
 
 <style scoped>
+.sliderLabelCases {
+  position: absolute;
+  bottom: 60%;
+  left: 0;
+}
+
+.sliderLabelResolution {
+  position: absolute;
+  bottom: 60%;
+  left: 0;
+}
+
 #zoomer {
   padding-bottom: 50px;
 }
