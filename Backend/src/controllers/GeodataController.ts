@@ -58,7 +58,7 @@ class GeoDataController {
     const res = mapResolutionToInt(resolution)
     let epsilon = mapResolutionToEpsilon(resolution)
     let reducedData = recuceGeoJSONPoints(rawData, epsilon)
-    getConnection()
+    await getConnection()
       .createQueryBuilder()
       .insert()
       .into(GeoDataObject)
@@ -75,10 +75,14 @@ class GeoDataController {
   static async initDB() {
     let sum: number = await getConnection().getRepository(GeoDataObject).count()
     if (sum === 0) {
-      GeoDataController.writeGeoDataInResolution('low')
-      GeoDataController.writeGeoDataInResolution('medium')
-      GeoDataController.writeGeoDataInResolution('high')
-      GeoDataController.writeGeoDataInResolution('original')
+      await GeoDataController.writeGeoDataInResolution('low')
+      console.log('GeoJSON resolution added to DB: low')
+      await GeoDataController.writeGeoDataInResolution('medium')
+      console.log('GeoJSON resolution added to DB: medium')
+      await GeoDataController.writeGeoDataInResolution('high')
+      console.log('GeoJSON resolution added to DB: high')
+      await GeoDataController.writeGeoDataInResolution('original')
+      console.log('GeoJSON resolution added to DB: original')
     }
   }
 }
