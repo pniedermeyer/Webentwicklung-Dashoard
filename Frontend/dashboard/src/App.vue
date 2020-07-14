@@ -68,11 +68,11 @@ import LineChartPopUp from "./components/LineChartPopUp.vue";
 // import GlobalOptions from "./components/GlobalOptions.vue";
 import axios from "axios";
 import { mapFields } from "vuex-map-fields";
+import store from './store/dataStore.js'
 
 import {
   registerURLEventListener,
-  parseUrlState,
-  urlToSettingsChange
+  storeListener
 } from "./functions/UrlSettings.js";
 
 export default {
@@ -114,13 +114,15 @@ export default {
 
   mounted() {
     let self = this;
-    urlToSettingsChange(parseUrlState(window.location));
+    //urlToSettingsChange(parseUrlState(window.location));
     axios
       .get("http://localhost:3001/data?numberOfPreviousDays=14")
       .then(response => {
         self.infectionData = response.data[0];
         self.pastInfectionData = response.data;
       });
+
+    store.subscribe(storeListener)
   },
   created() {
     registerURLEventListener();
