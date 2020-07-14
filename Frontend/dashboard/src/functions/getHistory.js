@@ -16,17 +16,17 @@ export function getHistoryDeutschland() {
   }
 
   let historyInfectionData = newHistoryInfectionData()
-  console.log(pastInfectionData)
+  // console.log(pastInfectionData)
 
   for (let i = 0; i < days; i++) {
-    console.log(pastInfectionData[i].cases_DE)
+    // console.log(pastInfectionData[i].cases_DE)
     historyInfectionData.cases.unshift(pastInfectionData[i].cases_DE)
     historyInfectionData.change.unshift(pastInfectionData[i].change_DE)
     historyInfectionData.date.unshift(pastInfectionData[i].date)
     historyInfectionData.deaths.unshift(pastInfectionData[i].deaths_DE)
     historyInfectionData.cases7per100k.unshift(Math.round((pastInfectionData[i].cases7_per_100k_DE + Number.EPSILON) * 100) / 100)
   }
-  console.log(historyInfectionData)
+  // console.log(historyInfectionData)
   return historyInfectionData
 }
 

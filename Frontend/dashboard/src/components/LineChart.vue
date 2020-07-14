@@ -64,7 +64,7 @@ function drawLineChart(parent) {
     onClick: parent.handle
   };
 
-  console.log(chartOptions);
+  // console.log(chartOptions);
 
   parent.renderChart(
     {
