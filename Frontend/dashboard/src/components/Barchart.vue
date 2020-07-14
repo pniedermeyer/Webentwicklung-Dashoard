@@ -52,15 +52,15 @@ export default {
    */
   watch: {
     BL_ID: function() {
-      console.log("BL_ID");
+      //console.log("BL_ID");
       drawChart(this);
     },
     barsShown: function() {
-      console.log("barsShown");
+      //console.log("barsShown");
       drawChart(this);
     },
     infectionData: function() {
-      console.log("infectionData");
+      //console.log("infectionData");
       evaluateMaxData(this);
       drawChart(this);
     },

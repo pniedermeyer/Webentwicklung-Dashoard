@@ -1,6 +1,11 @@
 <template>
   <v-card class="ma-3">
-    <v-tabs v-model="tab" background-color="deep-purple accent-4" centered dark icons-and-text>
+    <v-app-bar color="blue darken-2" dark dense>
+      <v-spacer></v-spacer>
+      <v-toolbar-title id="gerTitle">{{this.data.name}}</v-toolbar-title>
+      <v-spacer></v-spacer>
+    </v-app-bar>
+    <v-tabs v-model="tab" background-color="light" icons-and-text :grow="true" show-arrows>
       <v-tabs-slider></v-tabs-slider>
 
       <v-tab href="#tab-1">
@@ -9,7 +14,7 @@
       </v-tab>
 
       <v-tab href="#tab-2">
-        Verlauf
+        Neu-Infektionen
         <v-icon>mdi-chart-timeline-variant</v-icon>
       </v-tab>
 
@@ -18,68 +23,134 @@
         <v-icon>mdi-skull-outline</v-icon>
       </v-tab>
     </v-tabs>
-
     <v-tabs-items v-model="tab">
-      <v-tab-item v-for="i in 3" :key="i" :value="'tab-' + i">
+      <v-tab-item :value="'tab-1'">
         <v-card flat>
-          <v-card-text>
-            Text
-            <LineChart :data="data.casesArr" :label="'Fälle gesamt'" v-on:lineclick="doSomething"></LineChart>
-          </v-card-text>
+          <v-container>
+            <v-row>
+              <v-col sm="12" md="4">
+                <v-row>
+                  <v-card-text>Alle</v-card-text>
+                </v-row>
+                <v-row>
+                  <v-spacer></v-spacer>
+                  <v-card-title class="blue--text text--darken-2 single-number">{{this.data.cases}}</v-card-title>
+                  <v-spacer></v-spacer>
+                </v-row>
+              </v-col>
+              <v-col sm="12" md="4">
+                <v-row>
+                  <v-card-text>Pro 100K Einwohner</v-card-text>
+                </v-row>
+                <v-row>
+                  <v-spacer></v-spacer>
+                  <v-card-title
+                    class="blue--text text--darken-2 single-number"
+                  >{{this.data.cases100k}}</v-card-title>
+                  <v-spacer></v-spacer>
+                </v-row>
+              </v-col>
+              <v-col sm="12" md="4">
+                <v-row>
+                  <v-card-text>Pro 100K Einwohner / 7 Tage</v-card-text>
+                </v-row>
+                <v-row>
+                  <v-spacer></v-spacer>
+                  <v-card-title
+                    class="blue--text text--darken-2 single-number"
+                  >{{this.data.cases100k7}}</v-card-title>
+                  <v-spacer></v-spacer>
+                </v-row>
+              </v-col>
+            </v-row>
+            <v-row v-if="visibleComponents.lineChartVisible">
+              <v-col xs="6">
+                <LineChart
+                  style="height:15rem"
+                  :data="data.lineChartData.cases"
+                  :dates="data.lineChartData.date"
+                  :label="'Fälle gesamt'"
+                  v-on:lineclick="openLargerGraph"
+                ></LineChart>
+              </v-col>
+              <v-col xs="6">
+                <LineChart
+                  style="height:15rem"
+                  :data="data.lineChartData.cases7per100k"
+                  :dates="data.lineChartData.date"
+                  :label="'Fälle pro 100k, letzte 7 Tage'"
+                  v-on:lineclick="openLargerGraph"
+                ></LineChart>
+              </v-col>
+            </v-row>
+          </v-container>
+
+          <!-- </v-card-text> -->
+        </v-card>
+      </v-tab-item>
+      <v-tab-item :value="'tab-2'">
+        <v-card flat>
+          <v-card-title v-if="!visibleComponents.lineChartVisible">
+            <v-spacer></v-spacer>
+            <v-card-text class="blue--text text--darken-2 single-number">{{this.data.newInfections}}</v-card-text>
+            <v-spacer></v-spacer>
+          </v-card-title>
+          <v-row v-if="visibleComponents.lineChartVisible" align="center" justify="center">
+            <v-col md="4">
+              <v-flex class="blue--text text--darken-2 single-number">{{this.data.newInfections}}</v-flex>
+            </v-col>
+            <v-col md="8">
+              <LineChart
+                style="height:15rem"
+                v-if="visibleComponents.lineChartVisible"
+                :data="data.lineChartData.change"
+                :dates="data.lineChartData.date"
+                :label="'Neuinfektionen'"
+                v-on:lineclick="openLargerGraph"
+              ></LineChart>
+            </v-col>
+          </v-row>
+          <!-- </v-card-text> -->
+        </v-card>
+      </v-tab-item>
+      <v-tab-item :value="'tab-3'">
+        <v-card flat>
+          <v-card-title v-if="!visibleComponents.lineChartVisible">
+            <v-spacer></v-spacer>
+            <v-card-text class="red--text text--darken-2 single-number">{{this.data.deaths}}</v-card-text>
+            <v-spacer></v-spacer>
+          </v-card-title>
+          <v-row v-if="visibleComponents.lineChartVisible" align="center" justify="center">
+            <v-col md="4">
+              <v-flex class="red--text text--darken-2 single-number">{{this.data.deaths}}</v-flex>
+            </v-col>
+            <v-col md="8">
+              <LineChart
+                style="height:15rem"
+                v-if="visibleComponents.lineChartVisible"
+                :data="data.lineChartData.deaths"
+                :dates="data.lineChartData.date"
+                :label="'Tote'"
+                v-on:lineclick="openLargerGraph"
+              ></LineChart>
+            </v-col>
+          </v-row>
+
+          <!-- </v-card-title> -->
         </v-card>
       </v-tab-item>
     </v-tabs-items>
-
-    <!-- <b-tabs card>
-        <b-tab title="Fälle">
-          <b-container class="bv-example-row">
-            <b-row>
-              <b-col>
-                <p>Fälle</p>
-                {{this.data.cases}}
-              </b-col>
-              <b-col>
-                <p>Fälle per 100k</p>
-                {{this.data.cases100k}}
-              </b-col>
-              <b-col>
-                <p>Fälle per 100k letze 7 Tage</p>
-                {{this.data.cases100k7}}
-              </b-col>
-              <b-col>
-                <LineChart :data="this.data.casesArr" :label="'Fälle gesamt'" v-on:lineclick="doSomething"></LineChart>
-              </b-col>
-            </b-row>
-            <b-row>{{this.data.name}}</b-row>
-          </b-container>
-        </b-tab>
-        <b-tab title="Vergleich">
-          <b-container class="bv-example-row">
-            <b-row>
-              <b-col>
-                <p>Neuinfektionen</p>
-                {{this.data.newInfections}}
-              </b-col>
-              <b-col>
-                <LineChart :data="this.data.newInfectionsArr" :label="'Tägiche Neuinfektionen'" v-on:lineclick="doSomething"></LineChart>
-              </b-col>
-            </b-row>
-            <b-row>{{this.data.name}}</b-row>
-          </b-container>
-        </b-tab>
-        <b-tab title="Tote">
-          <b-container class="bv-example-row">
-            <b-row>{{"Tote: " + this.data.deaths}}</b-row>
-            <b-row>{{this.data.name}}</b-row>
-          </b-container>
-        </b-tab>
-    </b-tabs>-->
   </v-card>
 </template>
 
 <script>
 import { mapFields } from "vuex-map-fields";
 import LineChart from "./LineChart.vue";
+import {
+  getHistoryDeutschland,
+  getHistoryBL,
+  getHistoryLK
+} from "../functions/getHistory.js";
 
 export default {
   name: "Details",
@@ -96,8 +167,7 @@ export default {
         cases100k7: "",
         newInfections: "",
         deaths: "",
-        casesArr: [],
-        newInfectionsArr: []
+        lineChartData: {}
       },
       dialog: this.lineChartDialogConfig //Change on click event
     };
@@ -128,16 +198,20 @@ export default {
       BL_ID: "BL_ID",
       LK_ID: "LK_ID",
       infectionData: "infectionData",
-      lineChartDialogConfig: "lineChartDialogConfig"
+      pastInfectionData: "pastInfectionData",
+      lineChartDialogConfig: "lineChartDialogConfig",
+      visibleComponents: "visibleComponents"
     })
   },
   methods: {
-    doSomething: function(value) {
+    openLargerGraph: function(value) {
       //console.log(value);
+      //TODO: Pop Up hat beim ersten Klick keine Daten!!
       this.lineChartDialogConfig = {
         label: value.label + " - " + this.data.name,
         data: value.data,
-        shown: true
+        shown: true,
+        dates: value.dates
       };
       this.dialog = true;
       // return ""
@@ -150,22 +224,23 @@ function fillData(parent) {
     switch (parent.view) {
       case 0:
         //Deutschand view
+
         parent.data = {
           name: parent.infectionData.name,
           cases: parent.infectionData.cases_DE,
           cases100k:
-            Math.round(parent.infectionData.cases_per_100k_DE * 100) / 100,
+            Math.round(
+              (parent.infectionData.cases_per_100k_DE + Number.EPSILON) * 100
+            ) / 100,
           cases100k7:
-            Math.round(parent.infectionData.cases7_per_100k_DE * 100) / 100,
-          newInfections: parent.infectionData.new_cases_DE,
+            Math.round(
+              (parent.infectionData.cases7_per_100k_DE + Number.EPSILON) * 100
+            ) / 100,
+          newInfections: parent.infectionData.change_DE,
           deaths: parent.infectionData.deaths_DE,
-          casesArr: parent.infectionData.cases_Arr
-            ? parent.infectionData.cases_Arr
-            : [1, 1, 2, 3, 5, 8],
-          newInfectionsArr: parent.infectionData.newInfections_Arr
-            ? parent.infectionData.newInfections_Arr
-            : [4, 5, 9, 7, 1, 3]
+          lineChartData: getHistoryDeutschland()
         };
+
         break;
       case 1:
         //BL view
@@ -177,17 +252,19 @@ function fillData(parent) {
           parent.data = {
             name: BLdata.name,
             cases: BLdata.cases_BL,
-            cases100k: Math.round(BLdata.cases_per_100k_BL * 100) / 100,
-            cases100k7: Math.round(BLdata.cases7_per_100k_BL * 100) / 100,
-            newInfections: BLdata.new_cases_BL,
+            cases100k:
+              Math.round((BLdata.cases_per_100k_BL + Number.EPSILON) * 100) /
+              100,
+            cases100k7:
+              Math.round((BLdata.cases7_per_100k_BL + Number.EPSILON) * 100) /
+              100,
+            newInfections: BLdata.change_BL,
             deaths: BLdata.deaths_BL,
-            casesArr: BLdata.cases_Arr ? BLdata.cases_Arr : [4, 7, 9, 1, 3, 5],
-            newInfectionsArr: BLdata.newInfections_Arr
-              ? BLdata.newInfections_Arr
-              : [1, 2, 6, 4, 7, 9]
+            lineChartData: getHistoryBL(parent.BL_ID)
           };
         } else {
           empty(parent);
+          parent.data.name = "Bundesland wählen";
         }
         break;
       case 2:
@@ -198,19 +275,21 @@ function fillData(parent) {
             .counties.find(ee => ee.LK_ID === parent.LK_ID);
 
           parent.data = {
-            name: LKdata.LK,
+            name: LKdata.full_name,
             cases: LKdata.cases_LK,
-            cases100k: Math.round(LKdata.cases_per_100k_LK * 100) / 100,
-            cases100k7: Math.round(LKdata.cases7_per_100k_LK * 100) / 100,
-            newInfections: LKdata.new_cases_LK,
+            cases100k:
+              Math.round((LKdata.cases_per_100k_LK + Number.EPSILON) * 100) /
+              100,
+            cases100k7:
+              Math.round((LKdata.cases7_per_100k_LK + Number.EPSILON) * 100) /
+              100,
+            newInfections: LKdata.change_LK,
             deaths: LKdata.deaths_LK,
-            casesArr: LKdata.cases_Arr ? LKdata.cases_Arr : [1, 1, 1, 2, 2, 8],
-            newInfectionsArr: LKdata.newInfections_Arr
-              ? LKdata.newInfections_Arr
-              : [1, 2, 3, 4, 5, 6]
+            lineChartData: getHistoryLK(parent.BL_ID, parent.LK_ID)
           };
         } else {
           empty(parent);
+          parent.data.name = "Landkreis wählen";
         }
         break;
       default:
@@ -223,16 +302,22 @@ function fillData(parent) {
 
 function empty(parent) {
   parent.data = {
+    title: "",
     name: "",
     cases: "",
     cases100k: "",
     cases100k7: "",
     newInfections: "",
-    deaths: ""
+    deaths: "",
+    lineChartData: {}
   };
 }
 </script>
 <style scoped>
+.single-number {
+  font-size: 3rem;
+}
+
 a:hover {
   text-decoration: none !important;
 }

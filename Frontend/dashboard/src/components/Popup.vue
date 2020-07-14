@@ -10,7 +10,7 @@
           <v-container>
             <v-row>
               <v-col cols="12">
-                <span class="subheading font-weight-light mr-1">Anzahl Graphen*:</span>
+                <span class="subheading font-weight-light mr-1">Anzahl Graphen:</span>
                 <span class="display-3 font-weight-light" v-text="barsShownTemp"></span>
                 <v-slider
                   v-model="barsShownTemp"
@@ -30,7 +30,7 @@
                 </v-slider>
               </v-col>
               <v-col cols="12">
-                <span class="subheading font-weight-light mr-1">Anzahl Tage*:</span>
+                <span class="subheading font-weight-light mr-1">Anzahl Tage:</span>
                 <span class="display-3 font-weight-light" v-text="days"></span>
                 <v-slider v-model="days" thumb-label step="1" ticks="always" min="1" max="10">
                   <template v-slot:prepend>
@@ -43,7 +43,7 @@
                 </v-slider>
               </v-col>
               <v-col cols="12" class="shrink" style="min-width: 220px;">
-                <span class="headline" style="font-size: 0.875rem !important;">Farbe des Graphen*:</span>
+                <span class="headline" style="font-size: 0.875rem !important;">Farbe des Graphen:</span>
                 <v-text-field v-model="baseColorTemp" hide-details class="ma-0 pa-0" solo>
                   <template v-slot:append>
                     <v-menu
@@ -70,9 +70,46 @@
                   </template>
                 </v-text-field>
               </v-col>
+              <v-col>
+                <v-row no-gutters>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-switch v-model="barchartvisibleTemp" class="ma-2" label="Barchart"></v-switch>
+                  </v-col>
+                  <v-col cols="12" md="6">
+                    <v-switch
+                      v-model="casesGermanyVisibleTemp"
+                      class="ma-2"
+                      label="Fallzahlen Deutschland"
+                    ></v-switch>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-switch
+                      v-model="casesStateVisibleTemp"
+                      class="ma-2"
+                      label="Fallzahlen Bundesland"
+                    ></v-switch>
+                  </v-col>
+                  <v-col cols="12" md="6">
+                    <v-switch
+                      v-model="casesCountyVisibleTemp"
+                      class="ma-2"
+                      label="Fallzahlen Landkreis"
+                    ></v-switch>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-switch v-model="mapVisibleTemp" class="ma-2" label="Karte"></v-switch>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-switch v-model="lineChartVisibleTemp" class="ma-2" label="Linechart"></v-switch>
+                  </v-col>
+                </v-row>
+              </v-col>
             </v-row>
           </v-container>
-          <small>*Pflichtfelder</small>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -101,9 +138,15 @@ export default {
         ["#00FFFF", "#00AAAA", "#005555"],
         ["#0000FF", "#0000AA", "#000055"]
       ],
+      casesCountyVisibleTemp: true,
+      casesGermanyVisibleTemp: true,
+      casesStateVisibleTemp: true,
+      barchartvisibleTemp: true,
+      lineChartVisibleTemp: true,
+      mapVisibleTemp: true,
+
       days: 5,
       dialog: false,
-      color: "#1976D2FF",
       mask: "!#XXXXXXXX",
       menu: false,
       barsShownTemp: 5,
@@ -130,14 +173,30 @@ export default {
       this.barsShown = this.barsShownTemp;
       this.baseColor = this.baseColorTemp;
       this.dialog = false;
+      this.visibleComponents.barchartvisible = this.barchartvisibleTemp;
+      this.visibleComponents.casesGermanyVisible = this.casesGermanyVisibleTemp;
+      this.visibleComponents.casesStateVisible = this.casesStateVisibleTemp;
+      this.visibleComponents.casesCountyVisible = this.casesCountyVisibleTemp;
+      this.visibleComponents.mapVisible = this.mapVisibleTemp;
+      this.visibleComponents.lineChartVisible = this.lineChartVisibleTemp;
     }
   },
   computed: {
-    ...mapFields(["barsShown", "baseColor"]),
+    ...mapFields([
+      "barsShown",
+      "baseColor",
+      "casesGermanyVisible",
+      "casesStateVisible",
+      "casesCountyVisible",
+      "mapVisible",
+      "barchartvisible",
+      "visibleComponents",
+      "lineChartVisible"
+    ]),
     swatchStyle() {
-      const { color, menu } = this;
+      const { baseColorTemp, menu } = this;
       return {
-        backgroundColor: color,
+        backgroundColor: baseColorTemp,
         cursor: "pointer",
         height: "30px",
         width: "30px",

@@ -17,6 +17,16 @@ export default new Vuex.Store({
       { label: '100k / 7 Tage', code: 'cases7_per_100k' },
     ],
     infectionData: {},
+    //Settings
+    visibleComponents: {
+      casesGermanyVisible: true,
+      casesStateVisible: true,
+      casesCountyVisible: true,
+      barchartvisible: true,
+      mapVisible: true,
+      lineChartVisible: true,
+    },
+    //Past Data
     pastInfectionData: [],
     baseColor: 'Coral',
     // Table items
@@ -29,7 +39,7 @@ export default new Vuex.Store({
     mapPosition: [51.9, 10.26], // Lat, Lng // Middlepoint of Germany
     mapResolution: 2, // lowest Resolution
     // Linechart Dialog
-    lineChartDialogConfig: { data: [], label: '', shown: false }, // Config for Chart Dialog
+    lineChartDialogConfig: { data: [], label: '', shown: false, dates: [] }, // Config for Chart Dialog
   },
   getters: {
     getField,

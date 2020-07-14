@@ -1,7 +1,16 @@
 <template>
   <div id="global-options-container">
     <v-card id="options" class="w-75">
-      <v-icon id="changeOptionsSize" v-on:click="minimizeOrMaximizeOptions">mdi-chevron-down</v-icon>
+      <v-icon
+        id="changeOptionsSize"
+        v-if="showOptions"
+        v-on:click="minimizeOrMaximizeOptions"
+      >mdi-chevron-down</v-icon>
+      <v-icon
+        id="changeOptionsSize"
+        v-if="!showOptions"
+        v-on:click="minimizeOrMaximizeOptions"
+      >mdi-chevron-up</v-icon>
       <v-expand-transition>
         <div v-show="showOptions">
           <v-list-item two-line>
@@ -37,22 +46,28 @@
                 </v-btn>
               </div>
               <div id="sliderContainer" class="d-flex">
-                <v-slider
-                  :max="2"
-                  :tick-labels="allCasesOptions.map(item => item.label)"
-                  class="mx-5"
-                  ticks
-                  @input="setCaseOption"
-                ></v-slider>
-                <v-slider
-                  v-model="resolutionSliderPos"
-                  :min="-3"
-                  :max="0"
-                  @input="setMapResolution"
-                  :tick-labels="this.mapResolutions"
-                  class="mx-5"
-                  ticks
-                ></v-slider>
+                <v-col>
+                  <v-subheader class="pl-0">Fallzahlen</v-subheader>
+                  <v-slider
+                    :max="2"
+                    :tick-labels="allCasesOptions.map(item => item.label)"
+                    class="pl-0"
+                    ticks
+                    @input="setCaseOption"
+                  ></v-slider>
+                </v-col>
+                <v-col>
+                  <v-subheader class="pl-0">Auflösung der Map</v-subheader>
+                  <v-slider
+                    v-model="resolutionSliderPos"
+                    :min="-3"
+                    :max="0"
+                    @input="setMapResolution"
+                    :tick-labels="this.mapResolutions"
+                    class="pl-0"
+                    ticks
+                  ></v-slider>
+                </v-col>
               </div>
             </v-list-item-content>
           </v-list-item>
@@ -138,8 +153,8 @@ export default {
       //Hier Settings speichern!
       console.log("Jetzt könnten wir speichern!");
     },
-    findOnMap(){
-      this.$emit('focus-map')
+    findOnMap() {
+      this.$emit("focus-map");
     }
   },
   watch: {
@@ -190,6 +205,10 @@ function initStates(parent) {
 <style scoped>
 #zoomer {
   padding-bottom: 50px;
+}
+
+.theme--light.v-icon:focus::after {
+  opacity: 0 !important;
 }
 
 button {
@@ -256,7 +275,7 @@ v-select {
 }
 
 #changeOptionsSize {
-  right: 1%;
+  right: 0.5%;
   position: absolute;
   z-index: 1010;
   padding: 0 !important;

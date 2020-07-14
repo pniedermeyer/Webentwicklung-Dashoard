@@ -1,6 +1,10 @@
 <template>
-  <div class="w-100" id="map-container">
-    <div id="map"></div>
+  <div
+    class="w-100"
+    id="map-container"
+    v-bind:class="{ mapNotVisible:!visibleComponents.mapVisible }"
+  >
+    <div v-show="visibleComponents.mapVisible" id="map"></div>
     <global-options @focus-map="focusMap()" />
   </div>
 </template>
@@ -33,7 +37,9 @@ export default {
       baseColor: "baseColor",
       mapZoom: "mapZoom",
       mapPosition: "mapPosition",
-      mapResolution: "mapResolution"
+      mapResolution: "mapResolution",
+      mapVisible: "mapVisible",
+      visibleComponents: "visibleComponents"
     })
   },
   watch: {
@@ -105,25 +111,25 @@ export default {
         this.lfltMng.setMapStyle(this.casesOption);
       }
     },
-    focusMap(){
+    focusMap() {
       // Find state to ID
-      let state = this.infectionData.states.find(state => state.BL_ID === this.BL_ID)
-      let county = null
+      let state = this.infectionData.states.find(
+        state => state.BL_ID === this.BL_ID
+      );
+      let county = null;
       // Find county to ID
-      if(state){
-        county = state.counties.find(county => county.LK_ID === this.LK_ID)
+      if (state) {
+        county = state.counties.find(county => county.LK_ID === this.LK_ID);
 
-        state = state.name
-        county = county ? county.full_name : null
+        state = state.name;
+        county = county ? county.full_name : null;
       }
 
-      
-      
-      this.lfltMng.focusMap({state: state, county: county})
+      this.lfltMng.focusMap({ state: state, county: county });
     }
   },
   mounted() {
-    const that = this
+    const that = this;
     this.lfltMng = new leafletManager({
       mapId: "map",
       position: this.mapPosition,
@@ -131,20 +137,24 @@ export default {
     });
 
     this.lfltMng.fillColor(this.baseColor);
-    this.lfltMng.setPositionChangeCallback(function(e){
-      that.mapPosition = [e.lat, e.lng]
-    })
-    this.lfltMng.setZoomChangeCallback(function(e){
-      that.mapZoom = e
-    })
-    this.lfltMng.setFeatureSelectChangeCallback(function(e){
+    this.lfltMng.setPositionChangeCallback(function(e) {
+      that.mapPosition = [e.lat, e.lng];
+    });
+    this.lfltMng.setZoomChangeCallback(function(e) {
+      that.mapZoom = e;
+    });
+    this.lfltMng.setFeatureSelectChangeCallback(function(e) {
       // that.BL_ID = e.properties.BL_ID // Currently not working bc of different IDs in geo- and infection-data
-      const state = that.infectionData.states.find(state => state.name === e.properties.BL)
-      that.BL_ID = state.BL_ID
-      
-      const county = state.counties.find(county => county.full_name === e.properties.county)
-      that.LK_ID = county.LK_ID
-    })
+      const state = that.infectionData.states.find(
+        state => state.name === e.properties.BL
+      );
+      that.BL_ID = state.BL_ID;
+
+      const county = state.counties.find(
+        county => county.full_name === e.properties.county
+      );
+      that.LK_ID = county.LK_ID;
+    });
 
     //manually trigger first geodata request
     this.resolutionChanged();
@@ -167,5 +177,9 @@ export default {
 }
 .leaflet-container {
   background-color: rgba(183, 183, 246, 0.308);
+}
+
+.mapNotVisible {
+  height: 15rem !important;
 }
 </style>

@@ -2,45 +2,39 @@
   <!-- <div selectedBL_ID="app"> -->
   <v-app>
     <app-bar />
-    <div class="d-flex w-100 h-100">
-      <Map />
-      <!-- <global-options /> -->
-    </div>
-    <LineChartPopUp />
-    <div class="d-flex flex-row">
-      <div class="d-flex flex-column w-50">
-        <Details :view="0" />
-        <Details :view="1" />
-        <Details :view="2" />
+    <v-main class="mh-100">
+      <div class="mapcon d-flex w-100 h-100">
+        <Map />
+        <!-- <global-options /> -->
       </div>
-      <div class="d-flex flex-column">
-        <bar-chart />
-        <div>
-          <span>Line Chart Filler</span>
-          <!-- <number-input /> -->
+      <LineChartPopUp />
+      <div class="d-flex flex-row">
+        <v-card class="vcardoverview">
+          <div class="overviewconf d-flex flex-column w-50">
+            <Details v-show="visibleComponents.casesGermanyVisible" :view="0" />
+            <Details v-show="visibleComponents.casesStateVisible" :view="1" />
+            <Details v-show="visibleComponents.casesCountyVisible" :view="2" />
+          </div>
+        </v-card>
+        <div class="barchart d-flex flex-column">
+          <v-card v-if="visibleComponents.barchartvisible">
+            <v-card class="barchartconf">
+              <v-app-bar color="blue darken-2" dark dense>
+                <v-spacer></v-spacer>
+                <v-toolbar-title class="w-100">
+                  Barchart
+                  <v-icon color="white">mdi-chart-bar</v-icon>
+                </v-toolbar-title>
+                <v-spacer></v-spacer>
+              </v-app-bar>
+
+              <bar-chart />
+            </v-card>
+          </v-card>
         </div>
       </div>
-    </div>
-    <!-- <b-container class="bv-example-row">
-        <b-row>
-          <b-col>
-            1 of 3:
-            <number-input />
-            <bar-chart></bar-chart>
-          </b-col>
-          <b-col>
-            2 of 3
-            <Map></Map>
-          </b-col>
-          <b-col>
-            3 of 3
-            <GlobalOptions></GlobalOptions>
-            <Details :view="0" />
-            <Details :view="1" />
-            <Details :view="2" />
-          </b-col>
-        </b-row>
-    </b-container>-->
+    </v-main>
+
     <v-footer>
       <div class="my-2">
         <v-btn text small href="https://www.htwsaar.de/htw/impressum" target="_blank">Impressum</v-btn>
@@ -101,7 +95,13 @@ export default {
       // casesOption : 'casesOption',
       // allCasesOptions : 'allCasesOptions',
       infectionData: "infectionData",
-      pastInfectionData: "pastInfectionData"
+      visibleComponents: "visibleComponents",
+      pastInfectionData: "pastInfectionData",
+      casesGermanyVisible: "casesGermanyVisible",
+      casesStateVisible: "casesStateVisible",
+      casesCountyVisible: "casesCountyVisible",
+      mapVisible: "mapVisible",
+      barchartvisible: "barchartvisible"
       // baseColor : 'baseColor',
       // tableSelectedItemsID : 'tableSelectedItemsID',
       // tableTab : 'tableTab',
@@ -119,8 +119,7 @@ export default {
       .get("http://localhost:3001/data?numberOfPreviousDays=14")
       .then(response => {
         self.infectionData = response.data[0];
-        self.pastInfectionData = response.data.slice(1);
-        console.log(self.infectionData);
+        self.pastInfectionData = response.data;
       });
   },
   created() {
@@ -139,8 +138,39 @@ export default {
   /* margin-top: 60px; */
 }
 
+.mapcon {
+  height: auto !important;
+}
+
+.footer {
+  /* position: absolute !important; */
+  bottom: 0;
+  width: 100%;
+}
+
+.overviewconf {
+  overflow: auto;
+  width: 60vw !important;
+  max-height: 70vh !important;
+  max-width: 60vw !important;
+}
+.barchart {
+  margin: 1vh;
+  width: 100%;
+  width: -moz-available; /* WebKit-based browsers will ignore this. */
+  width: -webkit-fill-available; /* Mozilla-based browsers will ignore this. */
+  width: fill-available;
+  max-width: 40vw;
+}
+.vcardoverview {
+  margin: 1vh;
+}
+
 .svg_element_primary_color_scheme {
   stroke: black;
   stroke-width: 0.05pt;
+}
+.barchartconf {
+  margin: 1vh !important;
 }
 </style>
