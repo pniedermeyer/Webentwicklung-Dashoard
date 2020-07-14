@@ -19,15 +19,31 @@ class GeoDataController {
       if (resolution === undefined) {
         resolution = 1
       }
-      let geoData: GeoDataObject[] = await getConnection()
-        .getRepository(GeoDataObject)
-        .find({ where: { res: resolution } })
+      let found = false
+      let tries = 0
+      let geoData: GeoDataObject[] = []
+      while (!found && tries < 10) {
+        geoData = await getConnection()
+          .getRepository(GeoDataObject)
+          .find({ where: { res: resolution } })
+
+        if (geoData[0] !== undefined) {
+          found = true
+        } else {
+          tries++
+          await GeoDataController.Sleep(5000)
+        }
+      }
 
       res.send(geoData[0].geojson)
     } catch (error) {
       console.log(error)
       res.status(401).send('ERROR while fetching Data from Database!')
     }
+  }
+
+  static Sleep(milliseconds: number) {
+    return new Promise((resolve: any) => setTimeout(resolve, milliseconds))
   }
 
   /**
