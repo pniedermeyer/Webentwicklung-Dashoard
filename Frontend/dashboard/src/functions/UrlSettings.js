@@ -1,5 +1,6 @@
 import vuexStore from '../store/dataStore.js'
 import axios from 'axios'
+import {getBaseUrl} from './UrlUtils'
 
 var defaultValues = null;
 var currentUrlData = null;
@@ -105,7 +106,7 @@ export function parseUrlState (url) {
 
     if (!dataPart.startsWith('{') && dataPart.length === 11) {
       // Request URL contains ID for server request
-      axios.get("http://localhost:3001/settings", {
+      axios.get(getBaseUrl()+"/settings", {
         headers: {
           'x-guid': dataPart
         }
