@@ -5,7 +5,6 @@ import _ from 'lodash'
 const GUID_HEADER = 'x-guid';
 
 async function getHandler(req: express.Request, res: express.Response) {
-    console.log(req.body)
   try {
     const result = await getConnection().query(
       `
@@ -13,28 +12,15 @@ async function getHandler(req: express.Request, res: express.Response) {
         SET 
             last_accessed = NOW() 
         WHERE "guid" = $1
-        RETURNING
-            "zoom",
-            "graphs_shown" AS graphsShown,
-            "lk_id" AS lkId,
-            "bl_id" AS blId,
-            "metric",
-            "table";
+        RETURNING "data";
       `,
       [req.header(GUID_HEADER)]
     );
 
-        console.log(result[0][0])
+        console.log(result)
 
     if (result.length > 0) {
-        // postgres returns all names in lowercase, the following line will convert all keys in the body to lowercase
-        req.body = _.mapKeys(req.body, (value, key) => key.toLowerCase())
-        const response = _.pickBy(result[0][0], (value, key) => !!req.body[key]);
-        if (response.table) {
-            response.table = JSON.parse(response.table)
-        }
-
-      res.send(response);
+      res.send(result[0][0].data);
     } else {
       res
         .status(404)
@@ -67,42 +53,22 @@ async function putHandler(
             INSERT INTO "settings" (
                 "guid", 
                 "last_accessed", 
-                "zoom", 
-                "graphs_shown", 
-                "lk_id", 
-                "bl_id", 
-                "metric", 
-                "table"
+                "data"
             ) 
             VALUES (
                 $1,
                 NOW(),
-                COALESCE($2, 1),
-                COALESCE($3, 1),
-                COALESCE($4, 0),
-                COALESCE($5, 0),
-                COALESCE($6, 'cases_per_100_k'),
-                COALESCE($7, '[]')
+                $2
             )
             ON CONFLICT("guid")
             DO
                 UPDATE SET
                     "last_accessed" = NOW(),
-                    "zoom" = COALESCE($2, settings.zoom),
-                    "graphs_shown" = COALESCE($3, settings.graphs_shown),
-                    "lk_id" = COALESCE($4, settings.lk_id),
-                    "bl_id" = COALESCE($5, settings.bl_id),
-                    "metric" = COALESCE($6, settings.metric),
-                    "table" = COALESCE($7, settings.table);
+                    "data" = $2;
         `,
       [
         req.header(GUID_HEADER),
-        req.body.zoom ?? null,
-        req.body.graphsShown ?? null,
-        req.body.lkId ?? null,
-        req.body.blId ?? null,
-        req.body.metric ?? null,
-        req.body.table ? JSON.stringify(req.body.table) : null,
+        req.body
       ]
     );
 
