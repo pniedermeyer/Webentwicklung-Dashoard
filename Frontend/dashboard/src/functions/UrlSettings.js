@@ -1,7 +1,5 @@
 import vuexStore from '../store/dataStore.js'
 import {readUserDataFromServer} from "./sendUserData";
-//import appbar from "../components/AppBar";
-//import vm from '../main'
 
 var defaultValues = null;
 var currentUrlData = null;

@@ -41,7 +41,7 @@
                   return-object
                 ></v-autocomplete>
                 <v-btn outlined @click="findOnMap()" color="primary" class="align-self-center mx-4">
-                  <span class>Find on Map</span>
+                  <span class>Auf Karte anzeigen</span>
                   <v-icon right>mdi-magnify</v-icon>
                 </v-btn>
               </div>
@@ -60,7 +60,7 @@
                     ></v-slider>
                   </v-col>
                   <v-col cols="12" md="6" class="pb-0">
-                    <v-subheader class="sliderLabelResolution">Auflösung der Map</v-subheader>
+                    <v-subheader class="sliderLabelResolution">Auflösung der Karte</v-subheader>
                     <v-slider
                       v-model="resolutionSliderPos"
                       :min="-3"
@@ -196,11 +196,13 @@ export default {
         this.resolutionSliderPos = this.mapResolution * -1;
       }
     },
-    casesOption:{
+    casesOption: {
       immediate: true,
       handler() {
-        const option = this.allCasesOptions.find(option => option.code === this.casesOption)
-        this.casesOptionslider = this.allCasesOptions.indexOf(option)
+        const option = this.allCasesOptions.find(
+          option => option.code === this.casesOption
+        );
+        this.casesOptionslider = this.allCasesOptions.indexOf(option);
       }
     }
   },
