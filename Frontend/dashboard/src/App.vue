@@ -97,13 +97,10 @@
 
 <script>
 import AppBar from "./components/AppBar.vue";
-//import NumberInput from "./components/SelectBarsCount.vue";
-// import TableComponent from "./components/TableComponent.vue";
 import Details from "./components/Details.vue";
 import BarChart from "./components/Barchart.vue";
 import Map from "./components/Map.vue";
 import LineChartPopUp from "./components/LineChartPopUp.vue";
-// import GlobalOptions from "./components/GlobalOptions.vue";
 import axios from "axios";
 import { mapFields } from "vuex-map-fields";
 import store from "./store/dataStore.js";

@@ -1,6 +1,5 @@
 import vuexStore from '../store/dataStore.js'
-import axios from 'axios'
-import {getBaseUrl} from './UrlUtils'
+import {readUserDataFromServer} from "./sendUserData";
 
 var defaultValues = null;
 var currentUrlData = null;
@@ -106,11 +105,15 @@ export function parseUrlState (url) {
 
     if (!dataPart.startsWith('{') && dataPart.length === 11) {
       // Request URL contains ID for server request
-      axios.get(getBaseUrl()+"/settings", {
-        headers: {
-          'x-guid': dataPart
-        }
-      }).then(result => vuexStore.commit('setFields', result.data))
+      readUserDataFromServer(dataPart,
+          function (result) {
+            vuexStore.commit('setFields', result)
+            //vm.$refs.snackbar.showSnackbar("Einstellungen wurden über die ID eingelesen", "success")
+      },
+      function (r) {
+        console.error("Could not read settings from server:", r)
+        //appbar.$refs.snackbar.showSnackbar("Die ID zum Einlesen der Einstellungen ist invalide oder abgelaufen", "error")
+      })
     }
 
     if (state === null) {
@@ -180,7 +183,6 @@ function dataStoreIsInitilizing(data) {
       if (window.location.hash.substring(1) !== "") {
         // If there is data in the URL - it was provided on page cal and needs to be serialized into the data store
         urlToSettingsChange(parseUrlState(window.location))
-        console.log("New store state after URL deserialize:", {... vuexStore.state})
       }
     }
 

@@ -35,8 +35,10 @@ Vue.component('v-multiselect', Multiselect)
 
 Vue.component('v-slider', VueSlider)
 
-new Vue({
+var vm = new Vue({
   render: (h) => h(App),
   vuetify,
   store: store,
 }).$mount('#app')
+
+export default vm
