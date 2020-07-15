@@ -126,6 +126,34 @@ export default {
       }
 
       this.lfltMng.focusMap({ state: state, county: county });
+    },
+    setBrowserLocation(coordinates){
+      const that = this
+      const geos = this.geoDatas[this.mapResolution]
+      if(!geos){
+        setTimeout(() => {that.setBrowserLocation(coordinates)}, 1000)
+      }else{
+        const GeoJsonGeometriesLookup = require('geojson-geometries-lookup');
+        const glookup = new GeoJsonGeometriesLookup(geos);
+        const point = {type: "Point", coordinates: [coordinates[1], coordinates[0]]};
+        const features = glookup.getContainers(point)
+
+        if(this.BL_ID === 0){
+          this.selectedFeatureChange(features.features[0]) 
+        }
+      }
+    },
+    selectedFeatureChange(feature) {
+      // that.BL_ID = e.properties.BL_ID // Currently not working bc of different IDs in geo- and infection-data
+      const state = this.infectionData.states.find(
+        state => state.name === feature.properties.BL
+      );
+      this.BL_ID = state.BL_ID;
+
+      const county = state.counties.find(
+        county => county.full_name === feature.properties.county
+      );
+      this.LK_ID = county.LK_ID;
     }
   },
   mounted() {
@@ -143,18 +171,7 @@ export default {
     this.lfltMng.setZoomChangeCallback(function(e) {
       that.mapZoom = e;
     });
-    this.lfltMng.setFeatureSelectChangeCallback(function(e) {
-      // that.BL_ID = e.properties.BL_ID // Currently not working bc of different IDs in geo- and infection-data
-      const state = that.infectionData.states.find(
-        state => state.name === e.properties.BL
-      );
-      that.BL_ID = state.BL_ID;
-
-      const county = state.counties.find(
-        county => county.full_name === e.properties.county
-      );
-      that.LK_ID = county.LK_ID;
-    });
+    this.lfltMng.setFeatureSelectChangeCallback(this.selectedFeatureChange);
 
     //manually trigger first geodata request
     this.resolutionChanged();

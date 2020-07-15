@@ -4,7 +4,7 @@
     <app-bar />
     <v-main class="mh-100">
       <div class="mapcon d-flex w-100 h-100">
-        <Map />
+        <Map ref="Map" />
         <!-- <global-options /> -->
       </div>
       <LineChartPopUp />
@@ -148,10 +148,10 @@ export default {
               position.coords.latitude,
               position.coords.longitude
             );
-            this.mapPosition = [
+            this.$refs.Map.setBrowserLocation([
               position.coords.latitude,
               position.coords.longitude
-            ];
+            ]);
           },
           error => {
             console.log(error.message);
@@ -172,10 +172,7 @@ export default {
       });
 
     store.subscribe(storeListener);
-
-    setTimeout(function() {
-      self.getLocation();
-    }, 5000);
+    this.getLocation();
   },
   created() {
     registerURLEventListener();
