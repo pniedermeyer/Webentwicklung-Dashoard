@@ -19,7 +19,7 @@
                   step="1"
                   ticks="always"
                   min="1"
-                  max="14"
+                  max="10"
                 >
                   <template v-slot:prepend>
                     <v-icon color="red" @click="decrementgraphs">mdi-minus</v-icon>
@@ -32,7 +32,7 @@
               <v-col cols="12">
                 <span class="subheading font-weight-light mr-1">Anzahl Tage:</span>
                 <span class="display-3 font-weight-light" v-text="days"></span>
-                <v-slider v-model="days" thumb-label step="1" ticks="always" min="1" max="10">
+                <v-slider v-model="days" thumb-label step="1" ticks="always" min="2" max="14">
                   <template v-slot:prepend>
                     <v-icon color="red" @click="decrementdays">mdi-minus</v-icon>
                   </template>
@@ -146,6 +146,7 @@ export default {
       mapVisibleTemp: true,
 
       days: 5,
+      daysTmp: 14,
       dialog: false,
       mask: "!#XXXXXXXX",
       menu: false,
@@ -155,6 +156,7 @@ export default {
   },
   methods: {
     showModal() {
+      this.initPopup();
       this.dialog = true;
     },
     decrementdays() {
@@ -179,6 +181,19 @@ export default {
       this.visibleComponents.casesCountyVisible = this.casesCountyVisibleTemp;
       this.visibleComponents.mapVisible = this.mapVisibleTemp;
       this.visibleComponents.lineChartVisible = this.lineChartVisibleTemp;
+      this.numberPastDays = this.days;
+    },
+    initPopup() {
+      this.barsShownTemp = this.barsShown;
+      this.baseColorTemp = this.baseColor;
+      this.dialog = false;
+      this.barchartvisibleTemp = this.visibleComponents.barchartvisible;
+      this.casesGermanyVisibleTemp = this.visibleComponents.casesGermanyVisible;
+      this.casesStateVisibleTemp = this.visibleComponents.casesStateVisible;
+      this.casesCountyVisibleTemp = this.visibleComponents.casesCountyVisible;
+      this.mapVisibleTemp = this.visibleComponents.mapVisible;
+      this.lineChartVisibleTemp = this.visibleComponents.lineChartVisible;
+      this.days = this.numberPastDays;
     }
   },
   computed: {
@@ -191,7 +206,8 @@ export default {
       "mapVisible",
       "barchartvisible",
       "visibleComponents",
-      "lineChartVisible"
+      "lineChartVisible",
+      "numberPastDays"
     ]),
     swatchStyle() {
       const { baseColorTemp, menu } = this;

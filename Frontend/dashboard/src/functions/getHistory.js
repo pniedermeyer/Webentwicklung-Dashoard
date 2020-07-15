@@ -6,10 +6,10 @@ import vuexStore from '../store/dataStore.js'
 
 // const pastInfectionData = { ...vuexStore.state.pastInfectionData }
 
-export function getHistoryDeutschland() {
+export function getHistoryDeutschland(days) {
   const pastInfectionData = { ...vuexStore.state.pastInfectionData }
   // const days = { ...vuexStore.state.days }
-  let days = 14
+  //let days = 14
 
   if (days > Object.keys(pastInfectionData).length) {
     days = Object.keys(pastInfectionData).length
@@ -24,17 +24,18 @@ export function getHistoryDeutschland() {
     historyInfectionData.change.unshift(pastInfectionData[i].change_DE)
     historyInfectionData.date.unshift(pastInfectionData[i].date)
     historyInfectionData.deaths.unshift(pastInfectionData[i].deaths_DE)
+    historyInfectionData.casesPer100k.unshift(Math.round((pastInfectionData[i].cases_per_100k_DE + Number.EPSILON) * 100) / 100)
     historyInfectionData.cases7per100k.unshift(Math.round((pastInfectionData[i].cases7_per_100k_DE + Number.EPSILON) * 100) / 100)
   }
   // console.log(historyInfectionData)
   return historyInfectionData
 }
 
-export function getHistoryBL(BL_ID) {
+export function getHistoryBL(days, BL_ID) {
   const pastInfectionData = { ...vuexStore.state.pastInfectionData }
   // const days = { ...vuexStore.state.days }
 
-  let days = 14
+  //let days = 14
 
   if (days > Object.keys(pastInfectionData).length) {
     days = Object.keys(pastInfectionData).length
@@ -50,6 +51,7 @@ export function getHistoryBL(BL_ID) {
       historyInfectionData.change.unshift(state.change_BL)
       historyInfectionData.date.unshift(state.date)
       historyInfectionData.deaths.unshift(state.deaths_BL)
+      historyInfectionData.casesPer100k.unshift(Math.round((state.cases_per_100k_BL + Number.EPSILON) * 100) / 100)
       historyInfectionData.cases7per100k.unshift(Math.round((state.cases7_per_100k_BL + Number.EPSILON) * 100) / 100)
     } catch (e) {
       console.error('Error in finding the BL_ID')
@@ -58,11 +60,11 @@ export function getHistoryBL(BL_ID) {
   return historyInfectionData
 }
 
-export function getHistoryLK(BL_ID, LK_ID) {
+export function getHistoryLK(days, BL_ID, LK_ID) {
   const pastInfectionData = { ...vuexStore.state.pastInfectionData }
   // const days = { ...vuexStore.state.days }
 
-  let days = 14
+  //let days = 14
 
   if (days > Object.keys(pastInfectionData).length) {
     days = Object.keys(pastInfectionData).length
@@ -79,6 +81,7 @@ export function getHistoryLK(BL_ID, LK_ID) {
         historyInfectionData.change.unshift(county.change_LK)
         historyInfectionData.date.unshift(state.date)
         historyInfectionData.deaths.unshift(county.deaths_LK)
+        historyInfectionData.casesPer100k.unshift(Math.round((county.cases_per_100k_LK + Number.EPSILON) * 100) / 100)
         historyInfectionData.cases7per100k.unshift(Math.round((county.cases7_per_100k_LK + Number.EPSILON) * 100) / 100)
       } catch (e) {
         console.error('Error in finding the LK_ID')
@@ -96,6 +99,7 @@ function newHistoryInfectionData() {
     change: [],
     date: [],
     deaths: [],
+    casesPer100k: [],
     cases7per100k: [],
   }
 }
