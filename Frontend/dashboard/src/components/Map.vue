@@ -95,7 +95,6 @@ export default {
         .get(url)
         .then(function(response) {
           that.geoDatas[res] = response.data;
-          console.log("Fetch geodata succeeded", response);
         })
         .catch(function(error) {
           console.log("Fetch geodata failed:", error);

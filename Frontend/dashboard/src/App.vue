@@ -2,7 +2,6 @@
   <!-- <div selectedBL_ID="app"> -->
   <v-app>
     <app-bar />
-    <snack-notifier />
     <v-main class="mh-100">
       <div class="mapcon d-flex w-100 h-100">
         <Map ref="Map" />

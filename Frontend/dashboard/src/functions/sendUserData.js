@@ -68,6 +68,5 @@ export function generateUrlWithSettingsId(currentUrl, settingsId) {
  * @param text
  */
 export function copyTextToClipboard(text) {
-  alert("Copy text")
   navigator.clipboard.writeText(text)
 }
