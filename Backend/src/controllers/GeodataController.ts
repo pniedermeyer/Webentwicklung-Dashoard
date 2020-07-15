@@ -68,23 +68,6 @@ class GeoDataController {
       })
       .execute()
   }
-
-  /**
-   * Saves GeoJSON in different resolutions when there is no data yet in that table
-   */
-  static async initDB() {
-    let sum: number = await getConnection().getRepository(GeoDataObject).count()
-    if (sum === 0) {
-      await GeoDataController.writeGeoDataInResolution('low')
-      console.log('GeoJSON resolution added to DB: low')
-      await GeoDataController.writeGeoDataInResolution('medium')
-      console.log('GeoJSON resolution added to DB: medium')
-      await GeoDataController.writeGeoDataInResolution('high')
-      console.log('GeoJSON resolution added to DB: high')
-      await GeoDataController.writeGeoDataInResolution('original')
-      console.log('GeoJSON resolution added to DB: original')
-    }
-  }
 }
 
 export default GeoDataController
