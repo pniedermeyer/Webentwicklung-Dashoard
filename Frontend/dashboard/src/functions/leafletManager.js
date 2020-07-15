@@ -5,28 +5,28 @@ import leaflet from 'leaflet'
  * endless loading an the browser starts begging for RAM.
  */
 export default class leafletManager {
-  #mapId = null
-  #map = null
-  #geoJsonLayer = null
-  #geoData = null
-  #infectionData = null
-  #minCases = 0
-  #maxCases = 0
-  #fillColor = 'LightSlateGrey'
-  #positionChangeCallback = this.defaultCallback
-  #zoomChangeCallback = this.defaultCallback
-  #featureSelectChangeCallback = this.defaultCallback
+  _mapId = null
+  _map = null
+  _geoJsonLayer = null
+  _geoData = null
+  _infectionData = null
+  _minCases = 0
+  _maxCases = 0
+  _fillColor = 'LightSlateGrey'
+  _positionChangeCallback = this.defaultCallback
+  _zoomChangeCallback = this.defaultCallback
+  _featureSelectChangeCallback = this.defaultCallback
 
   constructor({mapId, position, zoom }) {
     const that = this
-    this.#mapId = mapId
-    this.#map = leaflet.map(this.#mapId).setView(position, zoom)
+    this._mapId = mapId
+    this._map = leaflet.map(this._mapId).setView(position, zoom)
 
-    this.#map.on('zoomend', function(){
+    this._map.on('zoomend', function(){
       that.zoomChanged(that)
     })
 
-    this.#map.on('moveend', function() {
+    this._map.on('moveend', function() {
       that.positionChanged(that)
     })
   }
@@ -36,51 +36,51 @@ export default class leafletManager {
   }
 
   setGeoData(geoData) {
-    this.#geoData = geoData
+    this._geoData = geoData
     const that = this
 
     // Update Map Layer
-    if (this.#geoJsonLayer) {
-      this.#map.removeLayer(this.#geoJsonLayer)
+    if (this._geoJsonLayer) {
+      this._map.removeLayer(this._geoJsonLayer)
     }
-    this.#geoJsonLayer = leaflet
-      .geoJSON(this.#geoData, {
+    this._geoJsonLayer = leaflet
+      .geoJSON(this._geoData, {
         onEachFeature: function(f, l) {
           l.bindPopup('<p>' + f.properties.county + ' <br/>(' + f.properties.BL + ')</p>')
           l.on('click', () => {that.featureSelected(f)})
         },
       })
-      .addTo(this.#map)
+      .addTo(this._map)
 
     this.updateMap()
   }
 
   setInfectionData(infectionData) {
-    this.#infectionData = infectionData
+    this._infectionData = infectionData
     this.updateMap()
   }
 
   setMapStyle(selectedCase) {
-    if (!this.#infectionData || !this.#geoJsonLayer) {
+    if (!this._infectionData || !this._geoJsonLayer) {
       return
     }
     let that = this
-    this.setMinMax(this.#infectionData, selectedCase + '_LK')
-    this.#geoJsonLayer.eachLayer(function(layer) {
+    this.setMinMax(this._infectionData, selectedCase + '_LK')
+    this._geoJsonLayer.eachLayer(function(layer) {
       layer.setStyle(that.featureStyling(layer.feature, selectedCase + '_LK'))
     })
   }
 
   getOpacity(countyName, stateName, caseName) {
-    const county = this.#infectionData.states
+    const county = this._infectionData.states
       .filter((state) => state.name === stateName)[0]
       .counties.find((county) => county.full_name === countyName)
-    return 0.1 + ((0.9 - 0.1) / (this.#maxCases - this.#minCases)) * (county[caseName] - this.#minCases)
+    return 0.1 + ((0.9 - 0.1) / (this._maxCases - this._minCases)) * (county[caseName] - this._minCases)
   }
 
   featureStyling(feature, caseName) {
     return {
-      fillColor: this.#fillColor,
+      fillColor: this._fillColor,
       weight: 1,
       opacity: 1,
       color: 'gray',
@@ -90,18 +90,18 @@ export default class leafletManager {
   }
 
   setMinMax(data, caseName) {
-    this.#minCases = data.states[0].counties[0][caseName]
-    this.#maxCases = this.#minCases
+    this._minCases = data.states[0].counties[0][caseName]
+    this._maxCases = this._minCases
 
     data.states.forEach((state) => {
       state.counties.forEach((county) => {
         const cases = county[caseName]
-        if (this.#minCases > cases) {
-          this.#minCases = cases
+        if (this._minCases > cases) {
+          this._minCases = cases
         }
 
-        if (this.#maxCases < cases) {
-          this.#maxCases = cases
+        if (this._maxCases < cases) {
+          this._maxCases = cases
         }
       })
     })
@@ -111,7 +111,7 @@ export default class leafletManager {
 
     if(state){ //Focus to state if set
       let states = []
-      this.#geoData.features.forEach(feature => {
+      this._geoData.features.forEach(feature => {
         if(feature.properties.BL === state){
           states.push(feature)
         }
@@ -125,58 +125,58 @@ export default class leafletManager {
           }
         })
         const countyGroup = leaflet.geoJSON(counties)
-        this.#map.fitBounds(countyGroup.getBounds())
+        this._map.fitBounds(countyGroup.getBounds())
       }else{
         const stateGroup = leaflet.geoJSON(states) 
-        this.#map.fitBounds(stateGroup.getBounds())
+        this._map.fitBounds(stateGroup.getBounds())
       }
     }else{
       // Focus complete map
-      this.#map.fitBounds(this.#geoJsonLayer.getBounds())
+      this._map.fitBounds(this._geoJsonLayer.getBounds())
     }
 
   }
 
   fillColor(color) {
-    this.#fillColor = color
+    this._fillColor = color
   }
 
   setView({ position, zoom }) {
-    this.#map.setView(position, zoom)
+    this._map.setView(position, zoom)
   }
 
   get zoom() {
-    return this.#map.getZoom()
+    return this._map.getZoom()
   }
 
   get viewPosition() {
-    return this.#map.getCenter()
+    return this._map.getCenter()
   }
 
   zoomChanged(instance){
-    instance.#zoomChangeCallback(instance.#map.getZoom())
+    instance._zoomChangeCallback(instance._map.getZoom())
     setTimeout(function(){}, 2000)   //TODO: Remove or move
   }
 
   positionChanged(instance){
-    instance.#positionChangeCallback(instance.#map.getCenter())
+    instance._positionChangeCallback(instance._map.getCenter())
     setTimeout(function(){}, 2000) //TODO: Remove
   }
 
   featureSelected(feature){
-    this.#featureSelectChangeCallback(feature)
+    this._featureSelectChangeCallback(feature)
   }
 
   setPositionChangeCallback(func){
-    this.#positionChangeCallback = func
+    this._positionChangeCallback = func
   }
 
   setZoomChangeCallback(func){
-    this.#zoomChangeCallback = func
+    this._zoomChangeCallback = func
   }
 
   setFeatureSelectChangeCallback(func){
-    this.#featureSelectChangeCallback = func
+    this._featureSelectChangeCallback = func
   }
 
   defaultCallback(param){
