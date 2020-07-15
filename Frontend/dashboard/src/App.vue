@@ -2,6 +2,7 @@
   <!-- <div selectedBL_ID="app"> -->
   <v-app>
     <app-bar />
+    <snack-notifier />
     <v-main class="mh-100">
       <div class="mapcon d-flex w-100 h-100">
         <Map ref="Map" />
@@ -94,31 +95,6 @@
           <Details :view="2" />
         </v-col>
       </v-row>
-      <!-- <div class="d-flex flex-row">
-        <v-card class="vcardoverview">
-          <div class="overviewconf d-flex flex-column w-50">
-            <Details v-show="visibleComponents.casesGermanyVisible" :view="0" />
-            <Details v-show="visibleComponents.casesStateVisible" :view="1" />
-            <Details v-show="visibleComponents.casesCountyVisible" :view="2" />
-          </div>
-        </v-card>
-        <div class="barchart d-flex flex-column">
-          <v-card v-if="visibleComponents.barchartvisible">
-            <v-card class="barchartconf">
-              <v-app-bar color="blue darken-2" dark dense>
-                <v-spacer></v-spacer>
-                <v-toolbar-title class="w-100">
-                  Barchart
-                  <v-icon color="white">mdi-chart-bar</v-icon>
-                </v-toolbar-title>
-                <v-spacer></v-spacer>
-              </v-app-bar>
-
-              <bar-chart />
-            </v-card>
-          </v-card>
-        </div>
-      </div>-->
     </v-main>
 
     <v-footer>
@@ -145,13 +121,11 @@
 
 <script>
 import AppBar from "./components/AppBar.vue";
-//import NumberInput from "./components/SelectBarsCount.vue";
-// import TableComponent from "./components/TableComponent.vue";
+import SnackNotifier from "./components/SnackNotifier.vue";
 import Details from "./components/Details.vue";
 import BarChart from "./components/Barchart.vue";
 import Map from "./components/Map.vue";
 import LineChartPopUp from "./components/LineChartPopUp.vue";
-// import GlobalOptions from "./components/GlobalOptions.vue";
 import axios from "axios";
 import { mapFields } from "vuex-map-fields";
 import store from "./store/dataStore.js";
@@ -165,6 +139,7 @@ export default {
   name: "App",
   components: {
     AppBar,
+    SnackNotifier,
     BarChart,
     Map,
     // NumberInput,

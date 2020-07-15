@@ -1,5 +1,6 @@
 import vuexStore from '../store/dataStore.js'
-import axios from 'axios'
+import {readUserDataFromServer} from "./sendUserData";
+import app from "../App.vue";
 
 var defaultValues = null;
 var currentUrlData = null;
@@ -105,11 +106,15 @@ export function parseUrlState (url) {
 
     if (!dataPart.startsWith('{') && dataPart.length === 11) {
       // Request URL contains ID for server request
-      axios.get("http://localhost:3001/settings", {
-        headers: {
-          'x-guid': dataPart
-        }
-      }).then(result => vuexStore.commit('setFields', result.data))
+      app.components.SnackNotifier.methods.showSnackbar("Lese Konfiguration. Bitte warten", "info")
+      readUserDataFromServer(dataPart,
+          function (result) {
+        vuexStore.commit('setFields', result)
+            app.components.SnackNotifier.methods.showSnackbar("Konfiguration eingelesen", "success")
+      },
+      function () {
+        app.components.SnackNotifier.methods.showSnackbar("Konfiguration konnte nicht eingelesen werden. Die ID ist invalide oder abgelaufen", "error")
+      })
     }
 
     if (state === null) {
