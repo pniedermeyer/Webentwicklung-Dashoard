@@ -11,7 +11,6 @@
         <span>Fälle Gesamt</span>
         <span class="case-number">{{formatNumber(this.data.cases)}}</span>
       </v-tab>
-
       <v-tab href="#tab-2">
         <span>Fälle Pro 100k</span>
         <span class="case-number">{{formatNumber(this.data.cases100k)}}</span>
@@ -29,12 +28,10 @@
         <span class="case-number">{{formatNumber(this.data.deaths)}}</span>
       </v-tab>
     </v-tabs>
-    <!-- </v-col>
-    <v-col cols="8">-->
-    <v-tabs-items v-model="tab">
+    <v-tabs-items v-model="tab" v-show="visibleComponents.lineChartVisible">
       <v-tab-item :value="'tab-1'">
         <LineChart
-          style="height:100%"
+          style="height:20.5rem"
           :data="data.lineChartData.cases"
           :dates="data.lineChartData.date"
           :label="'Fälle gesamt'"
@@ -43,37 +40,37 @@
       </v-tab-item>
       <v-tab-item :value="'tab-2'">
         <LineChart
-          style="height:100%"
-          :data="data.lineChartData.cases"
+          style="height:20.5rem"
+          :data="data.lineChartData.casesPer100k"
           :dates="data.lineChartData.date"
-          :label="'Fälle gesamt'"
+          :label="'Fälle pro 100k'"
           v-on:lineclick="openLargerGraph"
         ></LineChart>
       </v-tab-item>
       <v-tab-item :value="'tab-3'">
         <LineChart
-          style="height:100%"
+          style="height:20.5rem"
           :data="data.lineChartData.cases7per100k"
           :dates="data.lineChartData.date"
-          :label="'Fälle gesamt'"
+          :label="'Fälle pro 100k / 7 Tage'"
           v-on:lineclick="openLargerGraph"
         ></LineChart>
       </v-tab-item>
       <v-tab-item :value="'tab-4'">
         <LineChart
-          style="height:100%"
+          style="height:20.5rem"
           :data="data.lineChartData.change"
           :dates="data.lineChartData.date"
-          :label="'Fälle gesamt'"
+          :label="'Neuinfektionen'"
           v-on:lineclick="openLargerGraph"
         ></LineChart>
       </v-tab-item>
       <v-tab-item :value="'tab-5'">
         <LineChart
-          style="height:100%"
+          style="height:20.5rem"
           :data="data.lineChartData.deaths"
           :dates="data.lineChartData.date"
-          :label="'Fälle gesamt'"
+          :label="'Tote'"
           v-on:lineclick="openLargerGraph"
         ></LineChart>
       </v-tab-item>
@@ -257,6 +254,9 @@ export default {
     },
     infectionData: function() {
       fillData(this);
+    },
+    days: function() {
+      fillData(this);
     }
     // lineChartDialogConfig: function() {
     //   console.log("oainf")
@@ -270,12 +270,13 @@ export default {
       infectionData: "infectionData",
       pastInfectionData: "pastInfectionData",
       lineChartDialogConfig: "lineChartDialogConfig",
-      visibleComponents: "visibleComponents"
+      visibleComponents: "visibleComponents",
+      days: "numberPastDays"
     })
   },
   methods: {
     formatNumber(number) {
-      if (!number) {
+      if (number === undefined) {
         return;
       }
       // console.log(number);
@@ -297,6 +298,7 @@ export default {
 };
 
 function fillData(parent) {
+  //console.log(parent.days);
   if (parent.infectionData) {
     switch (parent.view) {
       case 0:
@@ -315,9 +317,8 @@ function fillData(parent) {
             ) / 100,
           newInfections: parent.infectionData.change_DE,
           deaths: parent.infectionData.deaths_DE,
-          lineChartData: getHistoryDeutschland()
+          lineChartData: getHistoryDeutschland(parent.days)
         };
-
         break;
       case 1:
         //BL view
@@ -337,7 +338,7 @@ function fillData(parent) {
               100,
             newInfections: BLdata.change_BL,
             deaths: BLdata.deaths_BL,
-            lineChartData: getHistoryBL(parent.BL_ID)
+            lineChartData: getHistoryBL(parent.days, parent.BL_ID)
           };
         } else {
           empty(parent);
@@ -362,8 +363,9 @@ function fillData(parent) {
               100,
             newInfections: LKdata.change_LK,
             deaths: LKdata.deaths_LK,
-            lineChartData: getHistoryLK(parent.BL_ID, parent.LK_ID)
+            lineChartData: getHistoryLK(parent.days, parent.BL_ID, parent.LK_ID)
           };
+          //console.log(parent.data);
         } else {
           empty(parent);
           parent.data.name = "Landkreis wählen";
