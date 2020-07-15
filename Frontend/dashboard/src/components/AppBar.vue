@@ -1,14 +1,12 @@
 <template>
-  <v-container>
-    <v-app-bar class="appbarconf" color="blue darken-2" dense dark fixed app>
-      <v-icon v-on:click="openModal">mdi-cog</v-icon>
-      <popup ref="modalpop"></popup>
-      <snack-notifier ref="snackbar"></snack-notifier>
-      <v-toolbar-title>Corona Dashboard</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-icon v-on:click="createBackendLinkAndCopyToClipboard">mdi-share-variant</v-icon>
-    </v-app-bar>
-  </v-container>
+  <v-app-bar class="appbarconf" color="blue darken-2" dense dark fixed app>
+    <v-icon v-on:click="openModal">mdi-cog</v-icon>
+    <popup ref="modalpop"></popup>
+    <snack-notifier ref="snackbar"></snack-notifier>
+    <v-toolbar-title>Corona Dashboard</v-toolbar-title>
+    <v-spacer></v-spacer>
+    <v-icon v-on:click="createBackendLinkAndCopyToClipboard">mdi-share-variant</v-icon>
+  </v-app-bar>
 </template>
 <style>
 .appbarconf {
@@ -46,30 +44,29 @@ export default {
         getCurrentUrlDataState(),
         function() {
           copyTextToClipboard(
-                  generateUrlWithSettingsId(window.location, settingsId)
+            generateUrlWithSettingsId(window.location, settingsId)
           );
           that.$refs.snackbar.showSnackbar(
-                  "Der Link wurde in die Zwischenablage kopiert",
-                  "success"
+            "Der Link wurde in die Zwischenablage kopiert",
+            "success"
           );
         },
         function() {
           that.$refs.snackbar.showSnackbar(
-                  "Fehler bei der Erstellung des Teilen-Links",
-                  "error"
+            "Fehler bei der Erstellung des Teilen-Links",
+            "error"
           );
         }
-      )
+      );
     },
 
-
     showSnackbar(content, isError) {
-      this.snackbarText = content
-      this.snackbarShown = true
+      this.snackbarText = content;
+      this.snackbarShown = true;
       if (isError) {
-        this.snackbarMode = "error"
+        this.snackbarMode = "error";
       } else {
-        this.snackbarMode = "success"
+        this.snackbarMode = "success";
       }
     }
   }

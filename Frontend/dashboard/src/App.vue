@@ -85,9 +85,6 @@
           target="_blank"
         >Datenquelle</v-btn>
       </div>
-      <div class="my-2">
-        <v-btn text small href="https://www.govdata.de/dl-de/by-2-0" target="_blank">Datenlizenz</v-btn>
-      </div>
       <v-spacer></v-spacer>
       <div>&copy; {{ new Date().getFullYear() }}</div>
     </v-footer>
@@ -109,7 +106,7 @@ import {
   registerURLEventListener,
   storeListener
 } from "./functions/UrlSettings.js";
-import {getBaseUrl} from "./functions/UrlUtils";
+import { getBaseUrl } from "./functions/UrlUtils";
 
 export default {
   name: "App",
@@ -169,12 +166,10 @@ export default {
   mounted() {
     let self = this;
     //urlToSettingsChange(parseUrlState(window.location));
-    axios
-      .get(getBaseUrl()+"/data?numberOfPreviousDays=14")
-      .then(response => {
-        self.infectionData = response.data[0];
-        self.pastInfectionData = response.data;
-      });
+    axios.get(getBaseUrl() + "/data?numberOfPreviousDays=14").then(response => {
+      self.infectionData = response.data[0];
+      self.pastInfectionData = response.data;
+    });
 
     store.subscribe(storeListener);
     this.getLocation();
