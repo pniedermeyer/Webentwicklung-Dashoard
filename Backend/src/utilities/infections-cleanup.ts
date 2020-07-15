@@ -5,6 +5,6 @@ import { getConnection } from 'typeorm'
  */
 export default async function cleanupInfections () {
   await getConnection().query(`
-    DELETE FROM "settings" WHERE "last_accessed" < NOW() - INTERVAL '2 week';
+    DELETE FROM "infections" WHERE "last_accessed" < NOW() - INTERVAL '2 week';
   `)
 }
