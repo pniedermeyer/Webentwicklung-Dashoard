@@ -25,8 +25,6 @@ import {
 } from "../functions/sendUserData";
 import { getCurrentUrlDataState } from "../functions/UrlSettings";
 import SnackNotifier from "./SnackNotifier.vue";
-import axios from "axios";
-import {getBaseUrl} from "../functions/UrlUtils";
 export default {
   name: "app-bar",
   components: { Popup, SnackNotifier },
@@ -44,23 +42,25 @@ export default {
       let that = this;
       let settingsId = generateShortId();
       sendUserSettingsToServer(
-              settingsId,
-              getCurrentUrlDataState(),
-              function() {
-                copyTextToClipboard(
-                        generateUrlWithSettingsId(window.location, settingsId)
-                );
-                that.$refs.snackbar.showSnackbar(
-                        "Der Link wurde in die Zwischenablage kopiert",
-                        "success"
-                );
-              },
-              function() {
-                that.$refs.snackbar.showSnackbar(
-                        "Fehler bei der Erstellung des Teilen-Links",
-                        "error"
-                );
-              }
+        settingsId,
+        getCurrentUrlDataState(),
+        function() {
+          copyTextToClipboard(
+                  generateUrlWithSettingsId(window.location, settingsId)
+          );
+          that.$refs.snackbar.showSnackbar(
+                  "Der Link wurde in die Zwischenablage kopiert",
+                  "success"
+          );
+        },
+        function() {
+          that.$refs.snackbar.showSnackbar(
+                  "Fehler bei der Erstellung des Teilen-Links",
+                  "error"
+          );
+        }
+      )
+    },
 
 
     showSnackbar(content, isError) {
@@ -71,31 +71,6 @@ export default {
       } else {
         this.snackbarMode = "success"
       }
-    },
-
-    copyShareLinkToClipboard: function(id) {
-      let completeUrl = window.location.toString()
-      let hashLocation = completeUrl.indexOf('#')
-      if (hashLocation <= 0) {
-        hashLocation = completeUrl.length;
-      }
-      let baseUrl = window.location.toString().slice(0, hashLocation);
-
-      let targetUrl = baseUrl + "#" + id;
-
-      navigator.clipboard.writeText(targetUrl)
-
-      return true
-    },
-
-    generateAndCopyShareLink: function () {
-      let id = Math.random().toString(36).slice(2)
-
-      axios.put(getBaseUrl()+"/settings", getCurrentUrlDataState(), {
-        headers: {
-          'x-guid': id
-        }
-      );
     }
   }
 };

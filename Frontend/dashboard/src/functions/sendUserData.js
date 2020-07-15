@@ -1,5 +1,6 @@
 import axios from 'axios'
 import {getCurrentUrlDataState} from "./UrlSettings";
+import {getBaseUrl} from "./UrlUtils";
 
 /**
  * Sends the given user data to the backend server and calls the callback functions accordingly to the result
@@ -9,7 +10,7 @@ import {getCurrentUrlDataState} from "./UrlSettings";
  * @param onError On any other HTTP code, as well as other exceptions
  */
 export function sendUserSettingsToServer(settingsId, settings, onSuccess = function(){}, onError = function(){}) {
-  axios.put("http://localhost:3001/settings", getCurrentUrlDataState(), {
+  axios.put(getBaseUrl()+"/settings", getCurrentUrlDataState(), {
     headers: {
       'x-guid': settingsId
     }
@@ -27,7 +28,7 @@ export function sendUserSettingsToServer(settingsId, settings, onSuccess = funct
  * @param onError On any other HTTP code, as well as other exceptions
  */
 export function readUserDataFromServer(settingsId, onSuccess = function(){}, onError = function(){}) {
-  axios.get("http://localhost:3001/settings", {
+  axios.get(getBaseUrl()+"/settings", {
     headers: {
       'x-guid': settingsId
     }
