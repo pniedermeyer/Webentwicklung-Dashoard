@@ -45,15 +45,7 @@ export default {
   },
   watch: {
     BL_ID: function() {
-      let geoData = new Object();
-      geoData.type = "FeatureCollection";
-      geoData.features = this.geoDatas[this.mapResolution].features;
-      if (this.BL_ID !== 0 && geoData) {
-        geoData.features = geoData.features.filter(
-          feature => feature.properties.BL_ID === this.BL_ID
-        );
-        this.lfltMng.addHighlightLayer(geoData);
-      }
+      this.highlightState();
     },
     LK_ID: function() {},
     infectionData: function() {
@@ -121,6 +113,21 @@ export default {
         this.lfltMng.setMapStyle(this.casesOption);
       }
     },
+    highlightState() {
+      if (this.geoDatas[this.mapResolution]) {
+        let geoData = new Object();
+        geoData.type = "FeatureCollection";
+        geoData.features = this.geoDatas[this.mapResolution].features;
+        if (this.BL_ID !== 0 && geoData) {
+          geoData.features = geoData.features.filter(
+            feature => feature.properties.BL_ID === this.BL_ID
+          );
+          this.lfltMng.addHighlightLayer(geoData);
+        }
+      } else {
+        setTimeout(this.highlightState, 500);
+      }
+    },
     focusMap() {
       // Find state to ID
       let state = this.infectionData.states.find(
@@ -153,9 +160,7 @@ export default {
         };
         const features = glookup.getContainers(point);
 
-        if (this.BL_ID === 0) {
-          this.selectedFeatureChange(features.features[0]);
-        }
+        this.selectedFeatureChange(features.features[0]);
       }
     },
     selectedFeatureChange(feature) {
