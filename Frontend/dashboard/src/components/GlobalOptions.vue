@@ -51,11 +51,12 @@
                     <v-subheader class="sliderLabelCases">Fallzahlen</v-subheader>
                     <v-slider
                       v-model="casesOptionslider"
+                      :min="0"
                       :max="2"
+                      @input="setCaseOption"
                       :tick-labels="allCasesOptions.map(item => item.label)"
                       class="pl-0"
                       ticks
-                      @input="setCaseOption"
                     ></v-slider>
                   </v-col>
                   <v-col cols="12" md="6" class="pb-0">
@@ -115,7 +116,6 @@ export default {
     resolutionSliderPos: -3,
     states: [{ BL_ID: 0, name: "Alle" }],
     mapResolutions: ["Low", "Medium", "High", "Original"],
-    casesOptions: ["Alle", "100K", "100K / 7 Tage"],
     selectedState: null,
     counties: [""],
     selectedCounty: null,
@@ -130,7 +130,6 @@ export default {
   }),
   methods: {
     setSelState(stateId) {
-      // console.log('GO setSelState: ', stateId);
       this.LK_ID = null;
       // this.BL_ID = value;
       this.selectCountiesToState(stateId);
@@ -141,10 +140,7 @@ export default {
     setSelCounty(value) {
       this.LK_ID = value.LK_ID;
       this.BL_ID = value.BL_ID;
-      // if (!this.BL_ID) {
-      //   this.BL_ID = this.counties.find(e => e.LK_ID === value).BL_ID;
       this.selectCountiesToState(this.BL_ID);
-      // }
     },
     setMapResolution(value) {
       if (value > 0) {
@@ -154,9 +150,6 @@ export default {
     },
     setCaseOption(caseOption) {
       this.casesOption = this.allCasesOptions[caseOption].code;
-    },
-    setSlider(value){
-      this.casesOptionslider = value;
     },
     selectCountiesToState(stateId) {
       if (stateId != 0) {
@@ -197,22 +190,17 @@ export default {
       initStates(this);
       this.selectCountiesToState(this.BL_ID);
     },
-    mapResolution: function() {
-      this.resolutionSliderPos = this.mapResolution * -1;
+    mapResolution: {
+      immediate: true,
+      handler() {
+        this.resolutionSliderPos = this.mapResolution * -1;
+      }
     },
-    casesOption: function() {
-      console.log( 'cases   ' + this.casesOption)
-      console.log(this.casesOption.includes("7"))
-      if(this.casesOption.includes("7")){
-        console.log('hello')
-        this.casesOptionslider = 2;
-        this.setSlider(2);
-      }
-      if(this.casesOption.includes("100")){
-        this.casesOptionslider = 1;
-      }
-      if(this.casesOption.includes("cases")){
-        this.casesOptionslider = 0;
+    casesOption:{
+      immediate: true,
+      handler() {
+        const option = this.allCasesOptions.find(option => option.code === this.casesOption)
+        this.casesOptionslider = this.allCasesOptions.indexOf(option)
       }
     }
   },

@@ -38,8 +38,8 @@ export default new Vuex.Store({
     // Map items
     mapZoom: 5,
     mapPosition: [51.9, 10.26], // Lat, Lng // Middlepoint of Germany
-    mapResolution: 2, // lowest Resolution
     //Linechart
+    mapResolution: 3, // lowest Resolution
     numberPastDays: 5,
     // Linechart Dialog
     lineChartDialogConfig: { data: [], label: '', shown: false, dates: [] }, // Config for Chart Dialog
