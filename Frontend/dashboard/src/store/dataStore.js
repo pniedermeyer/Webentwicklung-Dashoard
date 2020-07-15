@@ -28,6 +28,7 @@ export default new Vuex.Store({
     },
     //Past Data
     pastInfectionData: [],
+    //Base Color
     baseColor: 'Coral',
     // Table items
     tableSelectedItemsID: [[2, 6], [], [0, 20, 40]],
@@ -38,6 +39,8 @@ export default new Vuex.Store({
     mapZoom: 5,
     mapPosition: [51.9, 10.26], // Lat, Lng // Middlepoint of Germany
     mapResolution: 2, // lowest Resolution
+    //Linechart
+    numberPastDays: 5,
     // Linechart Dialog
     lineChartDialogConfig: { data: [], label: '', shown: false, dates: [] }, // Config for Chart Dialog
   },

@@ -8,8 +8,51 @@
         <!-- <global-options /> -->
       </div>
       <LineChartPopUp />
-      <v-row>
-        <v-col cols="12" lg="6">
+      <v-row v-show="!visibleComponents.lineChartVisible">
+        <v-col
+          v-bind:class="{'col-12': !visibleComponents.casesGermanyVisible && !visibleComponents.casesStateVisible && !visibleComponents.casesCountyVisible}"
+        >
+          <!-- <v-card class="ma-2">
+            <v-app-bar color="blue darken-2" dark dense>
+              <v-spacer></v-spacer>
+              <v-toolbar-title class="w-100">
+                Barchart
+                <v-icon color="white">mdi-chart-bar</v-icon>
+              </v-toolbar-title>
+              <v-spacer></v-spacer>
+            </v-app-bar>
+            <bar-chart />
+          </v-card>-->
+          <v-card v-if="visibleComponents.barchartvisible">
+            <v-card class="barchartconf">
+              <v-app-bar color="blue darken-2" dark dense>
+                <v-spacer></v-spacer>
+                <v-toolbar-title class="w-100">
+                  Barchart
+                  <v-icon color="white">mdi-chart-bar</v-icon>
+                </v-toolbar-title>
+                <v-spacer></v-spacer>
+              </v-app-bar>
+
+              <bar-chart />
+            </v-card>
+          </v-card>
+        </v-col>
+        <v-col v-bind:class="{ 'col-12': !visibleComponents.barchartvisible }">
+          <Details v-show="visibleComponents.casesGermanyVisible" :view="0" />
+          <Details v-show="visibleComponents.casesStateVisible" :view="1" />
+          <Details v-show="visibleComponents.casesCountyVisible" :view="2" />
+        </v-col>
+      </v-row>
+      <v-row
+        v-show="visibleComponents.lineChartVisible && (visibleComponents.casesGermanyVisible || visibleComponents.barchartvisible)"
+      >
+        <v-col
+          v-if="visibleComponents.barchartvisible"
+          cols="12"
+          lg="6"
+          v-bind:class="{'col-lg-12': !visibleComponents.casesGermanyVisible}"
+        >
           <v-card class="ma-2">
             <v-app-bar color="blue darken-2" dark dense>
               <v-spacer></v-spacer>
@@ -22,16 +65,33 @@
             <bar-chart />
           </v-card>
         </v-col>
-        <v-col cols="12" lg="6">
-          <Details v-show="visibleComponents.casesGermanyVisible" :view="0" />
+        <v-col
+          v-show="visibleComponents.casesGermanyVisible"
+          cols="12"
+          lg="6"
+          v-bind:class="{'col-lg-12': !visibleComponents.barchartvisible}"
+        >
+          <Details :view="0" />
         </v-col>
       </v-row>
-      <v-row>
-        <v-col cols="12" lg="6">
-          <Details v-show="visibleComponents.casesStateVisible" :view="1" />
+      <v-row
+        v-if="visibleComponents.lineChartVisible && (visibleComponents.casesCountyVisible || visibleComponents.casesStateVisible)"
+      >
+        <v-col
+          v-show="visibleComponents.casesStateVisible"
+          cols="12"
+          lg="6"
+          v-bind:class="{'col-lg-12': !visibleComponents.casesCountyVisible}"
+        >
+          <Details :view="1" />
         </v-col>
-        <v-col cols="12" lg="6">
-          <Details v-show="visibleComponents.casesCountyVisible" :view="2" />
+        <v-col
+          v-show="visibleComponents.casesCountyVisible"
+          cols="12"
+          lg="6"
+          v-bind:class="{'col-lg-12': !visibleComponents.casesStateVisible}"
+        >
+          <Details :view="2" />
         </v-col>
       </v-row>
       <!-- <div class="d-flex flex-row">
@@ -189,18 +249,18 @@ export default {
   height: auto !important;
 }
 
-.footer {
-  /* position: absolute !important; */
-  bottom: 0;
-  width: 100%;
-}
-
 .overviewconf {
   overflow: auto;
   width: 60vw !important;
   max-height: 70vh !important;
   max-width: 60vw !important;
 }
+
+.compWidth100 {
+  max-width: 100% !important;
+  flex: 0 0 100% !important;
+}
+
 .barchart {
   margin: 1vh;
   width: 100%;
