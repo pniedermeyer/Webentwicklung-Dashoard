@@ -1,11 +1,85 @@
 <template>
-  <v-card class="ma-3">
+  <v-card class="ma-2">
     <v-app-bar color="blue darken-2" dark dense>
       <v-spacer></v-spacer>
       <v-toolbar-title id="gerTitle">{{this.data.name}}</v-toolbar-title>
       <v-spacer></v-spacer>
     </v-app-bar>
     <v-tabs v-model="tab" background-color="light" icons-and-text :grow="true" show-arrows>
+      <v-tabs-slider></v-tabs-slider>
+      <v-tab href="#tab-1">
+        <span>Fälle Gesamt</span>
+        <span class="case-number">{{formatNumber(this.data.cases)}}</span>
+      </v-tab>
+
+      <v-tab href="#tab-2">
+        <span>Fälle Pro 100k</span>
+        <span class="case-number">{{formatNumber(this.data.cases100k)}}</span>
+      </v-tab>
+      <v-tab href="#tab-3">
+        <span>Fälle Pro 100k / 7 Tage</span>
+        <span class="case-number">{{formatNumber(this.data.cases100k7)}}</span>
+      </v-tab>
+      <v-tab href="#tab-4">
+        <span>Neu-Infektionen</span>
+        <span class="case-number">{{formatNumber(this.data.newInfections)}}</span>
+      </v-tab>
+      <v-tab href="#tab-5">
+        <span>Tote</span>
+        <span class="case-number">{{formatNumber(this.data.deaths)}}</span>
+      </v-tab>
+    </v-tabs>
+    <!-- </v-col>
+    <v-col cols="8">-->
+    <v-tabs-items v-model="tab">
+      <v-tab-item :value="'tab-1'">
+        <LineChart
+          style="height:100%"
+          :data="data.lineChartData.cases"
+          :dates="data.lineChartData.date"
+          :label="'Fälle gesamt'"
+          v-on:lineclick="openLargerGraph"
+        ></LineChart>
+      </v-tab-item>
+      <v-tab-item :value="'tab-2'">
+        <LineChart
+          style="height:100%"
+          :data="data.lineChartData.cases"
+          :dates="data.lineChartData.date"
+          :label="'Fälle gesamt'"
+          v-on:lineclick="openLargerGraph"
+        ></LineChart>
+      </v-tab-item>
+      <v-tab-item :value="'tab-3'">
+        <LineChart
+          style="height:100%"
+          :data="data.lineChartData.cases7per100k"
+          :dates="data.lineChartData.date"
+          :label="'Fälle gesamt'"
+          v-on:lineclick="openLargerGraph"
+        ></LineChart>
+      </v-tab-item>
+      <v-tab-item :value="'tab-4'">
+        <LineChart
+          style="height:100%"
+          :data="data.lineChartData.change"
+          :dates="data.lineChartData.date"
+          :label="'Fälle gesamt'"
+          v-on:lineclick="openLargerGraph"
+        ></LineChart>
+      </v-tab-item>
+      <v-tab-item :value="'tab-5'">
+        <LineChart
+          style="height:100%"
+          :data="data.lineChartData.deaths"
+          :dates="data.lineChartData.date"
+          :label="'Fälle gesamt'"
+          v-on:lineclick="openLargerGraph"
+        ></LineChart>
+      </v-tab-item>
+    </v-tabs-items>
+
+    <!-- <v-tabs v-model="tab" background-color="light" icons-and-text :grow="true" show-arrows>
       <v-tabs-slider></v-tabs-slider>
 
       <v-tab href="#tab-1">
@@ -84,8 +158,6 @@
               </v-col>
             </v-row>
           </v-container>
-
-          <!-- </v-card-text> -->
         </v-card>
       </v-tab-item>
       <v-tab-item :value="'tab-2'">
@@ -110,7 +182,6 @@
               ></LineChart>
             </v-col>
           </v-row>
-          <!-- </v-card-text> -->
         </v-card>
       </v-tab-item>
       <v-tab-item :value="'tab-3'">
@@ -135,17 +206,16 @@
               ></LineChart>
             </v-col>
           </v-row>
-
-          <!-- </v-card-title> -->
         </v-card>
       </v-tab-item>
-    </v-tabs-items>
+    </v-tabs-items>-->
   </v-card>
 </template>
 
 <script>
 import { mapFields } from "vuex-map-fields";
 import LineChart from "./LineChart.vue";
+import { numberWithCommas } from "../functions/formatNumber";
 import {
   getHistoryDeutschland,
   getHistoryBL,
@@ -204,6 +274,13 @@ export default {
     })
   },
   methods: {
+    formatNumber(number) {
+      if (!number) {
+        return;
+      }
+      console.log(number);
+      return numberWithCommas(number);
+    },
     openLargerGraph: function(value) {
       //console.log(value);
       //TODO: Pop Up hat beim ersten Klick keine Daten!!
@@ -314,6 +391,10 @@ function empty(parent) {
 }
 </script>
 <style scoped>
+.case-number {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
 .single-number {
   font-size: 3rem;
 }

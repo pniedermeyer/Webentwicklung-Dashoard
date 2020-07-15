@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar class="appbarconf" color="blue accent-2" dense dark fixed app>
+  <v-app-bar class="appbarconf" color="blue darken-2" dense dark fixed app>
     <v-app-bar-nav-icon v-on:click="openModal"></v-app-bar-nav-icon>
     <popup ref="modalpop"></popup>
     <v-toolbar-title>Corona Dashboard</v-toolbar-title>

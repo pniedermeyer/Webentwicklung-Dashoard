@@ -8,7 +8,33 @@
         <!-- <global-options /> -->
       </div>
       <LineChartPopUp />
-      <div class="d-flex flex-row">
+      <v-row>
+        <v-col cols="12" lg="6">
+          <v-card class="ma-2">
+            <v-app-bar color="blue darken-2" dark dense>
+              <v-spacer></v-spacer>
+              <v-toolbar-title class="w-100">
+                Barchart
+                <v-icon color="white">mdi-chart-bar</v-icon>
+              </v-toolbar-title>
+              <v-spacer></v-spacer>
+            </v-app-bar>
+            <bar-chart />
+          </v-card>
+        </v-col>
+        <v-col cols="12" lg="6">
+          <Details v-show="visibleComponents.casesGermanyVisible" :view="0" />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" lg="6">
+          <Details v-show="visibleComponents.casesStateVisible" :view="1" />
+        </v-col>
+        <v-col cols="12" lg="6">
+          <Details v-show="visibleComponents.casesCountyVisible" :view="2" />
+        </v-col>
+      </v-row>
+      <!-- <div class="d-flex flex-row">
         <v-card class="vcardoverview">
           <div class="overviewconf d-flex flex-column w-50">
             <Details v-show="visibleComponents.casesGermanyVisible" :view="0" />
@@ -32,7 +58,7 @@
             </v-card>
           </v-card>
         </div>
-      </div>
+      </div>-->
     </v-main>
 
     <v-footer>
@@ -68,7 +94,7 @@ import LineChartPopUp from "./components/LineChartPopUp.vue";
 // import GlobalOptions from "./components/GlobalOptions.vue";
 import axios from "axios";
 import { mapFields } from "vuex-map-fields";
-import store from './store/dataStore.js'
+import store from "./store/dataStore.js";
 
 import {
   registerURLEventListener,
@@ -114,20 +140,27 @@ export default {
   },
   methods: {
     getLocation() {
-      if(navigator.geolocation){
+      if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-            position => {
-              console.log('Geolocation from Browser: ', position.coords.latitude, position.coords.longitude)
-              this.mapPosition = [position.coords.latitude, position.coords.longitude];
-            },
-            error => {
-              console.log(error.message);
-            },
-        )
+          position => {
+            console.log(
+              "Geolocation from Browser: ",
+              position.coords.latitude,
+              position.coords.longitude
+            );
+            this.mapPosition = [
+              position.coords.latitude,
+              position.coords.longitude
+            ];
+          },
+          error => {
+            console.log(error.message);
+          }
+        );
       }
     }
   },
-  
+
   mounted() {
     let self = this;
     //urlToSettingsChange(parseUrlState(window.location));
@@ -138,11 +171,11 @@ export default {
         self.pastInfectionData = response.data;
       });
 
-    store.subscribe(storeListener)
+    store.subscribe(storeListener);
 
-    setTimeout(function(){
+    setTimeout(function() {
       self.getLocation();
-    }, 5000)
+    }, 5000);
   },
   created() {
     registerURLEventListener();
