@@ -191,6 +191,10 @@ export default {
     BL_ID: function() {
       initStates(this);
       this.selectCountiesToState(this.BL_ID);
+    },
+    mapResolution: function() {
+      console.log('Änderung')
+      this.resolutionSliderPos = this.mapResolution * -1;
     }
   },
   mounted() {
