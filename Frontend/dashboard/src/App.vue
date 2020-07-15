@@ -1,13 +1,15 @@
 <template>
   <!-- <div selectedBL_ID="app"> -->
   <v-app>
-    <app-bar />
+    <app-bar @setGeoLocation="getLocation" />
     <v-main class="mh-100">
       <div class="mapcon d-flex w-100 h-100">
         <Map ref="Map" />
         <!-- <global-options /> -->
       </div>
       <LineChartPopUp />
+
+      <snack-notifier ref="snackbar"></snack-notifier>
       <v-row>
         <v-col
           v-show="visibleComponents.barchartvisible"
@@ -101,6 +103,7 @@ import LineChartPopUp from "./components/LineChartPopUp.vue";
 import axios from "axios";
 import { mapFields } from "vuex-map-fields";
 import store from "./store/dataStore.js";
+import SnackNotifier from "./components/SnackNotifier.vue";
 
 import {
   registerURLEventListener,
@@ -114,6 +117,7 @@ export default {
     AppBar,
     BarChart,
     Map,
+    SnackNotifier,
     // NumberInput,
     LineChartPopUp,
     // TableComponent,
@@ -156,6 +160,10 @@ export default {
             ]);
           },
           error => {
+            this.$refs.snackbar.showSnackbar(
+              "Standort konnte nicht ermittelt werden",
+              "error"
+            );
             console.log(error.message);
           }
         );
@@ -172,7 +180,7 @@ export default {
     });
 
     store.subscribe(storeListener);
-    this.getLocation();
+    // this.getLocation();
   },
   created() {
     registerURLEventListener();

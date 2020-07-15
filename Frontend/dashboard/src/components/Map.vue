@@ -1,4 +1,4 @@
-<template>
+=<template>
   <div
     class="w-100"
     id="map-container"
@@ -14,7 +14,7 @@ import axios from "axios";
 import leafletManager from "../functions/leafletManager";
 import { mapFields } from "vuex-map-fields";
 import GlobalOptions from "./GlobalOptions.vue";
-import {getBaseUrl} from "../functions/UrlUtils";
+import { getBaseUrl } from "../functions/UrlUtils";
 
 export default {
   name: "Map",
@@ -45,16 +45,15 @@ export default {
   },
   watch: {
     BL_ID: function() {
-      
-      console.log(this.geoDatas)
-      let geoData = new Object()
+      let geoData = new Object();
       geoData.type = "FeatureCollection";
-      geoData.features = this.geoDatas[this.mapResolution].features
-      if(this.BL_ID !== 0 && geoData){ 
-        geoData.features = geoData.features.filter(feature => feature.properties.BL_ID === this.BL_ID)
-        this.lfltMng.addHighlightLayer(geoData)
+      geoData.features = this.geoDatas[this.mapResolution].features;
+      if (this.BL_ID !== 0 && geoData) {
+        geoData.features = geoData.features.filter(
+          feature => feature.properties.BL_ID === this.BL_ID
+        );
+        this.lfltMng.addHighlightLayer(geoData);
       }
-      
     },
     LK_ID: function() {},
     infectionData: function() {
@@ -91,7 +90,7 @@ export default {
     fetchGeoData(res) {
       let that = this;
       //TODO: Change Request URL for production
-      let url = getBaseUrl()+`/geodata?` + "res=" + res;
+      let url = getBaseUrl() + `/geodata?` + "res=" + res;
       return axios
         .get(url)
         .then(function(response) {
@@ -138,19 +137,24 @@ export default {
 
       this.lfltMng.focusMap({ state: state, county: county });
     },
-    setBrowserLocation(coordinates){
-      const that = this
-      const geos = this.geoDatas[this.mapResolution]
-      if(!geos){
-        setTimeout(() => {that.setBrowserLocation(coordinates)}, 1000)
-      }else{
-        const GeoJsonGeometriesLookup = require('geojson-geometries-lookup');
+    setBrowserLocation(coordinates) {
+      const that = this;
+      const geos = this.geoDatas[this.mapResolution];
+      if (!geos) {
+        setTimeout(() => {
+          that.setBrowserLocation(coordinates);
+        }, 1000);
+      } else {
+        const GeoJsonGeometriesLookup = require("geojson-geometries-lookup");
         const glookup = new GeoJsonGeometriesLookup(geos);
-        const point = {type: "Point", coordinates: [coordinates[1], coordinates[0]]};
-        const features = glookup.getContainers(point)
+        const point = {
+          type: "Point",
+          coordinates: [coordinates[1], coordinates[0]]
+        };
+        const features = glookup.getContainers(point);
 
-        if(this.BL_ID === 0){
-          this.selectedFeatureChange(features.features[0]) 
+        if (this.BL_ID === 0) {
+          this.selectedFeatureChange(features.features[0]);
         }
       }
     },

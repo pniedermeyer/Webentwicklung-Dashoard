@@ -1,6 +1,16 @@
 <template>
   <v-app-bar class="appbarconf" color="blue darken-2" dense dark fixed app>
-    <v-icon v-on:click="openModal">mdi-cog</v-icon>
+    <v-btn icon>
+      <v-icon v-on:click="openModal">mdi-cog</v-icon>
+    </v-btn>
+    <v-tooltip bottom>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn icon v-bind="attrs" v-on="on" @click="getLocation">
+          <v-icon>mdi-crosshairs-gps</v-icon>
+        </v-btn>
+      </template>
+      <span>Mein Standort lokalisieren</span>
+    </v-tooltip>
     <popup ref="modalpop"></popup>
     <snack-notifier ref="snackbar"></snack-notifier>
     <v-toolbar-title>Corona Dashboard</v-toolbar-title>
@@ -35,7 +45,22 @@ export default {
     openModal: function() {
       this.$refs.modalpop.showModal();
     },
-
+    getLocation() {
+      this.$emit("setGeoLocation");
+      // if (navigator.geolocation) {
+      //   navigator.geolocation.getCurrentPosition(
+      //     position => {
+      //       this.$refs.Map.setBrowserLocation([
+      //         position.coords.latitude,
+      //         position.coords.longitude
+      //       ]);
+      //     },
+      //     error => {
+      //       console.log(error.message);
+      //     }
+      //   );
+      // }
+    },
     createBackendLinkAndCopyToClipboard: function() {
       let that = this;
       let settingsId = generateShortId();
