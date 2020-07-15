@@ -116,8 +116,6 @@ export default class leafletManager {
           states.push(feature)
         }
       })
-      let fGroup = leaflet.geoJSON(states) //.addTo(this.#map)
-      this.#map.fitBounds(fGroup.getBounds())
 
       if(county){ //Focus to county if set
         let counties = []
@@ -126,8 +124,11 @@ export default class leafletManager {
             counties.push(state)
           }
         })
-        fGroup = leaflet.geoJSON(counties)
-        this.#map.fitBounds(fGroup.getBounds())
+        const countyGroup = leaflet.geoJSON(counties)
+        this.#map.fitBounds(countyGroup.getBounds())
+      }else{
+        const stateGroup = leaflet.geoJSON(states) 
+        this.#map.fitBounds(stateGroup.getBounds())
       }
     }else{
       // Focus complete map
