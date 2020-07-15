@@ -1,8 +1,13 @@
 <template>
   <v-app-bar class="appbarconf" color="blue darken-2" dense dark fixed app>
-    <v-btn icon>
-      <v-icon v-on:click="openModal">mdi-cog</v-icon>
-    </v-btn>
+    <v-tooltip bottom>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn icon v-bind="attrs" v-on="on" @click="openModal">
+          <v-icon>mdi-cog</v-icon>
+        </v-btn>
+      </template>
+      <span>Link teilen</span>
+    </v-tooltip>
     <v-tooltip bottom>
       <template v-slot:activator="{ on, attrs }">
         <v-btn icon v-bind="attrs" v-on="on" @click="getLocation">
@@ -15,7 +20,15 @@
     <snack-notifier ref="snackbar"></snack-notifier>
     <v-toolbar-title>Corona Dashboard</v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-icon v-on:click="createBackendLinkAndCopyToClipboard">mdi-share-variant</v-icon>
+    <v-tooltip bottom>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn icon v-bind="attrs" v-on="on" @click="createBackendLinkAndCopyToClipboard">
+          <v-icon>mdi-crosshairs-gps</v-icon>
+        </v-btn>
+      </template>
+      <span>Link teilen</span>
+    </v-tooltip>
+    <!-- <v-icon v-on:click="createBackendLinkAndCopyToClipboard">mdi-share-variant</v-icon> -->
   </v-app-bar>
 </template>
 <style>
