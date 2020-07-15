@@ -38,6 +38,7 @@
 import Popup from "./Popup.vue";
 import axios from "axios";
 import {getCurrentUrlDataState} from "../functions/UrlSettings";
+import {getBaseUrl} from "../functions/UrlUtils";
 export default {
   name: "app-bar",
   components: { Popup },
@@ -79,7 +80,7 @@ export default {
     generateAndCopyShareLink: function () {
       let id = Math.random().toString(36).slice(2)
 
-      axios.put("http://localhost:3001/settings", getCurrentUrlDataState(), {
+      axios.put(getBaseUrl()+"/settings", getCurrentUrlDataState(), {
         headers: {
           'x-guid': id
         }

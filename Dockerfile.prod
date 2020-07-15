@@ -1,0 +1,8 @@
+FROM node:12
+COPY ./Backend /usr/src/app/Backend
+COPY ./Frontend/dashboard /usr/src/app/Frontend
+RUN mkdir -p /usr/src/app/Backend/src/website && cd /usr/src/app/Frontend && npm i && npm run-script build && cp -rp ./dist/* /usr/src/app/Backend/src/website/ && cd /usr/src/app/Backend && npm i
+
+WORKDIR /usr/src/app/Backend
+
+ENTRYPOINT npm run-script start

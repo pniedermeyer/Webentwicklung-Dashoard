@@ -14,6 +14,7 @@ import axios from "axios";
 import leafletManager from "../functions/leafletManager";
 import { mapFields } from "vuex-map-fields";
 import GlobalOptions from "./GlobalOptions.vue";
+import {getBaseUrl} from "../functions/UrlUtils";
 
 export default {
   name: "Map",
@@ -90,7 +91,7 @@ export default {
     fetchGeoData(res) {
       let that = this;
       //TODO: Change Request URL for production
-      let url = `http://localhost:3001/geodata?` + "res=" + res;
+      let url = getBaseUrl()+`/geodata?` + "res=" + res;
       return axios
         .get(url)
         .then(function(response) {

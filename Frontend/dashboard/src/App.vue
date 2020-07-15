@@ -112,6 +112,7 @@ import {
   registerURLEventListener,
   storeListener
 } from "./functions/UrlSettings.js";
+import {getBaseUrl} from "./functions/UrlUtils";
 
 export default {
   name: "App",
@@ -172,7 +173,7 @@ export default {
     let self = this;
     //urlToSettingsChange(parseUrlState(window.location));
     axios
-      .get("http://localhost:3001/data?numberOfPreviousDays=14")
+      .get(getBaseUrl()+"/data?numberOfPreviousDays=14")
       .then(response => {
         self.infectionData = response.data[0];
         self.pastInfectionData = response.data;

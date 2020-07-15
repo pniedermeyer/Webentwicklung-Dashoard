@@ -1,4 +1,26 @@
 # Dashboard-Prototyp
+## Produktives deployment
+Dieses Kapitel beschreibt, wie die App auf einer produktiven umgebung deployed werden kann.  
+
+Hierfür kann entweder das mitgelieferte docker-compose file genutzt werden oder die Schritte
+zum bauen der Anwendung können manuell erfolgen.
+### Deployment via docker
+Im Stammverzeichnis folgenden Befehl ausführen: ``docker-compose -f docker-compose.prod.yml up -d`` ausführen.  
+
+Dies baut das Frontend und hinterlegt es im verzeichnis für statische ressourcen im Backend.
+Im Anschluss wird das Backend gestartet und die anwendung ist auf port 3001 verfügbar.
+Es wird empfohlen eine apache- oder nginx reverse proxy vor die anwendung zu hängen
+
+### Manuelles deployment
+Zum Durchführen eines manuellen deployments müssen folgende Schritte befolgt werden:
+1. In das Verzeichnis Frontend/dashbaord wechseln
+1. Den Befehl ``npm i`` ausführen
+1. Den Befehl ``npm run-script build`` ausführen  
+1. Den Inhalt des dist-Ordners in den Ordner ../../Backend/src/website kopieren. Falls dieser ordner nicht existiert muss er angelegt werden
+1. In den Ordner ../../Backend wechseln
+1. Den Befehl ``npm i`` ausführen
+1. Den Befehl ``npm run-script start`` ausführen
+
 ## Aufbau einer lokalen (Entwicklungs)-Umgebung
 ### Vorbereitung (Für beide vorgehen)
 In die github registry einloggen:
