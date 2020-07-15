@@ -1,77 +1,42 @@
 import { FeatureCollection, Feature, Position, Polygon, MultiPolygon } from 'geojson'
-import fs from 'fs'
 import { Point, SubPath } from './subclasses'
 import { BBox, Path, intermediateStruct, PathPoint } from './types'
 import PathManager from './path-manager'
 import douglasPeucker from '../douglas-peuker'
 
-// const GlobalPoints: any = []
-
 /**
- * Vorgehensweise:
- * Normalerweise würde man jeden Landkreis einzeln betrachten und die Punkte mittels
- * dem douglas-peuker reduzieren. Hierzu kann es aber kommen das Landkreise die nebeneinander
- * liegen auf einmal weiße flächen zwischen sich haben. Um dies zu verhindern wird folgende Methodik
- * angewandt
- *
- * 1. Die GeoJSON wird in ein Zwischenformat überführt. Hier wird sich die entsprechende Position
- * aus der GeoJSON gemerkt sowie der Typ und die darin enthaltenen Punkte. Dadurch kann am Schluss der reduzierte
- * Teil wieder in die korrekte GeoJSON umgewandelt werden. Alle Punkte einen Ladkreises werden beim überführen
- * ins Zwischenformat als Path Objekt abgelegt
- *
- * 2. Nachdem jeder Landkreis im Zwischenformat vorliegt wird jetzt ermittelt welche Landkreise eine gemeinsame Grenze
- * besitzen. Alle gemeinsamen Grenzen werden in einem seperaten Subpath gespeichert und die Paths verweisen nur auf diese.
- * Dadurch können mehrere Paths auf den gleichen Subpath verweisen. Nun besteht ein Path aus einzelnen Punkten und verweisen auf
- * Subpaths.
- *
- * 3. Manche Stellen eines Landkreises besitzen keine Nachbar. Diese Punkte aus dem Path werden nun in eigene Subpaths umgewandelt
- *
- * 4. Nachdem jeder Path nur noch aus Subpaths besteht, werden alle Subpaths mittels dem douglas peucker geklättet.
- *
- * 5. Ersetzt die Verweise auf die Subpaths im Path mit den eigentlichen Punkten
- *
- * 6. Die Reduzierten Punkte werden nun im GeoJSON abgespeichert
+ * Usually we would look at each county seperately and reduce these points with RDP.
+ * Here we could get some white spots for counties that share borders and differents points are removed.
  */
 
 class GeoJSONReduction {
   static recuceGeoJSONPoints(geoJSON: FeatureCollection, epsilon: number) {
-    // 1. Schritt:
     let iss: intermediateStruct[] = GeoJSONReduction.createIntermediateStructs(geoJSON)
-
-    // 2. Schritt
     GeoJSONReduction.splitIntoCommonBorderLines(iss)
 
-    // 3. Schritt
     iss.forEach((is: intermediateStruct) => {
       GeoJSONReduction.reduceMainPathToSubpaths(is.mainPath)
     })
-
-    // 4. Schritt
+    // Reduce each subpath with RDP
     PathManager.getSubPaths().forEach((subPath: SubPath) => {
       subPath.points = douglasPeucker(subPath.points, epsilon)
     })
-
-    // 5. Schritt
+    // Replace subpath pointers with actual points.
     iss.forEach((is: intermediateStruct) => {
       PathManager.buildPath(is.mainPath)
     })
 
-    // 6. Schritt
     GeoJSONReduction.createNewGeoJSON(geoJSON, iss)
-
-    // fs.writeFile('paths.json', JSON.stringify(PathManager.paths, null, 2), function (err) {
-    //   if (err) return console.log(err)
-    //   console.log('paths > paths.json')
-    // })
-
-    // fs.writeFile('subPaths.json', JSON.stringify(PathManager.subPaths, null, 2), function (err) {
-    //   if (err) return console.log(err)
-    //   console.log('SubPaths > SubPaths.json')
-    // })
 
     return geoJSON
   }
 
+  /**
+   * Transform GeoJSON into intermediate format where we capture the position of the county in the GeoJSON
+   * and all of the coordinates. We save the coordinate in a path object.
+   * @param geoJson map information in finest granularity
+   * @returns intermediate GeoJSON like format
+   */
   private static createIntermediateStructs(geoJson: FeatureCollection): intermediateStruct[] {
     const intermediateStructs: intermediateStruct[] = []
     geoJson.features.forEach((feature: Feature, featureIndex: number) => {
@@ -96,6 +61,14 @@ class GeoJSONReduction {
     return intermediateStructs
   }
 
+  /**
+   * We create the intermediate data structure from the given parameters
+   * @param type 
+   * @param coordinate 
+   * @param fi 
+   * @param ri 
+   * @param ci 
+   */
   private static createIS(type: string, coordinate: Position[], fi: number, ri: number, ci: number): intermediateStruct {
     const points: Point[] = []
     coordinate.forEach((position: Position) => {
@@ -114,6 +87,11 @@ class GeoJSONReduction {
     }
   }
 
+  /**
+   * Identify shared borders and save those as subpaths such that multiple paths from different 
+   * counties may point to them.
+   * @param iss intermediate GeoJSON like data structure
+   */
   private static splitIntoCommonBorderLines(iss: intermediateStruct[]) {
     iss.forEach((is: intermediateStruct, isIndex: number) => {
       for (let i = isIndex + 1; i < iss.length; ++i) {
@@ -169,8 +147,8 @@ class GeoJSONReduction {
 
     firstPath.points.forEach((point: PathPoint, pointIndex) => {
       if (!(point instanceof Point)) {
-        // Aktueller Punkt ist eine Referenz zu einem Subpath
-        // Falls bis hierhin eine gemeinsame Grenze gefunden wurde, wird sie hier beendet
+        // current point is reference to subpath
+        // we stop the shared border here
         firstPreviousIndex = -2
         secondPreviousIndex = -2
         return
@@ -180,8 +158,8 @@ class GeoJSONReduction {
       secondCurrentIndex = PathManager.getPointPosition(secondPath, point)
 
       if (secondCurrentIndex < 0) {
-        // Punkt wurde nicht im zweiten Pfad gefunden
-        // Falls bis hierhin eine gemeinsame Grenze gefunden wurde, wird sie hier beendet
+        // point not in second path found
+        // we stop the shared border here
         firstPreviousIndex = -2
         secondPreviousIndex = -2
         return
@@ -191,10 +169,10 @@ class GeoJSONReduction {
       let secondCheck = secondPreviousIndex + 1 === secondCurrentIndex || secondPreviousIndex - 1 === secondCurrentIndex
 
       if (firstCheck && secondCheck) {
-        // Punkte folgt direkt vor dem vorherigen sowhol im ersten als auch im zweiten Path
+        // point follows directly in both paths
         points.push(point)
       } else {
-        // Es gab eine Unterbrechung im ersten oder zweiten Path, daher werden die bisher gemeinsamen Punkte gespeichert
+        // there has been a gap in either of the paths -> save points up to here
         if (points.length > 0) {
           allCommonPoints.push(points)
           points = []
@@ -210,14 +188,16 @@ class GeoJSONReduction {
       allCommonPoints.push(points)
     }
 
-    // console.log(allCommonPoints)
     allCommonPoints.forEach((commonPoints: Point[]) => {
-      // console.log(commonPoints)
       let subPathId: number = PathManager.createSubPath(firstPath, commonPoints)
       PathManager.setSubPath(secondPath, subPathId)
     })
   }
 
+  /**
+   * Some counties do not have shared borders. Those paths are transformed into subpaths aswell.
+   * @param path transform the given path into subpaths aswell.
+   */
   private static reduceMainPathToSubpaths(path: Path) {
     let points: Point[] = []
     let subPathsPoints: Point[][] = []
@@ -242,6 +222,11 @@ class GeoJSONReduction {
     })
   }
 
+  /**
+   * Save reduced points in GeoJSON.
+   * @param geoJSON the original data
+   * @param iss intermediate data structure
+   */
   private static createNewGeoJSON(geoJSON: FeatureCollection, iss: intermediateStruct[]) {
     iss.forEach((is: intermediateStruct) => {
       const feature: Feature = geoJSON.features[is.featureIndex]

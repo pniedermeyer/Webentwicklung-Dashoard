@@ -1,11 +1,12 @@
 import DataAPI from './data-request'
+import { FeatureCollection, Feature } from 'geojson'
+import hashCode from '../utilities/hash-function'
 
 let geoData: any = null
 
 class GeoDataAPI {
-  
-  /** 
-   * Axios request object for geojson from RKI endpoint
+  /**
+   * Axios request object for GeoJSON from RKI endpoint
    */
   private static request = {
     method: 'get',
@@ -14,7 +15,7 @@ class GeoDataAPI {
   }
 
   /**
-   * Method that requests the geojson from RKI endpoint and returns it
+   * Method that requests the GeoJSON from RKI endpoint and returns it
    */
   static get() {
     if (geoData !== null) {
@@ -25,7 +26,11 @@ class GeoDataAPI {
     }
     return DataAPI.get(this.request, normaliseData)
 
-    function normaliseData(originalData: any) {
+    function normaliseData(originalData: FeatureCollection) {
+      //correct the BL_ID
+      originalData.features.forEach((feature: Feature) => {
+        feature.properties!.BL_ID = hashCode(feature.properties!.BL)
+      })
       return originalData
     }
   }

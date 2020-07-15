@@ -24,11 +24,10 @@ export default class PathManager {
       reverse: false,
     }
 
-    //Spezialfälle wenn der Subpath nur einen Punkt besitzt
+    // special case where subpath only has one point
     if (subPath.points.length < 2) {
       let index = PathManager.getPointPosition(path, subPath.points[0])
       path.points.splice(index, 1, subPath.points[0], subPathRef, subPath.points[0])
-      //   console.log('SUBPATH LENGTH 1')
       return
     }
 
@@ -42,9 +41,7 @@ export default class PathManager {
       console.log(path, subPath)
     }
 
-    // console.log(firstIndex, secondIndex, penultimateIndex, lastIndex)
-
-    // 1. Der Subpath ist normal im Path vorhanden
+    // subpath is present in path
     if (firstIndex < secondIndex && penultimateIndex < lastIndex && firstIndex < lastIndex) {
       length = lastIndex - firstIndex + 1
 
@@ -55,7 +52,7 @@ export default class PathManager {
       return
     }
 
-    // 2. Der Subpath is rückwärts im Path vorhanden
+    // subpath is present in reverse in path 
     if (firstIndex > secondIndex && penultimateIndex > lastIndex) {
       length = firstIndex - lastIndex + 1
 
@@ -67,7 +64,7 @@ export default class PathManager {
       return
     }
 
-    // 3. Der Subpath fängt hinten an und hört vorne auf (läuft aber vorwärts)
+    // subpath begins at the end and stops at the start but runs forward nevertheless
     if (firstIndex < secondIndex && penultimateIndex < lastIndex && firstIndex > lastIndex) {
       path.points.splice(firstIndex, path.points.length)
 
@@ -78,7 +75,7 @@ export default class PathManager {
       return
     }
 
-    //4. Der Subpath fängt vorne an und hört hinten auf (läuft aber rückwärts)
+    // subpath begins at the front and ends at the end but runs backwards
     if (firstIndex > secondIndex && lastIndex < penultimateIndex) {
       path.points.splice(lastIndex, path.points.length)
 
@@ -104,8 +101,6 @@ export default class PathManager {
       reverse: false,
     }
 
-    // console.log('first ', points[0])
-    // console.log('last ', points[points.length - 1])
     let firstIndex = PathManager.getPointPosition(path, points[0])
     let lastIndex = PathManager.getPointPosition(path, points[points.length - 1])
 
@@ -151,16 +146,6 @@ export default class PathManager {
       const currentPoint = <Point>point
       return nextPoint === undefined || !currentPoint.equals(nextPoint)
     })
-
-    // for (let i = path.points.length; i > 0; --i) {
-    //   let point: Point = <Point>path.points[i]
-    //   let prevPoint: Point = <Point>path.points[i - 1]
-
-    //   if (point.equals(prevPoint)) {
-    //     path.points.splice(i, 1)
-    //   }
-    // }
-
     path.points.push(path.points[0])
   }
 }

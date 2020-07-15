@@ -1,16 +1,11 @@
 <template>
-  <div class="w-100" id="map-container">
-    <!-- resolution -->
-    <!-- <label for="resol">🗺️ Auflösung:</label>
-    <v-select
-      v-model="mapResolution"
-      label="text"
-      :options="resolutions"
-      :reduce="(item) => item.value"
-      :clearable="false"
-    ></v-select>-->
-    <div id="map"></div>
-    <global-options />
+  <div
+    class="w-100"
+    id="map-container"
+    v-bind:class="{ mapNotVisible:!visibleComponents.mapVisible }"
+  >
+    <div v-show="visibleComponents.mapVisible" id="map"></div>
+    <global-options @focus-map="focusMap()" />
   </div>
 </template>
 
@@ -29,11 +24,6 @@ export default {
     return {
       lfltMng: null,
       geoDatas: [],
-      resolutions: [
-        { text: "Niedrig", value: 2 },
-        { text: "Mittel", value: 1 },
-        { text: "Hoch", value: 0 }
-      ],
       minCases: 0,
       maxCases: 0
     };
@@ -47,11 +37,24 @@ export default {
       baseColor: "baseColor",
       mapZoom: "mapZoom",
       mapPosition: "mapPosition",
-      mapResolution: "mapResolution"
+      mapResolution: "mapResolution",
+      mapVisible: "mapVisible",
+      visibleComponents: "visibleComponents"
     })
   },
   watch: {
-    BL_ID: function() {},
+    BL_ID: function() {
+      
+      console.log(this.geoDatas)
+      let geoData = new Object()
+      geoData.type = "FeatureCollection";
+      geoData.features = this.geoDatas[this.mapResolution].features
+      if(this.BL_ID !== 0 && geoData){ 
+        geoData.features = geoData.features.filter(feature => feature.properties.BL_ID === this.BL_ID)
+        this.lfltMng.addHighlightLayer(geoData)
+      }
+      
+    },
     LK_ID: function() {},
     infectionData: function() {
       this.lfltMng.setInfectionData(this.infectionData);
@@ -84,8 +87,9 @@ export default {
     }
   },
   methods: {
-    fetchGeoData(res = 0) {
+    fetchGeoData(res) {
       let that = this;
+      //TODO: Change Request URL for production
       let url = `http://localhost:3001/geodata?` + "res=" + res;
       return axios
         .get(url)
@@ -99,6 +103,12 @@ export default {
     },
     zoomLevelChanged() {},
     resolutionChanged() {
+      if (this.infectionData.states === undefined) {
+        setTimeout(() => {
+          this.resolutionChanged();
+        }, 1000);
+        return;
+      }
       const geoData = this.geoDatas[this.mapResolution];
       const that = this;
       if (!geoData) {
@@ -111,15 +121,70 @@ export default {
         this.lfltMng.setGeoData(geoData);
         this.lfltMng.setMapStyle(this.casesOption);
       }
+    },
+    focusMap() {
+      // Find state to ID
+      let state = this.infectionData.states.find(
+        state => state.BL_ID === this.BL_ID
+      );
+      let county = null;
+      // Find county to ID
+      if (state) {
+        county = state.counties.find(county => county.LK_ID === this.LK_ID);
+
+        state = state.name;
+        county = county ? county.full_name : null;
+      }
+
+      this.lfltMng.focusMap({ state: state, county: county });
+    },
+    setBrowserLocation(coordinates){
+      const that = this
+      const geos = this.geoDatas[this.mapResolution]
+      if(!geos){
+        setTimeout(() => {that.setBrowserLocation(coordinates)}, 1000)
+      }else{
+        const GeoJsonGeometriesLookup = require('geojson-geometries-lookup');
+        const glookup = new GeoJsonGeometriesLookup(geos);
+        const point = {type: "Point", coordinates: [coordinates[1], coordinates[0]]};
+        const features = glookup.getContainers(point)
+
+        if(this.BL_ID === 0){
+          this.selectedFeatureChange(features.features[0]) 
+        }
+      }
+    },
+    selectedFeatureChange(feature) {
+      // that.BL_ID = e.properties.BL_ID // Currently not working bc of different IDs in geo- and infection-data
+      const state = this.infectionData.states.find(
+        state => state.name === feature.properties.BL
+      );
+      this.BL_ID = state.BL_ID;
+
+      const county = state.counties.find(
+        county => county.full_name === feature.properties.county
+      );
+      this.LK_ID = county.LK_ID;
     }
   },
   mounted() {
-    this.lfltMng = new leafletManager("map");
-    this.lfltMng.initializeMap({
+    const that = this;
+    this.lfltMng = new leafletManager({
+      mapId: "map",
       position: this.mapPosition,
       zoom: this.mapZoom
     });
+
     this.lfltMng.fillColor(this.baseColor);
+    this.lfltMng.setPositionChangeCallback(function(e) {
+      that.mapPosition = [e.lat, e.lng];
+    });
+    this.lfltMng.setZoomChangeCallback(function(e) {
+      that.mapZoom = e;
+    });
+    this.lfltMng.setFeatureSelectChangeCallback(this.selectedFeatureChange);
+
+    //manually trigger first geodata request
     this.resolutionChanged();
   }
 };
@@ -129,12 +194,20 @@ export default {
 @import "../../node_modules/leaflet/dist/leaflet.css";
 #map {
   height: 100%;
+  /* background: rgb(127, 127, 243); */
   /* height: 100%; */
 }
 
 #map-container {
   height: 600px;
   position: relative;
-  z-index: 0
+  z-index: 0;
+}
+.leaflet-container {
+  background-color: rgba(183, 183, 246, 0.308);
+}
+
+.mapNotVisible {
+  height: 15rem !important;
 }
 </style>

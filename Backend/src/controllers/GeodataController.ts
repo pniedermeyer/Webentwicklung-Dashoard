@@ -6,11 +6,10 @@ import recuceGeoJSONPoints from '../utilities/advanced-reduce-points/advanced-re
 import { mapResolutionToEpsilon, mapResolutionToInt } from '../utilities/resolutionMapper'
 
 class GeoDataController {
-  
   /**
    * Reads geodata from the database as geojson in the requested resolution
    * and sends it back via the response object
-   * 
+   *
    * @param req Request object from express
    * @param res Response object from express
    */
@@ -20,9 +19,21 @@ class GeoDataController {
       if (resolution === undefined) {
         resolution = 1
       }
-      let geoData: GeoDataObject[] = await getConnection()
-        .getRepository(GeoDataObject)
-        .find({ where: { res: resolution } })
+      let found = false
+      let tries = 0
+      let geoData: GeoDataObject[] = []
+      while (!found && tries < 10) {
+        geoData = await getConnection()
+          .getRepository(GeoDataObject)
+          .find({ where: { res: resolution } })
+
+        if (geoData[0] !== undefined) {
+          found = true
+        } else {
+          tries++
+          await GeoDataController.Sleep(5000)
+        }
+      }
 
       res.send(geoData[0].geojson)
     } catch (error) {
@@ -31,10 +42,14 @@ class GeoDataController {
     }
   }
 
+  static Sleep(milliseconds: number) {
+    return new Promise((resolve: any) => setTimeout(resolve, milliseconds))
+  }
+
   /**
    * Calls the API of the RKI and gets the geojson which will be persisted, in
    * the given resolution after it is transformed into that resolution via RDP
-   * 
+   *
    * @param resolution resolution corresponding to which the geojson will be
    * persisted in the database
    */
@@ -43,7 +58,7 @@ class GeoDataController {
     const res = mapResolutionToInt(resolution)
     let epsilon = mapResolutionToEpsilon(resolution)
     let reducedData = recuceGeoJSONPoints(rawData, epsilon)
-    getConnection()
+    await getConnection()
       .createQueryBuilder()
       .insert()
       .into(GeoDataObject)
@@ -52,6 +67,23 @@ class GeoDataController {
         res: res,
       })
       .execute()
+  }
+
+  /**
+   * Saves GeoJSON in different resolutions when there is no data yet in that table
+   */
+  static async initDB() {
+    let sum: number = await getConnection().getRepository(GeoDataObject).count()
+    if (sum === 0) {
+      await GeoDataController.writeGeoDataInResolution('low')
+      console.log('GeoJSON resolution added to DB: low')
+      await GeoDataController.writeGeoDataInResolution('medium')
+      console.log('GeoJSON resolution added to DB: medium')
+      await GeoDataController.writeGeoDataInResolution('high')
+      console.log('GeoJSON resolution added to DB: high')
+      await GeoDataController.writeGeoDataInResolution('original')
+      console.log('GeoJSON resolution added to DB: original')
+    }
   }
 }
 

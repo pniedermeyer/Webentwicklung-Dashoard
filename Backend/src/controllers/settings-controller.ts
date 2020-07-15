@@ -1,5 +1,5 @@
-import express from "express";
-import { getConnection } from "typeorm";
+import express from 'express'
+import { getConnection } from 'typeorm'
 import _ from 'lodash'
 
 const GUID_HEADER = 'x-guid';
@@ -15,7 +15,7 @@ async function getHandler(req: express.Request, res: express.Response) {
         RETURNING "data";
       `,
       [req.header(GUID_HEADER)]
-    );
+    )
 
         console.log(result)
 
@@ -24,10 +24,10 @@ async function getHandler(req: express.Request, res: express.Response) {
     } else {
       res
         .status(404)
-        .send(makeError("guid does not exist in database"));
+        .send(makeError('guid does not exist in database'))
     }
   } catch (error) {
-    res.status(500).send(makeInternalError());
+    res.status(500).send(makeInternalError())
   }
 }
 
@@ -37,9 +37,9 @@ function authorize(
     next: express.NextFunction) {
     
     if (!req.header(GUID_HEADER)) {
-        res.status(400).send(makeError("header parameter x-guid is missing"));
+        res.status(400).send(makeError('header parameter x-guid is missing'))
     } else {
-        next();
+        next()
     }
 }
 
@@ -68,42 +68,51 @@ async function putHandler(
         `,
       [
         req.header(GUID_HEADER),
+<<<<<<< HEAD
         req.body
+=======
+        req.body.zoom ?? null,
+        req.body.graphsShown ?? null,
+        req.body.lkId ?? null,
+        req.body.blId ?? null,
+        req.body.metric ?? null,
+        req.body.table ? JSON.stringify(req.body.table) : null
+>>>>>>> 099e7bde9c3c06170571dc41797b1f2c794e4fd8
       ]
-    );
+    )
 
-      res.send();
+      res.send()
   } catch (error) {
-    res.status(500).send(makeInternalError());
+    res.status(500).send(makeInternalError())
   }
 }
 
 interface Error {
-  isError: true;
-  msg: string;
+  isError: true
+  msg: string
 }
 
 function makeError(msg: string): Error {
   return {
     isError: true,
-    msg,
-  };
+    msg
+  }
 }
 
 function makeInternalError(): Error {
   return {
     isError: true,
-    msg: "internal error",
-  };
+    msg: 'internal error'
+  }
 }
 
 export = {
   get: {
     handler: getHandler,
-    authorize,
+    authorize
   },
   put: {
     handler: putHandler,
-    authorize,
-  },
-};
+    authorize
+  }
+}

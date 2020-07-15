@@ -1,111 +1,119 @@
 <template>
   <div id="global-options-container">
-    <v-card class="w-75">
-      <v-list-item two-line>
-        <v-list-item-content>
-          <!-- <v-list-item-title class="headline">San Francisco</v-list-item-title>
-          <v-list-item-subtitle>Mon, 12:30 PM, Mostly sunny</v-list-item-subtitle>-->
-          <div class="d-flex">
-            <v-autocomplete
-              v-model="BL_ID"
-              :items="states"
-              :search-input.sync="searchBL"
-              @input="setSelState"
-              item-text="name"
-              item-value="BL_ID"
-              label="Bundesland"
-              class="mx-3"
-              style="width:2%"
-            ></v-autocomplete>
-            <v-autocomplete
-              v-model="LK_ID"
-              :items="counties"
-              @input="setSelCounty"
-              hide-no-data
-              hide-selected
-              item-text="LK"
-              item-value="LK_ID"
-              label="Landkreis"
-              class="mx-3"
-              style="width:2%"
-              return-object
-            ></v-autocomplete>
-            <v-btn outlined color="primary" class="align-self-center mx-4">
-              <span>Find on Map</span>
-              <v-icon right>mdi-magnify</v-icon>
-            </v-btn>
-          </div>
-          <div>
-            <v-slider :max="3" :tick-labels="mapResolutions" class="mx-5" ticks></v-slider>
-          </div>
-        </v-list-item-content>
-      </v-list-item>
-
-      <!-- <v-card-text>
-        <v-row align="center">
-          <v-col class="display-3" cols="6">23&deg;C</v-col>
-          <v-col cols="6">
-            <v-img
-              src="https://cdn.vuetifyjs.com/images/cards/sun.png"
-              alt="Sunny image"
-              width="92"
-            ></v-img>
-          </v-col>
-        </v-row>
-      </v-card-text>-->
+    <v-card id="options" class="w-75">
+      <v-icon
+        id="changeOptionsSize"
+        v-if="showOptions"
+        v-on:click="minimizeOrMaximizeOptions"
+      >mdi-chevron-down</v-icon>
+      <v-icon
+        id="changeOptionsSize"
+        v-if="!showOptions"
+        v-on:click="minimizeOrMaximizeOptions"
+      >mdi-chevron-up</v-icon>
+      <v-expand-transition>
+        <div v-show="showOptions">
+          <v-list-item two-line>
+            <v-list-item-content>
+              <div class="d-flex flex-column flex-md-row">
+                <v-autocomplete
+                  v-model="BL_ID"
+                  :items="states"
+                  :search-input.sync="searchBL"
+                  @input="setSelState"
+                  item-text="name"
+                  item-value="BL_ID"
+                  label="Bundesland"
+                  class="px-3"
+                  style="width:100%; margin:0px !important; padding"
+                ></v-autocomplete>
+                <v-autocomplete
+                  v-model="LK_ID"
+                  :items="counties"
+                  @input="setSelCounty"
+                  hide-no-data
+                  hide-selected
+                  item-text="full_name"
+                  item-value="LK_ID"
+                  label="Landkreis"
+                  class="px-3"
+                  style="width:100%; margin:0px !important"
+                  return-object
+                ></v-autocomplete>
+                <v-btn outlined @click="findOnMap()" color="primary" class="align-self-center mx-4">
+                  <span class>Find on Map</span>
+                  <v-icon right>mdi-magnify</v-icon>
+                </v-btn>
+              </div>
+              <v-container fluid class="pb-0">
+                <v-row>
+                  <v-col cols="12" md="6" class="pb-0">
+                    <v-subheader class="sliderLabelCases">Fallzahlen</v-subheader>
+                    <v-slider
+                      :max="2"
+                      :tick-labels="allCasesOptions.map(item => item.label)"
+                      class="pl-0"
+                      ticks
+                      @input="setCaseOption"
+                    ></v-slider>
+                  </v-col>
+                  <v-col cols="12" md="6" class="pb-0">
+                    <v-subheader class="sliderLabelResolution">Auflösung der Map</v-subheader>
+                    <v-slider
+                      v-model="resolutionSliderPos"
+                      :min="-3"
+                      :max="0"
+                      @input="setMapResolution"
+                      :tick-labels="this.mapResolutions"
+                      class="pl-0"
+                      ticks
+                    ></v-slider>
+                  </v-col>
+                </v-row>
+              </v-container>
+              <!-- <div id="sliderContainer" class="d-flex">
+                <v-col>
+                  <v-subheader class="pl-0">Fallzahlen</v-subheader>
+                  <v-slider
+                    :max="2"
+                    :tick-labels="allCasesOptions.map(item => item.label)"
+                    class="pl-0"
+                    ticks
+                    @input="setCaseOption"
+                  ></v-slider>
+                </v-col>
+                <v-col>
+                  <v-subheader class="pl-0">Auflösung der Map</v-subheader>
+                  <v-slider
+                    v-model="resolutionSliderPos"
+                    :min="-3"
+                    :max="0"
+                    @input="setMapResolution"
+                    :tick-labels="this.mapResolutions"
+                    class="pl-0"
+                    ticks
+                  ></v-slider>
+                </v-col>
+              </div>-->
+            </v-list-item-content>
+          </v-list-item>
+        </div>
+      </v-expand-transition>
     </v-card>
-    <!-- <div>
-      <div id="zoomer">
-        <h1>Auflösung</h1>
-        <v-slider
-          v-model="zoomstufe"
-          v-bind="zoomsliderOptions"
-          :data="['basycs', 'etwas Wilder', 'Zu Wild', '10/10']"
-        ></v-slider>
-      </div>
-      <h1>🗺️Bundesland</h1>
-      <v-select
-        v-model="BL_ID"
-        label="name"
-        :options="states"
-        :reduce="(item) => item.BL_ID"
-        @input="setSelState"
-        :clearable="false"
-      ></v-select>
-    </div>
-    <div>
-      <h1>🗾Landkreis</h1>
-      <v-select
-        v-model="LK_ID"
-        label="LK"
-        :options="counties"
-        :reduce="(item) => item.LK_ID"
-        :clearable="false"
-        @input="setSelCounty"
-      ></v-select>
-    </div>
-    <div>
-      <h1>💯Fallzahlen</h1>
-      <v-select
-        v-model="casesOption"
-        :options="allCasesOptions"
-        :reduce="(option) => option.code"
-        :clearable="false"
-      ></v-select>
-    </div>
-    <div>
-      <button v-on:click="saveUserSettings()">💾Einstellungen speichern</button>
-    </div>-->
   </div>
 </template>
 
 <script>
 import { mapFields } from "vuex-map-fields";
 
+//vuetify changes the css styl when an icon has the @click attribute therfore the event is added manually
 export default {
   data: () => ({
+    showOptions: true,
+    resolutionSliderPos: -3,
     states: [{ BL_ID: 0, name: "Alle" }],
     mapResolutions: ["Low", "Medium", "High", "Original"],
+    casesOptions: ["Alle", "100K", "100K / 7 Tage"],
     selectedState: null,
     counties: [""],
     selectedCounty: null,
@@ -119,18 +127,31 @@ export default {
     }
   }),
   methods: {
-    setSelState(value) {
+    setSelState(stateId) {
+      // console.log('GO setSelState: ', stateId);
       this.LK_ID = null;
       // this.BL_ID = value;
-      this.selectCountiesToState(value);
+      this.selectCountiesToState(stateId);
+    },
+    minimizeOrMaximizeOptions() {
+      this.showOptions = !this.showOptions;
     },
     setSelCounty(value) {
       this.LK_ID = value.LK_ID;
       this.BL_ID = value.BL_ID;
       // if (!this.BL_ID) {
       //   this.BL_ID = this.counties.find(e => e.LK_ID === value).BL_ID;
-        this.selectCountiesToState(this.BL_ID);
+      this.selectCountiesToState(this.BL_ID);
       // }
+    },
+    setMapResolution(value) {
+      if (value > 0) {
+        value = 0;
+      }
+      this.mapResolution = Math.abs(value);
+    },
+    setCaseOption(caseOption) {
+      this.casesOption = this.allCasesOptions[caseOption].code;
     },
     selectCountiesToState(stateId) {
       if (stateId != 0) {
@@ -157,6 +178,9 @@ export default {
     saveUserSettings() {
       //Hier Settings speichern!
       console.log("Jetzt könnten wir speichern!");
+    },
+    findOnMap() {
+      this.$emit("focus-map");
     }
   },
   watch: {
@@ -167,6 +191,9 @@ export default {
     BL_ID: function() {
       initStates(this);
       this.selectCountiesToState(this.BL_ID);
+    },
+    mapResolution: function() {
+      this.resolutionSliderPos = this.mapResolution * -1;
     }
   },
   mounted() {
@@ -179,34 +206,50 @@ export default {
       LK_ID: "LK_ID",
       casesOption: "casesOption",
       allCasesOptions: "allCasesOptions",
-      infectionData: "infectionData"
+      infectionData: "infectionData",
+      mapResolution: "mapResolution"
     })
   }
 };
 
 function initStates(parent) {
-  try{
+  try {
     let tempStates = [...parent.infectionData.states];
     tempStates.sort(function(a, b) {
       return a.name < b.name ? -1 : 1;
     });
     tempStates.unshift({ BL_ID: 0, name: "Alle" });
     parent.states = tempStates;
-  }catch(e){
-    if(e instanceof TypeError){
+  } catch (e) {
+    if (e instanceof TypeError) {
       //Is trown when the async loaded data is not yet finished loading. No real Error
-
       // console.log(e)
-    }else{
-      console.error(e)
+    } else {
+      console.error(e);
     }
   }
 }
 </script>
 
 <style scoped>
+.sliderLabelCases {
+  position: absolute;
+  bottom: 60%;
+  left: 0;
+}
+
+.sliderLabelResolution {
+  position: absolute;
+  bottom: 60%;
+  left: 0;
+}
+
 #zoomer {
   padding-bottom: 50px;
+}
+
+.theme--light.v-icon:focus::after {
+  opacity: 0 !important;
 }
 
 button {
@@ -223,12 +266,61 @@ v-select {
   cursor: pointer;
 }
 
-#global-options-container {
+#options {
   position: absolute;
   bottom: 2%;
-  left: 25%;
   z-index: 1001;
   width: 75%;
+  min-height: 1.5rem;
+}
+
+@media screen and (max-width: 959px) {
+  #options {
+    left: 0%;
+    width: 100% !important;
+  }
+}
+
+@media screen and (min-width: 960px) {
+  #options {
+    left: 12.5%;
+    width: 75% !important;
+  }
+}
+
+@media screen and (max-width: 649px) {
+  #sliderContainer {
+    flex-direction: column;
+  }
+}
+
+@media screen and (min-width: 650px) {
+  #sliderContainer {
+    flex-direction: row;
+  }
+}
+
+#d-large {
+  position: absolute;
+  bottom: 2%;
+  left: 12.5%;
+  z-index: 1001;
+  width: 75%;
+}
+
+#d-small {
+  position: absolute;
+  bottom: 2%;
+  z-index: 1001;
+  width: 100%;
+}
+
+#changeOptionsSize {
+  right: 0.5%;
+  position: absolute;
+  z-index: 1010;
+  padding: 0 !important;
+  border: 0;
 }
 </style>
 

@@ -1,70 +1,223 @@
 <template>
-<div>
-    <b-card no-body>
-      <b-tabs card>
-        <b-tab title="Fälle">
-          <b-container class="bv-example-row">
-            <b-row>
-              <b-col>
-                <p>Fälle</p>
-                {{this.data.cases}}
-              </b-col>
-              <b-col>
-                <p>Fälle per 100k</p>
-                {{this.data.cases100k}}
-              </b-col>
-              <b-col>
-                <p>Fälle per 100k letze 7 Tage</p>
-                {{this.data.cases100k7}}
-              </b-col>
-              <b-col>
-                <LineChart :data="this.data.casesArr" :label="'Fälle gesamt'" v-on:lineclick="doSomething"></LineChart>
-              </b-col>
-            </b-row>
-            <b-row>
-              {{this.data.name}}
-            </b-row>
-          </b-container>
-        </b-tab>
-        <b-tab title="Vergleich">
-          <b-container class="bv-example-row">
-            <b-row>
-              <b-col>
-                <p>Neuinfektionen</p>
-                {{this.data.newInfections}}
-              </b-col>
-              <b-col>
-                <LineChart :data="this.data.newInfectionsArr" :label="'Tägiche Neuinfektionen'" v-on:lineclick="doSomething"></LineChart>
-              </b-col>
-            </b-row>
-            <b-row>
-              {{this.data.name}}
-            </b-row>
-          </b-container>
-        </b-tab>
-        <b-tab title="Tote">
-          <b-container class="bv-example-row">
-            <b-row>
-              {{"Tote: " + this.data.deaths}}
-            </b-row>
-            <b-row>
-              {{this.data.name}}
-            </b-row>
-          </b-container>
-        </b-tab>
-      </b-tabs>
-    </b-card>
+  <v-card class="ma-2">
+    <v-app-bar color="blue darken-2" dark dense>
+      <v-spacer></v-spacer>
+      <v-toolbar-title id="gerTitle">{{this.data.name}}</v-toolbar-title>
+      <v-spacer></v-spacer>
+    </v-app-bar>
+    <v-tabs v-model="tab" background-color="light" icons-and-text :grow="true" show-arrows>
+      <v-tabs-slider></v-tabs-slider>
+      <v-tab href="#tab-1">
+        <span>Fälle Gesamt</span>
+        <span class="case-number">{{formatNumber(this.data.cases)}}</span>
+      </v-tab>
+      <v-tab href="#tab-2">
+        <span>Fälle Pro 100k</span>
+        <span class="case-number">{{formatNumber(this.data.cases100k)}}</span>
+      </v-tab>
+      <v-tab href="#tab-3">
+        <span>Fälle Pro 100k / 7 Tage</span>
+        <span class="case-number">{{formatNumber(this.data.cases100k7)}}</span>
+      </v-tab>
+      <v-tab href="#tab-4">
+        <span>Neu-Infektionen</span>
+        <span class="case-number">{{formatNumber(this.data.newInfections)}}</span>
+      </v-tab>
+      <v-tab href="#tab-5">
+        <span>Tote</span>
+        <span class="case-number">{{formatNumber(this.data.deaths)}}</span>
+      </v-tab>
+    </v-tabs>
+    <v-tabs-items v-model="tab" v-show="visibleComponents.lineChartVisible">
+      <v-tab-item :value="'tab-1'">
+        <LineChart
+          style="height:20.5rem"
+          :data="data.lineChartData.cases"
+          :dates="data.lineChartData.date"
+          :label="'Fälle gesamt'"
+          v-on:lineclick="openLargerGraph"
+        ></LineChart>
+      </v-tab-item>
+      <v-tab-item :value="'tab-2'">
+        <LineChart
+          style="height:20.5rem"
+          :data="data.lineChartData.casesPer100k"
+          :dates="data.lineChartData.date"
+          :label="'Fälle pro 100k'"
+          v-on:lineclick="openLargerGraph"
+        ></LineChart>
+      </v-tab-item>
+      <v-tab-item :value="'tab-3'">
+        <LineChart
+          style="height:20.5rem"
+          :data="data.lineChartData.cases7per100k"
+          :dates="data.lineChartData.date"
+          :label="'Fälle pro 100k / 7 Tage'"
+          v-on:lineclick="openLargerGraph"
+        ></LineChart>
+      </v-tab-item>
+      <v-tab-item :value="'tab-4'">
+        <LineChart
+          style="height:20.5rem"
+          :data="data.lineChartData.change"
+          :dates="data.lineChartData.date"
+          :label="'Neuinfektionen'"
+          v-on:lineclick="openLargerGraph"
+        ></LineChart>
+      </v-tab-item>
+      <v-tab-item :value="'tab-5'">
+        <LineChart
+          style="height:20.5rem"
+          :data="data.lineChartData.deaths"
+          :dates="data.lineChartData.date"
+          :label="'Tote'"
+          v-on:lineclick="openLargerGraph"
+        ></LineChart>
+      </v-tab-item>
+    </v-tabs-items>
 
-    
+    <!-- <v-tabs v-model="tab" background-color="light" icons-and-text :grow="true" show-arrows>
+      <v-tabs-slider></v-tabs-slider>
 
+      <v-tab href="#tab-1">
+        Fälle
+        <v-icon>mdi-numeric</v-icon>
+      </v-tab>
 
+      <v-tab href="#tab-2">
+        Neu-Infektionen
+        <v-icon>mdi-chart-timeline-variant</v-icon>
+      </v-tab>
 
-  </div>
+      <v-tab href="#tab-3">
+        Tote
+        <v-icon>mdi-skull-outline</v-icon>
+      </v-tab>
+    </v-tabs>
+    <v-tabs-items v-model="tab">
+      <v-tab-item :value="'tab-1'">
+        <v-card flat>
+          <v-container>
+            <v-row>
+              <v-col sm="12" md="4">
+                <v-row>
+                  <v-card-text>Alle</v-card-text>
+                </v-row>
+                <v-row>
+                  <v-spacer></v-spacer>
+                  <v-card-title class="blue--text text--darken-2 single-number">{{this.data.cases}}</v-card-title>
+                  <v-spacer></v-spacer>
+                </v-row>
+              </v-col>
+              <v-col sm="12" md="4">
+                <v-row>
+                  <v-card-text>Pro 100K Einwohner</v-card-text>
+                </v-row>
+                <v-row>
+                  <v-spacer></v-spacer>
+                  <v-card-title
+                    class="blue--text text--darken-2 single-number"
+                  >{{this.data.cases100k}}</v-card-title>
+                  <v-spacer></v-spacer>
+                </v-row>
+              </v-col>
+              <v-col sm="12" md="4">
+                <v-row>
+                  <v-card-text>Pro 100K Einwohner / 7 Tage</v-card-text>
+                </v-row>
+                <v-row>
+                  <v-spacer></v-spacer>
+                  <v-card-title
+                    class="blue--text text--darken-2 single-number"
+                  >{{this.data.cases100k7}}</v-card-title>
+                  <v-spacer></v-spacer>
+                </v-row>
+              </v-col>
+            </v-row>
+            <v-row v-if="visibleComponents.lineChartVisible">
+              <v-col xs="6">
+                <LineChart
+                  style="height:15rem"
+                  :data="data.lineChartData.cases"
+                  :dates="data.lineChartData.date"
+                  :label="'Fälle gesamt'"
+                  v-on:lineclick="openLargerGraph"
+                ></LineChart>
+              </v-col>
+              <v-col xs="6">
+                <LineChart
+                  style="height:15rem"
+                  :data="data.lineChartData.cases7per100k"
+                  :dates="data.lineChartData.date"
+                  :label="'Fälle pro 100k, letzte 7 Tage'"
+                  v-on:lineclick="openLargerGraph"
+                ></LineChart>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card>
+      </v-tab-item>
+      <v-tab-item :value="'tab-2'">
+        <v-card flat>
+          <v-card-title v-if="!visibleComponents.lineChartVisible">
+            <v-spacer></v-spacer>
+            <v-card-text class="blue--text text--darken-2 single-number">{{this.data.newInfections}}</v-card-text>
+            <v-spacer></v-spacer>
+          </v-card-title>
+          <v-row v-if="visibleComponents.lineChartVisible" align="center" justify="center">
+            <v-col md="4">
+              <v-flex class="blue--text text--darken-2 single-number">{{this.data.newInfections}}</v-flex>
+            </v-col>
+            <v-col md="8">
+              <LineChart
+                style="height:15rem"
+                v-if="visibleComponents.lineChartVisible"
+                :data="data.lineChartData.change"
+                :dates="data.lineChartData.date"
+                :label="'Neuinfektionen'"
+                v-on:lineclick="openLargerGraph"
+              ></LineChart>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-tab-item>
+      <v-tab-item :value="'tab-3'">
+        <v-card flat>
+          <v-card-title v-if="!visibleComponents.lineChartVisible">
+            <v-spacer></v-spacer>
+            <v-card-text class="red--text text--darken-2 single-number">{{this.data.deaths}}</v-card-text>
+            <v-spacer></v-spacer>
+          </v-card-title>
+          <v-row v-if="visibleComponents.lineChartVisible" align="center" justify="center">
+            <v-col md="4">
+              <v-flex class="red--text text--darken-2 single-number">{{this.data.deaths}}</v-flex>
+            </v-col>
+            <v-col md="8">
+              <LineChart
+                style="height:15rem"
+                v-if="visibleComponents.lineChartVisible"
+                :data="data.lineChartData.deaths"
+                :dates="data.lineChartData.date"
+                :label="'Tote'"
+                v-on:lineclick="openLargerGraph"
+              ></LineChart>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-tab-item>
+    </v-tabs-items>-->
+  </v-card>
 </template>
 
 <script>
 import { mapFields } from "vuex-map-fields";
-import LineChart from "./LineChart.vue"
+import LineChart from "./LineChart.vue";
+import { numberWithCommas } from "../functions/formatNumber";
+import {
+  getHistoryDeutschland,
+  getHistoryBL,
+  getHistoryLK
+} from "../functions/getHistory.js";
 
 export default {
   name: "Details",
@@ -73,35 +226,38 @@ export default {
   },
   data() {
     return {
-      data:{
-        name : "",
-        cases : "",
-        cases100k : "",
-        cases100k7 : "",
-        newInfections : "",
-        deaths : "",
-        casesArr : [],
-        newInfectionsArr : []
+      tab: null,
+      data: {
+        name: "",
+        cases: "",
+        cases100k: "",
+        cases100k7: "",
+        newInfections: "",
+        deaths: "",
+        lineChartData: {}
       },
       dialog: this.lineChartDialogConfig //Change on click event
-    }
+    };
   },
   props: {
     view: Number
   },
   mounted() {
-    fillData(this)
+    fillData(this);
   },
   watch: {
     BL_ID: function() {
-      fillData(this)
+      fillData(this);
     },
     LK_ID: function() {
-      fillData(this)
+      fillData(this);
     },
     infectionData: function() {
-      fillData(this)
+      fillData(this);
     },
+    days: function() {
+      fillData(this);
+    }
     // lineChartDialogConfig: function() {
     //   console.log("oainf")
     //   this.dialog = true
@@ -112,95 +268,140 @@ export default {
       BL_ID: "BL_ID",
       LK_ID: "LK_ID",
       infectionData: "infectionData",
-      lineChartDialogConfig: 'lineChartDialogConfig'  
+      pastInfectionData: "pastInfectionData",
+      lineChartDialogConfig: "lineChartDialogConfig",
+      visibleComponents: "visibleComponents",
+      days: "numberPastDays"
     })
   },
   methods: {
-    doSomething: function(value) {
+    formatNumber(number) {
+      if (number === undefined) {
+        return;
+      }
+      // console.log(number);
+      return numberWithCommas(number);
+    },
+    openLargerGraph: function(value) {
       //console.log(value);
+      //TODO: Pop Up hat beim ersten Klick keine Daten!!
       this.lineChartDialogConfig = {
         label: value.label + " - " + this.data.name,
         data: value.data,
-        shown: true}
-      this.dialog = true
+        shown: true,
+        dates: value.dates
+      };
+      this.dialog = true;
       // return ""
     }
   }
-
 };
 
-function fillData(parent){
-  if(parent.infectionData){
-    switch(parent.view) {
+function fillData(parent) {
+  //console.log(parent.days);
+  if (parent.infectionData) {
+    switch (parent.view) {
       case 0:
-      //Deutschand view
-      parent.data = {
-        name : parent.infectionData.name,
-        cases : parent.infectionData.cases_DE,
-        cases100k : Math.round(parent.infectionData.cases_per_100k_DE * 100) / 100,
-        cases100k7 : Math.round(parent.infectionData.cases7_per_100k_DE * 100) / 100,
-        newInfections : parent.infectionData.new_cases_DE,
-        deaths : parent.infectionData.deaths_DE,
-        casesArr : parent.infectionData.cases_Arr ? parent.infectionData.cases_Arr : [1,1,2,3,5,8],
-        newInfectionsArr : parent.infectionData.newInfections_Arr ? parent.infectionData.newInfections_Arr : [4,5,9,7,1,3]
-      }
-      break;
-      case 1:
-      //BL view
-        if(parent.BL_ID){
-          let BLdata = parent.infectionData.states.find(e => e.BL_ID === parent.BL_ID)
-
-          parent.data = {
-            name : BLdata.name,
-            cases : BLdata.cases_BL,
-            cases100k : Math.round(BLdata.cases_per_100k_BL * 100) / 100,
-            cases100k7 : Math.round(BLdata.cases7_per_100k_BL * 100) / 100,
-            newInfections : BLdata.new_cases_BL,
-            deaths : BLdata.deaths_BL,
-            casesArr : BLdata.cases_Arr ? BLdata.cases_Arr : [4,7,9,1,3,5],
-            newInfectionsArr : BLdata.newInfections_Arr ? BLdata.newInfections_Arr : [1,2,6,4,7,9]
-          }
-        }else{
-          empty(parent);
-        }
-      break;
-      case 2:
-      //LK view
-      if(parent.BL_ID && parent.LK_ID){
-        let LKdata = parent.infectionData.states.find(e => e.BL_ID === parent.BL_ID).counties.find(ee => ee.LK_ID === parent.LK_ID)
+        //Deutschand view
 
         parent.data = {
-          name : LKdata.LK,
-          cases : LKdata.cases_LK,
-          cases100k : Math.round(LKdata.cases_per_100k_LK * 100) / 100,
-          cases100k7 : Math.round(LKdata.cases7_per_100k_LK * 100) / 100,
-          newInfections : LKdata.new_cases_LK,
-          deaths : LKdata.deaths_LK,
-          casesArr : LKdata.cases_Arr ? LKdata.cases_Arr : [1,1,1,2,2,8],
-          newInfectionsArr : LKdata.newInfections_Arr ? LKdata.newInfections_Arr : [1,2,3,4,5,6]
+          name: parent.infectionData.name,
+          cases: parent.infectionData.cases_DE,
+          cases100k:
+            Math.round(
+              (parent.infectionData.cases_per_100k_DE + Number.EPSILON) * 100
+            ) / 100,
+          cases100k7:
+            Math.round(
+              (parent.infectionData.cases7_per_100k_DE + Number.EPSILON) * 100
+            ) / 100,
+          newInfections: parent.infectionData.change_DE,
+          deaths: parent.infectionData.deaths_DE,
+          lineChartData: getHistoryDeutschland(parent.days)
+        };
+        break;
+      case 1:
+        //BL view
+        if (parent.BL_ID) {
+          let BLdata = parent.infectionData.states.find(
+            e => e.BL_ID === parent.BL_ID
+          );
+
+          parent.data = {
+            name: BLdata.name,
+            cases: BLdata.cases_BL,
+            cases100k:
+              Math.round((BLdata.cases_per_100k_BL + Number.EPSILON) * 100) /
+              100,
+            cases100k7:
+              Math.round((BLdata.cases7_per_100k_BL + Number.EPSILON) * 100) /
+              100,
+            newInfections: BLdata.change_BL,
+            deaths: BLdata.deaths_BL,
+            lineChartData: getHistoryBL(parent.days, parent.BL_ID)
+          };
+        } else {
+          empty(parent);
+          parent.data.name = "Bundesland wählen";
         }
-      }else{
-        empty(parent)
-      }
-      break;
+        break;
+      case 2:
+        //LK view
+        if (parent.BL_ID && parent.LK_ID) {
+          let LKdata = parent.infectionData.states
+            .find(e => e.BL_ID === parent.BL_ID)
+            .counties.find(ee => ee.LK_ID === parent.LK_ID);
+
+          parent.data = {
+            name: LKdata.full_name,
+            cases: LKdata.cases_LK,
+            cases100k:
+              Math.round((LKdata.cases_per_100k_LK + Number.EPSILON) * 100) /
+              100,
+            cases100k7:
+              Math.round((LKdata.cases7_per_100k_LK + Number.EPSILON) * 100) /
+              100,
+            newInfections: LKdata.change_LK,
+            deaths: LKdata.deaths_LK,
+            lineChartData: getHistoryLK(parent.days, parent.BL_ID, parent.LK_ID)
+          };
+          //console.log(parent.data);
+        } else {
+          empty(parent);
+          parent.data.name = "Landkreis wählen";
+        }
+        break;
       default:
-        empty(parent)
+        empty(parent);
     }
-  }else{
-        empty(parent)
-      }
+  } else {
+    empty(parent);
+  }
 }
 
-function empty (parent){
+function empty(parent) {
   parent.data = {
-          name : "",
-          cases : "",
-          cases100k : "",
-          cases100k7 : "",
-          newInfections : "",
-          deaths : ""
-        }
+    title: "",
+    name: "",
+    cases: "",
+    cases100k: "",
+    cases100k7: "",
+    newInfections: "",
+    deaths: "",
+    lineChartData: {}
+  };
+}
+</script>
+<style scoped>
+.case-number {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+.single-number {
+  font-size: 3rem;
 }
 
-</script>
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+a:hover {
+  text-decoration: none !important;
+}
+</style>

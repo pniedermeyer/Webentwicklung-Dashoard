@@ -55,6 +55,11 @@ function simplifyDPStep(points: Point[], first: number, last: number, epsilon: n
   }
 }
 
+/**
+ * Implementation of RDP
+ * @param points 
+ * @param epsilon 
+ */
 function douglasPeucker(points: Point[], epsilon: number): Point[] {
   const last: number = points.length - 1
   const reducedPoints: Point[] = [points[0]]

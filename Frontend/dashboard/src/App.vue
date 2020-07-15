@@ -1,66 +1,164 @@
 <template>
-  <div selectedBL_ID="app">
-    <v-app>
-      <app-bar />
-
-      <div class="d-flex w-100 h-100">
-        <Map />
+  <!-- <div selectedBL_ID="app"> -->
+  <v-app>
+    <app-bar />
+    <v-main class="mh-100">
+      <div class="mapcon d-flex w-100 h-100">
+        <Map ref="Map" />
         <!-- <global-options /> -->
       </div>
+      <LineChartPopUp />
+      <v-row v-show="!visibleComponents.lineChartVisible">
+        <v-col
+          v-bind:class="{'col-12': !visibleComponents.casesGermanyVisible && !visibleComponents.casesStateVisible && !visibleComponents.casesCountyVisible}"
+        >
+          <!-- <v-card class="ma-2">
+            <v-app-bar color="blue darken-2" dark dense>
+              <v-spacer></v-spacer>
+              <v-toolbar-title class="w-100">
+                Barchart
+                <v-icon color="white">mdi-chart-bar</v-icon>
+              </v-toolbar-title>
+              <v-spacer></v-spacer>
+            </v-app-bar>
+            <bar-chart />
+          </v-card>-->
+          <v-card v-if="visibleComponents.barchartvisible">
+            <v-card class="barchartconf">
+              <v-app-bar color="blue darken-2" dark dense>
+                <v-spacer></v-spacer>
+                <v-toolbar-title class="w-100">
+                  Barchart
+                  <v-icon color="white">mdi-chart-bar</v-icon>
+                </v-toolbar-title>
+                <v-spacer></v-spacer>
+              </v-app-bar>
 
-      <LineChartPopUp/>
-
-      <div class="d-flex flex-row">
-        <div class="d-flex flex-column">
+              <bar-chart />
+            </v-card>
+          </v-card>
+        </v-col>
+        <v-col v-bind:class="{ 'col-12': !visibleComponents.barchartvisible }">
+          <Details v-show="visibleComponents.casesGermanyVisible" :view="0" />
+          <Details v-show="visibleComponents.casesStateVisible" :view="1" />
+          <Details v-show="visibleComponents.casesCountyVisible" :view="2" />
+        </v-col>
+      </v-row>
+      <v-row
+        v-show="visibleComponents.lineChartVisible && (visibleComponents.casesGermanyVisible || visibleComponents.barchartvisible)"
+      >
+        <v-col
+          v-if="visibleComponents.barchartvisible"
+          cols="12"
+          lg="6"
+          v-bind:class="{'col-lg-12': !visibleComponents.casesGermanyVisible}"
+        >
+          <v-card class="ma-2">
+            <v-app-bar color="blue darken-2" dark dense>
+              <v-spacer></v-spacer>
+              <v-toolbar-title class="w-100">
+                Barchart
+                <v-icon color="white">mdi-chart-bar</v-icon>
+              </v-toolbar-title>
+              <v-spacer></v-spacer>
+            </v-app-bar>
+            <bar-chart />
+          </v-card>
+        </v-col>
+        <v-col
+          v-show="visibleComponents.casesGermanyVisible"
+          cols="12"
+          lg="6"
+          v-bind:class="{'col-lg-12': !visibleComponents.barchartvisible}"
+        >
           <Details :view="0" />
+        </v-col>
+      </v-row>
+      <v-row
+        v-if="visibleComponents.lineChartVisible && (visibleComponents.casesCountyVisible || visibleComponents.casesStateVisible)"
+      >
+        <v-col
+          v-show="visibleComponents.casesStateVisible"
+          cols="12"
+          lg="6"
+          v-bind:class="{'col-lg-12': !visibleComponents.casesCountyVisible}"
+        >
           <Details :view="1" />
+        </v-col>
+        <v-col
+          v-show="visibleComponents.casesCountyVisible"
+          cols="12"
+          lg="6"
+          v-bind:class="{'col-lg-12': !visibleComponents.casesStateVisible}"
+        >
           <Details :view="2" />
-        </div>
-        <div class="d-flex flex-column">
-          <bar-chart />
-        </div>
-      </div>
-      <b-container class="bv-example-row">
-        <b-row>
-          <b-col>
-            1 of 3:
-            <number-input />
-            <!-- <bar-chart></bar-chart> -->
-          </b-col>
-          <b-col>
-            <!-- 2 of 3
-            <Map></Map>-->
-          </b-col>
-          <b-col>
-            <!-- 3 of 3 -->
-            <!-- <GlobalOptions></GlobalOptions> -->
-            <!-- <Details :view="0" />
-            <Details :view="1" />
-            <Details :view="2" />-->
-          </b-col>
-        </b-row>
-      </b-container>
-    </v-app>
+        </v-col>
+      </v-row>
+      <!-- <div class="d-flex flex-row">
+        <v-card class="vcardoverview">
+          <div class="overviewconf d-flex flex-column w-50">
+            <Details v-show="visibleComponents.casesGermanyVisible" :view="0" />
+            <Details v-show="visibleComponents.casesStateVisible" :view="1" />
+            <Details v-show="visibleComponents.casesCountyVisible" :view="2" />
+          </div>
+        </v-card>
+        <div class="barchart d-flex flex-column">
+          <v-card v-if="visibleComponents.barchartvisible">
+            <v-card class="barchartconf">
+              <v-app-bar color="blue darken-2" dark dense>
+                <v-spacer></v-spacer>
+                <v-toolbar-title class="w-100">
+                  Barchart
+                  <v-icon color="white">mdi-chart-bar</v-icon>
+                </v-toolbar-title>
+                <v-spacer></v-spacer>
+              </v-app-bar>
 
-  </div>
+              <bar-chart />
+            </v-card>
+          </v-card>
+        </div>
+      </div>-->
+    </v-main>
+
+    <v-footer>
+      <div class="my-2">
+        <v-btn text small href="https://www.htwsaar.de/htw/impressum" target="_blank">Impressum</v-btn>
+      </div>
+      <div class="my-2">
+        <v-btn
+          text
+          small
+          href="https://npgeo-corona-npgeo-de.hub.arcgis.com/datasets/917fc37a709542548cc3be077a786c17_0"
+          target="_blank"
+        >Datenquelle</v-btn>
+      </div>
+      <div class="my-2">
+        <v-btn text small href="https://www.govdata.de/dl-de/by-2-0" target="_blank">Datenlizenz</v-btn>
+      </div>
+      <v-spacer></v-spacer>
+      <div>&copy; {{ new Date().getFullYear() }}</div>
+    </v-footer>
+  </v-app>
+  <!-- </div> -->
 </template>
 
 <script>
 import AppBar from "./components/AppBar.vue";
-import NumberInput from "./components/SelectBarsCount.vue";
+//import NumberInput from "./components/SelectBarsCount.vue";
 // import TableComponent from "./components/TableComponent.vue";
 import Details from "./components/Details.vue";
 import BarChart from "./components/Barchart.vue";
 import Map from "./components/Map.vue";
-import LineChartPopUp from "./components/LineChartPopUp.vue"
+import LineChartPopUp from "./components/LineChartPopUp.vue";
 // import GlobalOptions from "./components/GlobalOptions.vue";
 import axios from "axios";
 import { mapFields } from "vuex-map-fields";
+import store from "./store/dataStore.js";
 
 import {
   registerURLEventListener,
-  parseUrlState,
-  urlToSettingsChange
+  storeListener
 } from "./functions/UrlSettings.js";
 
 export default {
@@ -69,7 +167,7 @@ export default {
     AppBar,
     BarChart,
     Map,
-    NumberInput,
+    // NumberInput,
     LineChartPopUp,
     // TableComponent,
     Details
@@ -82,7 +180,15 @@ export default {
       // LK_ID : 'LK_ID',
       // casesOption : 'casesOption',
       // allCasesOptions : 'allCasesOptions',
-      infectionData: "infectionData"
+      mapPosition: "mapPosition",
+      infectionData: "infectionData",
+      visibleComponents: "visibleComponents",
+      pastInfectionData: "pastInfectionData",
+      casesGermanyVisible: "casesGermanyVisible",
+      casesStateVisible: "casesStateVisible",
+      casesCountyVisible: "casesCountyVisible",
+      mapVisible: "mapVisible",
+      barchartvisible: "barchartvisible"
       // baseColor : 'baseColor',
       // tableSelectedItemsID : 'tableSelectedItemsID',
       // tableTab : 'tableTab',
@@ -92,13 +198,36 @@ export default {
       // mapResolution : 'mapResolution'
     })
   },
+  methods: {
+    getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            this.$refs.Map.setBrowserLocation([
+              position.coords.latitude,
+              position.coords.longitude
+            ]);
+          },
+          error => {
+            console.log(error.message);
+          }
+        );
+      }
+    }
+  },
 
   mounted() {
     let self = this;
-    urlToSettingsChange(parseUrlState(window.location));
+    //urlToSettingsChange(parseUrlState(window.location));
     axios
-      .get("http://localhost:3001/data/")
-      .then(response => (self.infectionData = response.data));
+      .get("http://localhost:3001/data?numberOfPreviousDays=14")
+      .then(response => {
+        self.infectionData = response.data[0];
+        self.pastInfectionData = response.data;
+      });
+
+    store.subscribe(storeListener);
+    this.getLocation();
   },
   created() {
     registerURLEventListener();
@@ -116,8 +245,39 @@ export default {
   /* margin-top: 60px; */
 }
 
+.mapcon {
+  height: auto !important;
+}
+
+.overviewconf {
+  overflow: auto;
+  width: 60vw !important;
+  max-height: 70vh !important;
+  max-width: 60vw !important;
+}
+
+.compWidth100 {
+  max-width: 100% !important;
+  flex: 0 0 100% !important;
+}
+
+.barchart {
+  margin: 1vh;
+  width: 100%;
+  width: -moz-available; /* WebKit-based browsers will ignore this. */
+  width: -webkit-fill-available; /* Mozilla-based browsers will ignore this. */
+  width: fill-available;
+  max-width: 40vw;
+}
+.vcardoverview {
+  margin: 1vh;
+}
+
 .svg_element_primary_color_scheme {
   stroke: black;
   stroke-width: 0.05pt;
+}
+.barchartconf {
+  margin: 1vh !important;
 }
 </style>

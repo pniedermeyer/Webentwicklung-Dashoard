@@ -15,6 +15,7 @@
     "chart.js": "^2.9.3",
     "chartjs": "^0.3.24",
     "core-js": "^3.6.5",
+    "geojson-geometries-lookup": "^0.5.0",
     "leaflet": "^1.6.0",
     "vue": "^2.6.11",
     "vue-chartjs": "^3.5.0",

@@ -7,7 +7,7 @@ import { CronJob, CronCommand } from 'cron'
 class Scheduler {
   private job: CronJob | null
   private schedule: string = ''
-  private jobFunction: CronCommand
+  private jobFunction: Function
 
   constructor(jobFunction: any, { schedule = '*/5 * * * * *' } = {}) {
     this.setSchedule(schedule)
@@ -29,7 +29,7 @@ class Scheduler {
   }
 
   private createJob(schedule: string) {
-    return new CronJob(schedule, this.jobFunction)
+    return new CronJob(schedule, <CronCommand>this.jobFunction)
   }
 
   stop() {
@@ -39,7 +39,7 @@ class Scheduler {
   }
 
   executeOutOfSchedule() {
-    this.jobFunction;
+    this.jobFunction()
   }
 }
 
