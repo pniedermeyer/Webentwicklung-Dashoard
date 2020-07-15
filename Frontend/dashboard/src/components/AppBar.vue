@@ -37,6 +37,7 @@
 <script>
 import Popup from "./Popup.vue";
 import axios from "axios";
+import {getCurrentUrlDataState} from "../functions/UrlSettings";
 export default {
   name: "app-bar",
   components: { Popup },
@@ -78,12 +79,14 @@ export default {
     generateAndCopyShareLink: function () {
       let id = Math.random().toString(36).slice(2)
 
-      axios.put("http://localhost:3001/settings", decodeURIComponent(window.location.hash.slice(1)), {
+      axios.put("http://localhost:3001/settings", getCurrentUrlDataState(), {
         headers: {
           'x-guid': id
         }
       }).then(result => result.status === 200 && this.copyShareLinkToClipboard(id) ?
         this.showSnackbar("Link in Zwischenablage kopiert", false) :
+        this.showSnackbar("Fehler bei Linkerstellung", true)
+      ).catch(
         this.showSnackbar("Fehler bei Linkerstellung", true)
       )
     }
