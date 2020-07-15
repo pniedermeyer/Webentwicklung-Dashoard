@@ -43,7 +43,18 @@ export default {
     })
   },
   watch: {
-    BL_ID: function() {},
+    BL_ID: function() {
+      
+      console.log(this.geoDatas)
+      let geoData = new Object()
+      geoData.type = "FeatureCollection";
+      geoData.features = this.geoDatas[this.mapResolution].features
+      if(this.BL_ID !== 0 && geoData){ 
+        geoData.features = geoData.features.filter(feature => feature.properties.BL_ID === this.BL_ID)
+        this.lfltMng.addHighlightLayer(geoData)
+      }
+      
+    },
     LK_ID: function() {},
     infectionData: function() {
       this.lfltMng.setInfectionData(this.infectionData);
@@ -76,7 +87,7 @@ export default {
     }
   },
   methods: {
-    fetchGeoData(res = 0) {
+    fetchGeoData(res) {
       let that = this;
       //TODO: Change Request URL for production
       let url = `http://localhost:3001/geodata?` + "res=" + res;

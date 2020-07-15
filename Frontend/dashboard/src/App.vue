@@ -143,11 +143,6 @@ export default {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           position => {
-            console.log(
-              "Geolocation from Browser: ",
-              position.coords.latitude,
-              position.coords.longitude
-            );
             this.$refs.Map.setBrowserLocation([
               position.coords.latitude,
               position.coords.longitude

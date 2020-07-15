@@ -13,6 +13,7 @@ export default class leafletManager {
   _minCases = 0
   _maxCases = 0
   _fillColor = 'LightSlateGrey'
+  _highlightLayer = null
   _positionChangeCallback = this.defaultCallback
   _zoomChangeCallback = this.defaultCallback
   _featureSelectChangeCallback = this.defaultCallback
@@ -83,7 +84,7 @@ export default class leafletManager {
       fillColor: this._fillColor,
       weight: 1,
       opacity: 1,
-      color: 'gray',
+      color: 'silver',
       dashArray: '0',
       fillOpacity: this.getOpacity(feature.properties.county, feature.properties.BL, caseName),
     }
@@ -135,6 +136,25 @@ export default class leafletManager {
       this._map.fitBounds(this._geoJsonLayer.getBounds())
     }
 
+  }
+
+  addHighlightLayer(geoData) {
+    if (this._highlightLayer) {
+      this._map.removeLayer(this._highlightLayer)
+    }
+    this._highlightLayer = leaflet
+      .geoJSON(geoData)
+      .eachLayer(function(layer){
+        layer.setStyle({
+          color: 'gray',
+          weight: 1.5,
+          opacity: 1,
+          fill: false
+        })
+      })
+      .addTo(this._map)
+
+    this.updateMap()
   }
 
   fillColor(color) {

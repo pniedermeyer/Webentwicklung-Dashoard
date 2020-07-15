@@ -278,7 +278,7 @@ export default {
       if (!number) {
         return;
       }
-      console.log(number);
+      // console.log(number);
       return numberWithCommas(number);
     },
     openLargerGraph: function(value) {
