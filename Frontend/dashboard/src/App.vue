@@ -121,7 +121,6 @@
 
 <script>
 import AppBar from "./components/AppBar.vue";
-import SnackNotifier from "./components/SnackNotifier.vue";
 import Details from "./components/Details.vue";
 import BarChart from "./components/Barchart.vue";
 import Map from "./components/Map.vue";
@@ -139,7 +138,6 @@ export default {
   name: "App",
   components: {
     AppBar,
-    SnackNotifier,
     BarChart,
     Map,
     // NumberInput,
