@@ -1,10 +1,21 @@
 import vuexStore from '../store/dataStore.js'
+import axios from 'axios'
 
 var defaultValues = null;
+var currentUrlData = null;
 
 vuexStore.subscribe(() => {
   // TODO: comment this in -> updateUserUrl()
 })
+
+export function getCurrentUrlDataState() {
+  if (currentUrlData === null) {
+    // no url data were set yet, return default values
+    return defaultValues
+  }
+
+  return currentUrlData;
+}
 
 /**
  * Updates the URL in the browser, so that it contains the current configuration of the webapp
@@ -13,6 +24,8 @@ vuexStore.subscribe(() => {
  */
 export function updateUserUrl (doStatePush = true) {
   const state = filterData({ ...vuexStore.state })
+
+  currentUrlData = state
 
   if (doStatePush) {
     window.history.pushState(state, '_THIS_IS_NOT_USED_CURRENTLY_', '#' + JSON.stringify(state))
@@ -90,8 +103,13 @@ export function parseUrlState (url) {
     let state = null;
     let dataPart =  url.hash.substring(1)
 
-    if (!dataPart.startsWith('{')) {
-      //TODO: Load state from server and put into URL
+    if (!dataPart.startsWith('{') && dataPart.length === 11) {
+      // Request URL contains ID for server request
+      axios.get("http://localhost:3001/settings", {
+        headers: {
+          'x-guid': dataPart
+        }
+      }).then(result => vuexStore.commit('setFields', result.data))
     }
 
     if (state === null) {

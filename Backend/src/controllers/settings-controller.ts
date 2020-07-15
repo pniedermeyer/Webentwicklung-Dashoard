@@ -68,16 +68,7 @@ async function putHandler(
         `,
       [
         req.header(GUID_HEADER),
-<<<<<<< HEAD
         req.body
-=======
-        req.body.zoom ?? null,
-        req.body.graphsShown ?? null,
-        req.body.lkId ?? null,
-        req.body.blId ?? null,
-        req.body.metric ?? null,
-        req.body.table ? JSON.stringify(req.body.table) : null
->>>>>>> 099e7bde9c3c06170571dc41797b1f2c794e4fd8
       ]
     )
 
