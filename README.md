@@ -28,6 +28,8 @@ In die github registry einloggen:
 - ``docker login docker.pkg.github.com`` in CMD eingeben
 - Als Nutzernamen euren Github Benutzernamen nutzen
 - Als passwort den "Github personal access token" nutzen
+- In den Verzeichnissen ``Frontend/dashbaord`` und ``Backend`` jeweils den Befehl ``npm -i`` ausführen (**Hinweis**: Dieser
+Schritt sollte nach jedem pull durchgeführt werden)
 
 ### Mit docker
 Einfach im root-folder ``docker-compose up --build`` aufrufen. Danach stehen folgende services zur Verfügung:
