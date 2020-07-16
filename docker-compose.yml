@@ -35,7 +35,7 @@ services:
     dashboard:
         build:
             context: Frontend/dashboard
-            dockerfile: Dockergfile.dev
+            dockerfile: Dockerfile.dev
         volumes:
             - "./Frontend/dashboard:/usr/src/app/"
         ports:
