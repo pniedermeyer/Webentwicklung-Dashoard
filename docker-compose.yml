@@ -27,6 +27,7 @@ services:
             - "./Backend:/usr/src/app/"
         networks:
             - backend
+            - fullstack
         ports:
             - 3001:3001
             - 5858:5858
@@ -34,12 +35,14 @@ services:
     dashboard:
         build:
             context: Frontend/dashboard
-            dockerfile: Dockerfile.dev
+            dockerfile: Dockergfile.dev
         volumes:
             - "./Frontend/dashboard:/usr/src/app/"
         ports:
             - "8080:8080"
             - "5959:5959"
+        networks:
+            - fullstack
         environment:
             DANGEROUSLY_DISABLE_HOST_CHECK: "true"
 
@@ -49,9 +52,12 @@ services:
             dockerfile: Dockerfile
         ports:
             - "8888:80"
+        networks:
+            - fullstack
 
 networks:
     backend:
+    fullstack:
 
 volumes:
     db-data:

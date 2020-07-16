@@ -23,7 +23,7 @@
     <v-tooltip bottom>
       <template v-slot:activator="{ on, attrs }">
         <v-btn icon v-bind="attrs" v-on="on" @click="createBackendLinkAndCopyToClipboard">
-          <v-icon>mdi-crosshairs-gps</v-icon>
+          <v-icon>mdi-share-variant</v-icon>
         </v-btn>
       </template>
       <span>Link teilen</span>
